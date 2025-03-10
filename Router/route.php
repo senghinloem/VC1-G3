@@ -13,14 +13,32 @@ require_once "Controllers/LoginRegisterController.php";
 
 
 $route = new Router();
+
+// user
+$route->get("/users", [UserController::class, 'user']);
+
 $route->get("/", [WelcomeController::class, 'welcome']);
 $route->get("/dashboard", [DashboardController::class, 'dashboard']);
+// product
 $route->get("/products", [ProductController::class, 'product']);
 $route->get("/create", [ProductController::class, 'create']);
+
+// stock
 $route->get("/stock", [StockController::class, 'stock']);
+
+// product lsit
 $route->get("/product_list", [ProductListController::class, 'product_list']);
+$route->get("/product_list/create_list", [ProductListController::class, 'create_list']);
+$route->post("/product_list/store", [ProductListController::class, 'store']);
+$route->get("/product_list/edit/{product_list_id}", [ProductListController::class, 'edit']);
+$route->put("/product_list/update/{product_list_id}", [ProductListController::class, 'update']);
+$route->delete("/product_list/destroy/{product_list_id}", [ProductListController::class, 'destroy']);
+
+// suppliers
 $route->get("/supplier", [SupplierController::class, 'supplier']);
 $route->get("/create_suppliers", [SupplierController::class, 'create']);
+
+// login and register
 $route->get("/login", [LoginRegisterController::class, 'login']);
 $route->get("/register", [LoginRegisterController::class, 'register']);
 $route->route();
