@@ -22,6 +22,9 @@ $route->get("/dashboard", [DashboardController::class, 'dashboard']);
 // product
 $route->get("/products", [ProductController::class, 'product']);
 $route->get("/create", [ProductController::class, 'create']);
+$route->post("/products/store", [ProductListController::class, 'store']);
+$route->delete("/products/destroy/{product_id}", [ProductListController::class, 'destroy']);
+
 
 // stock
 $route->get("/stock", [StockController::class, 'stock']);
