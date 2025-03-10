@@ -21,8 +21,11 @@
                             <td><?= $list['available_quantity'] ?></td>
                             <td><?= $list['price'] ?></td>
                             <td>
-                                <a href="/product_list/delete/<?= $list['product_list_id']?>" class="btn btn-danger">Delete</a>
                                 <a href="/product_list/edit/<?= $list['product_list_id']?>" class="btn btn-primary">Edit</a>
+                                <form action="/product_list/destroy/<?= $list['product_list_id']?>" method="POST" style="display:inline;">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
                             </td>
                         </tr>
                 <?php

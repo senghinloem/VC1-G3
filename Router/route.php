@@ -9,8 +9,7 @@ require_once "Controllers/StockController.php";
 require_once "Controllers/ProductListController.php";
 require_once "Controllers/SupplierController.php";
 require_once "Controllers/LoginRegisterController.php";
-
-
+require_once "Controllers/UserController.php"; // Added missing UserController
 
 $route = new Router();
 
@@ -26,7 +25,7 @@ $route->get("/create", [ProductController::class, 'create']);
 // stock
 $route->get("/stock", [StockController::class, 'stock']);
 
-// product lsit
+// product list
 $route->get("/product_list", [ProductListController::class, 'product_list']);
 $route->get("/product_list/create_list", [ProductListController::class, 'create_list']);
 $route->post("/product_list/store", [ProductListController::class, 'store']);
@@ -41,4 +40,5 @@ $route->get("/create_suppliers", [SupplierController::class, 'create']);
 // login and register
 $route->get("/login", [LoginRegisterController::class, 'login']);
 $route->get("/register", [LoginRegisterController::class, 'register']);
+
 $route->route();
