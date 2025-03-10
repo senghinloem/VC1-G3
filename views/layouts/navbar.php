@@ -154,6 +154,13 @@
             <span class="ms-2">Reports</span>
           </a>
         </li>
+
+        <li class="nav-item">
+          <a href="/users" class="nav-link">
+            <i class="bi bi-person-gear"></i>
+            <span class="ms-2">User</span>
+          </a>
+        </li>
       </ul>
 
       <!-- Settings & Help Section -->

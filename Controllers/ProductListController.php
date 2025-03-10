@@ -141,6 +141,16 @@ class ProductListController extends BaseController
         header("Location: /product_list");
     }
 
+    // view detail of product list
+
+    public function detail($product_list_id) {
+        $list = $this->list->getProductListById($product_list_id);
+        if ($list) {
+            $this->view('products/detail_list', ['list' => $list]);
+        } else {
+            echo "Product not found.";
+        }
+    }
     public function destroy($product_list_id) {
         $this->list->deleteProductList($product_list_id);
         header("Location: /product_list");

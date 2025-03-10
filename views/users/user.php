@@ -1,11 +1,12 @@
 
 <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <input type="text" class="form-control w-50" placeholder="Search for supplier...">
-            <a href="" class="btn btn-primary">+ Add New Supplier</a>
+            <input type="text" class="form-control w-50" placeholder="Search for users">
+            <a href="/users/create" class="btn btn-primary">+ Add New User</a>
         </div>
 
-        <h4><i class="bi bi-table"></i> Suppliers</h4>
+        <h4 class="mb-3"><i class="bi bi-person"></i>
+        User List</h4>
         
         <div class="table-responsive">
             <table class="table table-bordered table-striped">
@@ -18,22 +19,29 @@
                         <th>Role</th>
                         <th>Phone</th>
                         <th>Action</th>
+                        
                     </tr>
                 </thead>
                 <tbody>
+                    <?php
+                    foreach ($users as $user):
+                    ?>
                     <tr>
-                        <td>1</td>
-                        <td><img src="https://via.placeholder.com/30" class="rounded-circle me-2"> Jack Men</td>
-                        <td>M</td>
-                        <td>jack.men@...</td>
-                        <td>012 345 678</td>
-                        <td>spoon</td>
-                        <td>11.03.2025</td>
+                        <td><?= $user['first_name']?></td>
+                        <td><?= $user['last_name']?></td>
+                        <td><?= $user['email']?></td>
+                        <td><?= $user['password']?></td>
+                        <td><?= $user['role']?></td>
+                        <td><?= $user['phone']?></td>
+                        <td>
+                        <a href="/users/delete/<?= $user['user_id']?>" class="btn btn-danger text-white">delete</i></a>
+                        <a href="/users/edit/<?= $user['user_id']?>" class="btn btn-primary text-white">edit</i></a>
+                        </td>
                     </tr>
-                   
                 </tbody>
+                <?php
+                    endforeach;
+                ?>
             </table>
         </div>
-
-        <button class="btn btn-dark mt-3">Save Supplier</button>
     </div>

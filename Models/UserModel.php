@@ -15,22 +15,24 @@ class UserModel
         return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getUserById($id)
+    public function getUserById($user_id)
     {
-        $result = $this->db->query("SELECT * FROM users WHERE id = :id", [':id' => $id]);
+        $result = $this->db->query("SELECT * FROM users WHERE user_id = :user_id", [':user_id' => $user_id]);
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function addUser($name, $email, $password, $role)
+    public function addUser($first_name, $last_name, $email, $password, $role, $phone)
     {
         try {
             $this->db->query(
-                "INSERT INTO users (name, email, password, role) VALUES (:name, :email, :password, :role)",
+                "INSERT INTO users (first_name, last_name, $email, $password, $role, $phone) VALUES (:first_name, :last_name, :email, :password, :role, :phone)",
                 [
-                    ':name' => $name,
-                    ':email'=> $email,
+                    ':first_name' => $first_name,
+                    ':last_name' => $last_name,
+                    ':email' => $email,
                     ':password' => $password,
                     ':role' => $role,
+                    ':phone' => $phone
                 ]
             );
         } catch (PDOException $e) {
@@ -38,27 +40,37 @@ class UserModel
         }
     }
 
-    public function updateUser($id, $name, $email, $password, $role)
+    public function updateUser($user_id, $first_name, $last_name, $email, $password, $role, $phone)
     {
         try {
             $this->db->query(
-                "UPDATE users SET name = :name, email = :email, password = :password, role = :role WHERE id = :id",
+                "UPDATE users SET first_name = :first_name, last_name = :last_name, email = :email, password = :password, role = :role, phone = :phone WHERE id = :id",
                 [
-                    ':name' => $name,
+                    ':id' => $user_id,
+                    ':first_name' => $first_name,
+                    ':last_name' => $last_name,
                     ':email' => $email,
                     ':password' => $password,
                     ':role' => $role,
-                    ':id' => $id
+                    ':phone' => $phone
                 ]
+               
             );
         } catch (PDOException $e) {
             echo "Error updating user: " . $e->getMessage();
         }
     }
 
-    public function deleteUser ($id) {
+    // view detail product list
+
+    public function viewDetailProductList($product_list_id) {
+        $result = $this->db->query("SELECT * FROM product_list WHERE product_list_id = :product_list_id", [':product_list_id' => $product_list_id]);
+        return $result->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function deleteUser ($user_id) {
         try {
-            $this->db->query("DELETE FROM users WHERE id = :id", [':id' => $id]);
+            $this->db->query("DELETE FROM users WHERE user_id = :user_id", [':user_id' => $user_id]);
         } catch (PDOException $e) {
             echo "Error deleting user: " . $e->getMessage();
         }
