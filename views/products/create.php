@@ -30,7 +30,7 @@
                 <p class="mb-0">Create new product</p>
             </div>
             <div class="card-body">
-                <form>
+                <form  action="store" medthod="POST">
                     <div class="row g-3">
                         
                         <div class="col-md-3">
@@ -64,7 +64,7 @@
                         </div>
                         <div class="col-md-12 d-flex justify-content-end gap-2">
                             <button type="submit" class="btn btn-primary">Submit</button>
-                            <a href="productlist.html" class="btn btn-secondary">Cancel</a>
+                            <a href="/products" class="btn btn-secondary">Cancel</a>
                         </div>
                     </div>
                 </form>
