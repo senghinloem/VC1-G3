@@ -22,16 +22,16 @@ class ProductModel
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function addProduct($image, $name, $description, $price, $unit, $stock)
+    public function addProduct($image, $name, $description, $price, $unit, $quantity)
     {
         try {
-            $this->db->query("INSERT INTO products(image,name, description, price, unit, stock) VALUES (:image, :name, :description, :price, :unit, :stock)", [
+            $this->db->query("INSERT INTO products(image,name, description, price, unit, quantity) VALUES (:image, :name, :description, :price, :unit, :quantity)", [
                 ':image' => $image,
                 ':name' => $name,
                 ':description' => $description,
                 ':price' => $price,
                 ':unit' => $unit,
-                ':stock' => $stock,
+                ':quantity' => $quantity,
             ]);
         } catch (PDOException $e) {
             echo "Error adding product: " . $e->getMessage();

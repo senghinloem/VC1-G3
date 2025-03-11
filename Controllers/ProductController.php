@@ -26,8 +26,8 @@ class ProductController extends BaseController
         $description = $_POST['description'];
         $price = floatval($_POST['price']);
         $unit = $_POST['unit'];
-        $stock = intval($_POST['stock']);
-        $this->product->addProduct($image, $name, $description, $price, $unit, $stock);
+        $stock = intval($_POST['quantity']);
+        $this->product->addProduct($image, $name, $description, $price, $unit, $quantity);
         header("Location: /products");
         exit();
     }
