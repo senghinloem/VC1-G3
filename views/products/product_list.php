@@ -27,11 +27,11 @@
                                 <td class="text-center"><?= $list['available_quantity'] ?></td>
                                 <td class="text-center">$<?= number_format($list['price'], 2) ?></td>
                                 <td class="text-center">
-                                    <a href="" class="btn btn-outline-info btn-sm"><i class="fas fa-eye"></i> View</a>
-                                    <a href="/product_list/edit/<?= $list['product_list_id']?>" class="btn btn-outline-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
+                                    <a href="" class="btn btn-outline-info btn-sm"><i class="fas fa-eye"></i></a>
+                                    <a href="/product_list/edit/<?= $list['product_list_id']?>" class="btn btn-outline-primary btn-sm"><i class="fas fa-edit"></i></a>
                                     <form action="/product_list/destroy/<?= $list['product_list_id']?>" method="POST" style="display:inline;">
                                         <input type="hidden" name="_method" value="DELETE">
-                                        <button type="submit" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash"></i> Delete</button>
+                                        <button type="submit" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash"></i></button>
                                     </form>
                                 </td>
                             </tr>
@@ -87,4 +87,16 @@
         color: #fff;
         transform: scale(1.05);
     }
+    .btn-sm i {
+    transition: color 0.3s ease;
+}
+
+.btn-outline-info:hover i, 
+.btn-outline-primary:hover i, 
+.btn-outline-danger:hover i {
+    color: #fff !important;
+}
+
 </style>
+
+

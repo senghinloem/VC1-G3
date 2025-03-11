@@ -9,7 +9,8 @@ require_once "Controllers/StockController.php";
 require_once "Controllers/ProductListController.php";
 require_once "Controllers/SupplierController.php";
 require_once "Controllers/LoginRegisterController.php";
-require_once "Controllers/UserController.php"; // Added missing UserController
+require_once "Controllers/UserController.php";
+
 
 $route = new Router();
 
@@ -19,7 +20,8 @@ $route->get("/users/create", [UserController::class, 'create']);
 $route->post("/users/store", [UserController::class, 'store']);
 $route->get("/users/edit/{user_id}", [UserController::class, 'edit']); 
 $route->put("/users/update/{user_id}", [UserController::class, 'update']);
-$route->delete("/users/destroy/{user_id}", [UserController::class, 'destroy']); 
+$route->delete("/users/destroy/{user_id}", [UserController::class, 'destroy']);
+$route->post("/users/authenticate", [UserController::class, 'authenticate']);
 // welcome
 $route->get("/", [WelcomeController::class, 'welcome']);
 $route->get("/dashboard", [DashboardController::class, 'dashboard']);
