@@ -44,7 +44,8 @@
                                 <a href="" class="btn btn-primary">ADD</a>
                             </td>
                             <td>
-                                <a href="" class="btn btn-danger">Delete</a>
+                                <a href="/products/destroy/<?= $product["product_id"]?>" class="btn btn-danger">Delete</a>
+                           
                             </td>
                         </tr>
                     <?php endforeach; ?>

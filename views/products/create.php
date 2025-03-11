@@ -30,7 +30,7 @@
                 <p class="mb-0">Create new product</p>
             </div>
             <div class="card-body">
-                <form  action="store" medthod="POST">
+                <form  action="/products/store" medthod="POST" enctype="multipart/form-data">
                     <div class="row g-3">
                         
                         <div class="col-md-3">
@@ -49,9 +49,18 @@
                         </div>
 
                         <div class="col-md-3">
-                            <label class="form-label">Stock Location</label>
-                            <input type="text" class="form-control">
+                            <label class="form-label">Unit</label>
+                            <select class="form-control" name="unit">
+                                <option value="pcs">Pieces (pcs)</option>
+                                <option value="kg">Kilograms (kg)</option>
+                                <option value="L">Liters (L)</option>
+                                <option value="m">Meters (m)</option>
+                                <option value="box">Boxes</option>
+                                <option value="pack">Packs</option>
+                                <option value="carton">Cartons</option>
+                            </select>
                         </div>
+
                     
                       
                         <div class="col-md-12">

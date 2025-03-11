@@ -22,10 +22,10 @@ class ProductModel
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function addProduct($image, $available_quantity, $price)
+    public function addProduct($image, $name, $description, $price, $unit, $stock)
     {
         try {
-            $this->db->query("INSERT INTO products(name, description, price, unit, stock) VALUES (:image, :name, :description, :price, :unit, :stock)", [
+            $this->db->query("INSERT INTO products(image,name, description, price, unit, stock) VALUES (:image, :name, :description, :price, :unit, :stock)", [
                 ':image' => $image,
                 ':name' => $name,
                 ':description' => $description,
