@@ -18,10 +18,11 @@ class ProductListModel
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function addProductList($image, $available_quantity, $price) {
+    public function addProductList($image, $available_quantity, $price, $name = null) {
         try {
-            $this->db->query("INSERT INTO product_list (image, available_quantity, price) VALUES (:image, :available_quantity, :price)", [
+            $this->db->query("INSERT INTO product_list (image, name, available_quantity, price) VALUES (:image, :name, :available_quantity, :price)", [
                 ':image' => $image,
+                ':name' => $name,
                 ':available_quantity' => $available_quantity,
                 ':price' => $price
             ]);
@@ -30,7 +31,7 @@ class ProductListModel
         }
     }
 
-    public function updateProductList($product_list_id, $image, $available_quantity, $price) {
+    public function updateProductList($product_list_id, $image, $available_quantity, $price, $name = null) {
         try {
             $query = "UPDATE product_list SET available_quantity = :available_quantity, price = :price";
             $params = [
@@ -38,6 +39,10 @@ class ProductListModel
                 ':available_quantity' => $available_quantity,
                 ':price' => $price
             ];
+            if ($name) {
+                $query .= ", name = :name";
+                $params[':name'] = $name;
+            }
             if ($image) {
                 $query .= ", image = :image";
                 $params[':image'] = $image;
@@ -48,6 +53,12 @@ class ProductListModel
             echo "Error updating product: " . $e->getMessage();
         }
     }
+
+    public function searchProductByName($name) {
+        $query = "SELECT * FROM product_list WHERE name LIKE :name";
+        return $this->db->query($query, [':name' => "%$name%"])->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
 
     public function deleteProductList($product_list_id) {
         try {
