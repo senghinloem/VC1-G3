@@ -25,7 +25,7 @@
                     <th scope="col">Description</th>
                     <th scope="col">Price</th>
                     <th scope="col">Unit</th>
-                    <th scope="col">Stock</th>
+                    <th scope="col">Quantity</th>
                     <th scope="col">Add to stock</th>
                     <th scope="col">Delete from table</th>
                 </tr>
@@ -39,7 +39,7 @@
                             <td><?= htmlspecialchars($product['description']) ?></td>
                             <td><?= htmlspecialchars($product['price']) ?></td>
                             <td><?= htmlspecialchars($product['unit']) ?></td>
-                            <td><?= htmlspecialchars($product['stock']) ?></td>
+                            <td><?= htmlspecialchars($product['quantity']) ?></td>
                             <td>
                                 <a href="" class="btn btn-primary">ADD</a>
                             </td>

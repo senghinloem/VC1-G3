@@ -30,7 +30,7 @@
                 <p class="mb-0">Create new product</p>
             </div>
             <div class="card-body">
-                <form  action="/products/store" medthod="POST" enctype="multipart/form-data">
+                <form  action="/products/store" method="POST" enctype="multipart/form-data">
                     <div class="row g-3">
                         
                         <div class="col-md-3">
