@@ -24,15 +24,17 @@ class ProductController extends BaseController
         $image = $_POST['image'];
         $name = $_POST['name'];
         $description = $_POST['description'];
-        $price = $_POST['price'];
+        $price = floatval($_POST['price']);
         $unit = $_POST['unit'];
-        $stock = $_POST['stock'];
+        $stock = intval($_POST['stock']);
         $this->product->addProduct($image, $name, $description, $price, $unit, $stock);
         header("Location: /products");
+        exit();
     }
+    
 
-    public function destroy($product_id) {
-        $this->list->deleteProductList($product_id);
+    public function delete($product_id) {
+        $this->product->deleteProduct($product_id);
         header("Location: /products");
     }
 }
