@@ -1,14 +1,18 @@
 <?php
 
+require_once "Models/SupplierModel.php";
+
 class SupplierController extends BaseController
 {
-    public function supplier() {
-        $this->view('users/supplier');
+    private $supply;
+
+    public function __construct() {
+        $this->supply = new SupplierModel();
     }
 
-    public function create() {
-        $this->view('users/create');
+    public function supplier() {
+        $result = $this->supply->getSupplier();
+        $this->view('users/supplier', ['suppliers' => $result]); // Fixed variable name
     }
 }
-
 ?>
