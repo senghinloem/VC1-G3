@@ -1,4 +1,10 @@
+<?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+?>
 
+<?php if (isset($_SESSION['user_id'])): ?>
   <!--begin::Body-->
   <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
     <!--begin::App Wrapper-->
@@ -154,6 +160,13 @@
             <span class="ms-2">Reports</span>
           </a>
         </li>
+
+        <li class="nav-item">
+          <a href="/users" class="nav-link">
+            <i class="bi bi-person-gear"></i>
+            <span class="ms-2">User</span>
+          </a>
+        </li>
       </ul>
 
       <!-- Settings & Help Section -->
@@ -172,7 +185,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a href="/users/logout" class="nav-link">
               <i class="fas fa-sign-out-alt"></i>
               <span class="ms-2">Logout</span>
             </a>
@@ -182,3 +195,5 @@
     </nav>
   </div>
 </aside>  
+
+<?php endif; ?>
