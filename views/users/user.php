@@ -1,3 +1,12 @@
+
+
+<?php
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    header("Location: /login");
+    exit();
+}
+?>
 <div class="container mt-4 mb-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <input type="text" class="form-control w-50" placeholder="Search for users">
@@ -39,3 +48,5 @@
         </table>
     </div>
 </div>
+
+

@@ -22,6 +22,7 @@ $route->get("/users/edit/{user_id}", [UserController::class, 'edit']);
 $route->put("/users/update/{user_id}", [UserController::class, 'update']);
 $route->delete("/users/destroy/{user_id}", [UserController::class, 'destroy']);
 $route->post("/users/authenticate", [UserController::class, 'authenticate']);
+$route->get ("/users/logout", [UserController::class, 'logout']);
 // welcome
 $route->get("/", [WelcomeController::class, 'welcome']);
 $route->get("/dashboard", [DashboardController::class, 'dashboard']);

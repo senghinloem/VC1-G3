@@ -26,14 +26,7 @@ class UserController extends BaseController
     public function store()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $first_name = $_POST['first_name'];
-            $last_name = $_POST['last_name'];
-            $email = $_POST['email'];
-            $password = $_POST['password'];
-            $role = $_POST['role'];
-            $phone = $_POST['phone'];
-
-            $this->user->addUser($first_name, $last_name, $email, $password, $role, $phone);
+            $this->user->addUser($_POST['first_name'], $_POST['last_name'], $_POST['email'], $_POST['password'], $_POST['role'], $_POST['phone']);
             header("Location: /users");
             exit();
         }
@@ -70,24 +63,25 @@ class UserController extends BaseController
 
     public function authenticate() {
         session_start();
+        
         $email = htmlspecialchars($_POST['email']);
         $password = htmlspecialchars($_POST['password']);
         
-        // Correct object reference for the model
-        $user = $this->user->getUserByEmail($email); 
-    
+        $user = $this->user->getUserByEmail($email);
+        
         if ($user && password_verify($password, $user['password'])) {
+            $_SESSION['user_id'] = $user['user_id'];
             $_SESSION['first_name'] = $user['first_name'];
             $_SESSION['last_name'] = $user['last_name'];
-            $_SESSION['user_id'] = $user['user_id'];
             $_SESSION['user_role'] = $user['role'];
-            $this->redirect("/users");
+            
+            header("Location: /dashboard");
+            exit();
         } else {
             header("Location: /users/login-error");
             exit();
-        }    
+        }
     }
-    
 
     public function logout() {
         session_start();
@@ -96,10 +90,6 @@ class UserController extends BaseController
         $this->redirect("/");
     }
 
-    public function loginError() {
-        $this->view('login_error');
-    }
-    
 }
 
     

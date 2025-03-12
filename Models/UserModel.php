@@ -21,24 +21,6 @@ class UserModel
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function addUser($first_name, $last_name, $email, $password, $role, $phone)
-    {
-        try {
-            $this->db->query(
-                "INSERT INTO users (first_name, last_name, email, password, role, phone) VALUES (:first_name, :last_name, :email, :password, :role, :phone)",
-                [
-                    ':first_name' => $first_name,
-                    ':last_name' => $last_name,
-                    ':email' => $email,
-                    ':password' => $password,
-                    ':role' => $role,
-                    ':phone' => $phone
-                ]
-            );
-        } catch (PDOException $e) {
-            echo "Error adding user: " . $e->getMessage();
-        }
-    }
     
     public function updateUser($user_id, $first_name, $last_name, $email, $password, $role, $phone)
     {
@@ -73,11 +55,28 @@ class UserModel
 }
 
 public function getUserByEmail($email) {
-    $result = $this->db->query("SELECT * FROM users WHERE email = :email", ['email' => $email]);
+    $result = $this->db->query("SELECT * FROM users WHERE email = :email", [':email' => $email]);
     return $result->fetch(PDO::FETCH_ASSOC);
 }
 
-    
+public function addUser($first_name, $last_name, $email, $password, $role, $phone) {
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    try {
+        $this->db->query(
+            "INSERT INTO users (first_name, last_name, email, password, role, phone) VALUES (:first_name, :last_name, :email, :password, :role, :phone)",
+            [
+                ':first_name' => $first_name,
+                ':last_name' => $last_name,
+                ':email' => $email,
+                ':password' => $hashedPassword,
+                ':role' => $role,
+                ':phone' => $phone
+            ]
+        );
+    } catch (PDOException $e) {
+        echo "Error adding user: " . $e->getMessage();
+    }
+}
 
     
 }

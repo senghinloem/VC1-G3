@@ -1,3 +1,10 @@
+<?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+?>
+
+<?php if (isset($_SESSION['user_id'])): ?>
 <footer class="app-footer">
         <!--begin::To the end-->
         <div class="float-end d-none d-sm-inline">PNN Give something that you want</div>
@@ -160,3 +167,8 @@
   </body>
   <!--end::Body-->
 </html>
+
+<?php
+
+    endif;
+    ?>
