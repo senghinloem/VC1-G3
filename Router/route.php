@@ -18,6 +18,12 @@ $route->get("/users", [UserController::class, 'user']);
 
 $route->get("/", [WelcomeController::class, 'welcome']);
 $route->get("/dashboard", [DashboardController::class, 'dashboard']);
+
+// product list on dashboard
+$route->get("/dashboard", [DashboardController::class, 'products']);
+
+
+
 // product
 $route->get("/products", [ProductController::class, 'product']);
 $route->get("/create", [ProductController::class, 'create']);
