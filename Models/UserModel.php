@@ -15,40 +15,29 @@ class UserModel
         return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getUserById($id)
+    public function getUserById($user_id)
     {
-        $result = $this->db->query("SELECT * FROM users WHERE id = :id", [':id' => $id]);
+        $result = $this->db->query("SELECT * FROM users WHERE user_id = :user_id", [':user_id' => $user_id]);
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function addUser($name, $email, $password, $role)
+    
+    public function updateUser($user_id, $first_name, $last_name, $email, $password, $role, $phone)
     {
         try {
             $this->db->query(
-                "INSERT INTO users (name, email, password, role) VALUES (:name, :email, :password, :role)",
+                "UPDATE users 
+                 SET first_name = :first_name, last_name = :last_name, email = :email, 
+                     password = :password, role = :role, phone = :phone 
+                 WHERE user_id = :user_id",
                 [
-                    ':name' => $name,
-                    ':email'=> $email,
-                    ':password' => $password,
-                    ':role' => $role,
-                ]
-            );
-        } catch (PDOException $e) {
-            echo "Error adding user: " . $e->getMessage();
-        }
-    }
-
-    public function updateUser($id, $name, $email, $password, $role)
-    {
-        try {
-            $this->db->query(
-                "UPDATE users SET name = :name, email = :email, password = :password, role = :role WHERE id = :id",
-                [
-                    ':name' => $name,
+                    ':user_id' => $user_id,
+                    ':first_name' => $first_name,
+                    ':last_name' => $last_name,
                     ':email' => $email,
                     ':password' => $password,
                     ':role' => $role,
-                    ':id' => $id
+                    ':phone' => $phone
                 ]
             );
         } catch (PDOException $e) {
@@ -56,13 +45,40 @@ class UserModel
         }
     }
 
-    public function deleteUser ($id) {
-        try {
-            $this->db->query("DELETE FROM users WHERE id = :id", [':id' => $id]);
-        } catch (PDOException $e) {
-            echo "Error deleting user: " . $e->getMessage();
-        }
+    public function deleteUser($user_id)
+{
+    try {
+        $this->db->query("DELETE FROM users WHERE user_id = :user_id", [':user_id' => $user_id]);
+    } catch (PDOException $e) {
+        echo "Error deleting user: " . $e->getMessage();
     }
+}
+
+public function getUserByEmail($email) {
+    $result = $this->db->query("SELECT * FROM users WHERE email = :email", [':email' => $email]);
+    return $result->fetch(PDO::FETCH_ASSOC);
+}
+
+public function addUser($first_name, $last_name, $email, $password, $role, $phone) {
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    try {
+        $this->db->query(
+            "INSERT INTO users (first_name, last_name, email, password, role, phone) VALUES (:first_name, :last_name, :email, :password, :role, :phone)",
+            [
+                ':first_name' => $first_name,
+                ':last_name' => $last_name,
+                ':email' => $email,
+                ':password' => $hashedPassword,
+                ':role' => $role,
+                ':phone' => $phone
+            ]
+        );
+    } catch (PDOException $e) {
+        echo "Error adding user: " . $e->getMessage();
+    }
+}
+
+    
 }
 
 ?>
