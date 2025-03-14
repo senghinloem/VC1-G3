@@ -28,7 +28,6 @@ $route->get("/", [WelcomeController::class, 'welcome']);
 $route->get("/dashboard", [DashboardController::class, 'dashboard']);
 
 // product list on dashboard
-$route->get("/dashboard", [DashboardController::class, 'products']);
 
 
 

@@ -60,20 +60,30 @@
                     <hr>
                     <p class="stat-number">1 Items</p>
                 </div>
+                <div class="card bg-primary text-white p-3 mb-2">
+                    <h5>Total Items</h5>
+                    <hr>
+                    <p class="stat-number">60 Items</p>
+                </div>
             </div>
         </div>
 
         <div class="card p-3 mt-4">
             <h4>Filter product</h4>
             <div class="selection">
+                <form method="GET" action="search.php" >
+                    <input
+                        type="text"
+                        name="query"
+                        class="form-control"
+                        placeholder="Search products..."
+                        aria-label="Search"
+                        value="<?= htmlspecialchars($_GET['query'] ?? '') ?>">
+                </form>
 
 
-                <select class="form-select" aria-label="Default select example">
-                    <option selected>Choose price </option>
-                    <option value="1">$20</option>
-                    <option value="2">$53</option>
-                    <option value="3">$29</option>
-                </select>
+
+
                 <select class="form-select" aria-label="Default select example">
                     <option selected>Select category</option>
                     <option value="1">plastic</option>
@@ -92,30 +102,28 @@
                             <th>Description</th>
                             <th>Price</th>
                             <th>Unit</th>
-                            <th>Supplier ID</th>
                             <th>Created At</th>
                         </tr>
                     </thead>
                     <tbody>
-                <?php if (!empty($products) && is_array($products)): ?>
-                    <?php foreach ($products as $product): ?>
-                        <tr>
-                            <td><img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" width="10"></td>
-                            <td><?= htmlspecialchars($product['product_id']) ?></td>
-                            <td><?= htmlspecialchars($product['name']) ?></td>
-                            <td><?= htmlspecialchars($product['description']) ?></td>
-                            <td><?= htmlspecialchars($product['price']) ?></td>
-                            <td><?= htmlspecialchars($product['unit']) ?></td>
-                            <td><?= htmlspecialchars($product['created_at']) ?></td>
-                            
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <tr>
-                        <td colspan="8" class="text-center">There Is No products.</td>
-                    </tr>
-                <?php endif; ?>
-            </tbody>
+                        <?php if (!empty($products) && is_array($products)): ?>
+                            <?php foreach ($products as $product): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($product['product_id']) ?></td>
+                                    <td><?= htmlspecialchars($product['name']) ?></td>
+                                    <td><?= htmlspecialchars($product['description']) ?></td>
+                                    <td><?= htmlspecialchars($product['price']) ?></td>
+                                    <td><?= htmlspecialchars($product['unit']) ?></td>
+                                    <td><?= htmlspecialchars($product['created_at']) ?></td>
+
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="8" class="text-center">There Is No products.</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
                 </table>
 
             </div>
