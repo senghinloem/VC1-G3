@@ -23,7 +23,7 @@
                     <th scope="col">Poduct Image</th>
                     <th scope="col">Name</th>
                     <th scope="col">Description</th>
-                    <th scope="col">Price</th>
+                    <th scope="col">Price($)</th>
                     <th scope="col">Unit</th>
                     <th scope="col">Quantity</th>
                     <th scope="col">Add to stock</th>
