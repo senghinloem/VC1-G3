@@ -21,13 +21,32 @@ class ProductController extends BaseController
     }
 
     public function store() {
-        $image = $_POST['image'];
+        if (!empty($_FILES['image']['name'])) {
+            $imageInfo = getimagesize($_FILES['image']['tmp_name']);
+            
+            if ($imageInfo !== false) {
+                $uploadDir = "uploads/";
+                $imageName = time() . "_" . basename($_FILES['image']['name']); 
+                $imagePath = $uploadDir . $imageName;
+
+                move_uploaded_file($_FILES['image']['tmp_name'], $imagePath);
+            } else {
+                echo "Invalid file type. Only image files are allowed.";
+                exit();
+            }
+        } elseif (!empty($_POST['image_url'])) {
+            $imagePath = filter_var($_POST['image_url'], FILTER_VALIDATE_URL) ? $_POST['image_url'] : "uploads/default.png";
+        } else {
+            $imagePath = "uploads/default.png"; 
+        }
+        
         $name = $_POST['name'];
         $description = $_POST['description'];
         $price = floatval($_POST['price']);
         $unit = $_POST['unit'];
-        $stock = intval($_POST['quantity']);
-        $this->product->addProduct($image, $name, $description, $price, $unit, $quantity);
+        $quantity = intval($_POST['quantity']);
+        $this->product->addProduct($imagePath, $name, $description, $price, $unit, $quantity);
+
         header("Location: /products");
         exit();
     }

@@ -34,7 +34,7 @@
                 <?php if (!empty($products) && is_array($products)): ?>
                     <?php foreach ($products as $product): ?>
                         <tr>
-                            <td><img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" width="10"></td>
+                            <td><img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" style="width: 100px; height: 100px;"></td>
                             <td><?= htmlspecialchars($product['name']) ?></td>
                             <td><?= htmlspecialchars($product['description']) ?></td>
                             <td><?= htmlspecialchars($product['price']) ?></td>

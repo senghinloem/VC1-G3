@@ -35,22 +35,27 @@
                         
                         <div class="col-md-3">
                             <label class="form-label">Product Name</label>
-                            <input type="text" class="form-control">
+                            <input type="text" class="form-control" id="name" name="name">
                         </div>
 
                         <div class="col-md-3">
                             <label class="form-label">Product Quantity</label>
-                            <input type="text" class="form-control">
+                            <input type="text" class="form-control" id="quantity" name="quantity">
                         </div>
 
                         <div class="col-md-3">
                             <label class="form-label">Description</label>
-                            <input type="text" class="form-control">
+                            <input type="text" class="form-control" id="description" name="description">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Product Price</label>
+                            <input type="text" class="form-control" id="price" name="price">
                         </div>
 
                         <div class="col-md-3">
                             <label class="form-label">Unit</label>
-                            <select class="form-control" name="unit">
+                            <select class="form-control" id="unit" name="unit">
                                 <option value="pcs">Pieces (pcs)</option>
                                 <option value="kg">Kilograms (kg)</option>
                                 <option value="L">Liters (L)</option>
@@ -62,15 +67,16 @@
                         </div>
 
                     
-                      
+
                         <div class="col-md-12">
                             <label class="form-label">Product Image</label>
                             <div class="image-upload">
-                                <img src="views/assets/images/upload.svg" alt="Upload Icon">
+                                <img src="views/assets/images/upload.svg" alt="Upload Icon" >
                                 <p>Drag and drop a file to upload</p>
-                                <input type="file" class="form-control d-none">
+                                <input type="file" class="form-control d-none" id="image" name="image">
                             </div>
                         </div>
+
                         <div class="col-md-12 d-flex justify-content-end gap-2">
                             <button type="submit" class="btn btn-primary">Submit</button>
                             <a href="/products" class="btn btn-secondary">Cancel</a>
@@ -86,3 +92,4 @@
             this.querySelector('input[type=file]').click();
         });
     </script>
+    

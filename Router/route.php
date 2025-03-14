@@ -27,7 +27,7 @@ $route->get("/users/search", [UserController::class, 'search']);
 // welcome
 $route->get("/", [WelcomeController::class, 'welcome']);
 $route->get("/dashboard", [DashboardController::class, 'dashboard']);
-// product
+// product_management
 $route->get("/products", [ProductController::class, 'product']);
 $route->get("/create", [ProductController::class, 'create']);
 $route->post("/products/store", [ProductController::class, 'store']);
