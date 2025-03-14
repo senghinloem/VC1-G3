@@ -55,7 +55,7 @@
 
                         <div class="col-md-3">
                             <label class="form-label">Unit</label>
-                            <select class="form-control" id="unit" name="unit">
+                            <select class="form-select" id="unit" name="unit">
                                 <option value="pcs">Pieces (pcs)</option>
                                 <option value="kg">Kilograms (kg)</option>
                                 <option value="L">Liters (L)</option>
