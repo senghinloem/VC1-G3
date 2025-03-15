@@ -1,5 +1,4 @@
 <?php
-
 require_once "Models/ProductListModel.php";
 
 class ProductListController extends BaseController 
@@ -22,57 +21,15 @@ class ProductListController extends BaseController
     }
 
     public function store() {
-        $target_dir = "uploads/";
-        // Check if the uploads directory exists, if not create it
-        if (!is_dir($target_dir)) {
-            mkdir($target_dir, 0777, true);
-        }
-        $target_file = $target_dir . basename($_FILES["product_image"]["name"]);
-        $uploadOk = 1;
-        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+        $image = $this->handleImageUpload();
+        if (!$image) return; // Stop if upload fails
 
-        // Check if image file is a actual image or fake image
-        $check = getimagesize($_FILES["product_image"]["tmp_name"]);
-        if ($check !== false) {
-            $uploadOk = 1;
-        } else {
-            echo "File is not an image.";
-            $uploadOk = 0;
-        }
+        $name = $_POST['name'];
+        $available_quantity = $_POST['available_quantity'];
+        $price = $_POST['price'];
 
-        // Check if file already exists
-        if (file_exists($target_file)) {
-            echo "Sorry, file already exists.";
-            $uploadOk = 0;
-        }
-
-        // Check file size
-        if ($_FILES["product_image"]["size"] > 500000) {
-            echo "Sorry, your file is too large.";
-            $uploadOk = 0;
-        }
-
-        // Allow certain file formats
-        if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
-            echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
-            $uploadOk = 0;
-        }
-
-        // Check if $uploadOk is set to 0 by an error
-        if ($uploadOk == 0) {
-            echo "Sorry, your file was not uploaded.";
-        // if everything is ok, try to upload file
-        } else {
-            if (move_uploaded_file($_FILES["product_image"]["tmp_name"], $target_file)) {
-                $image = $target_file;
-                $available_quantity = $_POST['available_quantity'];
-                $price = $_POST['price'];
-                $this->list->addProductList($image, $available_quantity, $price);
-                header("Location: /product_list");
-            } else {
-                echo "Sorry, there was an error uploading your file.";
-            }
-        }
+        $this->list->addProductList($image, $name, $available_quantity, $price);
+        header("Location: /product_list");
     }
 
     public function edit($product_list_id) {
@@ -85,64 +42,26 @@ class ProductListController extends BaseController
     }
 
     public function update($product_list_id) {
-        $target_dir = "uploads/";
-        // Check if the uploads directory exists, if not create it
-        if (!is_dir($target_dir)) {
-            mkdir($target_dir, 0777, true);
+        $list = $this->list->getProductListById($product_list_id);
+        if (!$list) {
+            echo "Product not found.";
+            return;
         }
 
-        $image = $_FILES["product_image"]["name"] ? $target_dir . basename($_FILES["product_image"]["name"]) : null;
-        $uploadOk = 1;
-        $imageFileType = strtolower(pathinfo($image, PATHINFO_EXTENSION));
-
-        if ($image) {
-            // Check if image file is a actual image or fake image
-            $check = getimagesize($_FILES["product_image"]["tmp_name"]);
-            if ($check !== false) {
-                $uploadOk = 1;
-            } else {
-                echo "File is not an image.";
-                $uploadOk = 0;
-            }
-
-            // Check if file already exists
-            if (file_exists($image)) {
-                echo "Sorry, file already exists.";
-                $uploadOk = 0;
-            }
-
-            // Check file size
-            if ($_FILES["product_image"]["size"] > 500000) {
-                echo "Sorry, your file is too large.";
-                $uploadOk = 0;
-            }
-
-            // Allow certain file formats
-            if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
-                echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
-                $uploadOk = 0;
-            }
-
-            // Check if $uploadOk is set to 0 by an error
-            if ($uploadOk == 0) {
-                echo "Sorry, your file was not uploaded.";
-            // if everything is ok, try to upload file
-            } else {
-                if (!move_uploaded_file($_FILES["product_image"]["tmp_name"], $image)) {
-                    echo "Sorry, there was an error uploading your file.";
-                    return;
-                }
-            }
-        }
-
+        $image = $this->handleImageUpload() ?: $list['image']; // Keep old image if no new one is uploaded
+        $name = $_POST['name'];
         $available_quantity = $_POST['available_quantity'];
         $price = $_POST['price'];
-        $this->list->updateProductList($product_list_id, $image, $available_quantity, $price);
+
+        $this->list->updateProductList($product_list_id, $image, $name, $available_quantity, $price);
         header("Location: /product_list");
     }
 
+<<<<<<< HEAD
     // view detail of product list
 
+=======
+>>>>>>> feature/product_list
     public function detail($product_list_id) {
         $list = $this->list->getProductListById($product_list_id);
         if ($list) {
@@ -151,9 +70,58 @@ class ProductListController extends BaseController
             echo "Product not found.";
         }
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> feature/product_list
     public function destroy($product_list_id) {
         $this->list->deleteProductList($product_list_id);
         header("Location: /product_list");
+    }
+
+    private function handleImageUpload() {
+        $target_dir = "uploads/";
+        if (!is_dir($target_dir)) {
+            mkdir($target_dir, 0777, true);
+        }
+
+        if (!isset($_FILES["product_image"]) || $_FILES["product_image"]["error"] != 0) {
+            return null; // No file uploaded
+        }
+
+        $target_file = $target_dir . basename($_FILES["product_image"]["name"]);
+        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+
+        $allowed_mime_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/bmp', 'image/tiff', 'image/svg+xml'];
+        $check = getimagesize($_FILES["product_image"]["tmp_name"]);
+
+        if (!$check || !in_array($check['mime'], $allowed_mime_types)) {
+            echo "File is not a valid image format.";
+            return null;
+        }
+
+        if ($_FILES["product_image"]["size"] > 5000000) {
+            echo "Sorry, your file is too large.";
+            return null;
+        }
+
+        if (file_exists($target_file)) {
+            echo "Sorry, file already exists.";
+            return null;
+        }
+
+        if (move_uploaded_file($_FILES["product_image"]["tmp_name"], $target_file)) {
+            return $target_file;
+        } else {
+            echo "Sorry, there was an error uploading your file.";
+            return null;
+        }
+    }
+
+    public function search() {
+        $searchQuery = isset($_GET['q']) ? trim($_GET['q']) : '';
+        $list = $this->list->searchProductByName($searchQuery);
+        $this->view('products/product_list', ['product_list' => $list, 'searchQuery' => $searchQuery]);
     }
 }
 ?>

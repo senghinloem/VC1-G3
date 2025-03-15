@@ -49,63 +49,180 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 ?>
 <style>
-        .image-upload {
-            border: 2px dashed #ccc;
-            border-radius: 10px;
-            text-align: center;
-            padding: 30px;
-            cursor: pointer;
-            transition: border-color 0.3s;
-        }
-        .image-upload:hover {
-            border-color: #007bff;
-        }
-        .image-upload img {
-            width: 50px;
-            margin-bottom: 10px;
-        }
-    </style>
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+    }
+
+    .container {
+        margin-top: 30px;
+    }
+
+    .card {
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        background-color: #007bff;
+        color: #fff;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        padding: 15px 25px;
+    }
+
+    .card-body {
+        padding: 25px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #343a40;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+    }
+
+    .upload-container {
+        border: 2px solid #007bff;
+        border-radius: 10px;
+        padding: 20px;
+        background-color: #f8f9fa;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .upload-container:hover {
+        border-color: #0056b3;
+    }
+
+    .upload-button {
+        background-color: #007bff;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .upload-button:hover {
+        background-color: #0056b3;
+    }
+
+    .image-preview {
+        margin-top: 15px;
+        display: none;
+        border-radius: 10px;
+        width: 100%;
+        height: auto;
+    }
+
+    .col-md-3 {
+        padding-bottom: 15px;
+    }
+
+    .d-flex.justify-content-end {
+        margin-top: 20px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 25px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border: none;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+</style>
+
+
 </head>
 <body>
     <div class="container mt-4">
         <div class="card">
             <div class="card-header">
-                <h4 class="mb-0">Product Add</h4>
-                <p class="mb-0">Create new product</p>
+                <h4 class="mb-0">Add New Product</h4>
+                <p class="mb-0">Create a new product entry</p>
             </div>
             <div class="card-body">
                 <form action="/product_list/store" method="POST" enctype="multipart/form-data">
-                    <div class="row g-3">   
+                    <div class="row g-3">
+                        <!-- Product Image Upload Section -->
                         <div class="col-md-12">
                             <label class="form-label">Product Image</label>
-                            <div class="image-upload">
-        <img src="views/assets/images/upload.svg" alt="Upload Icon">
-        <p>Drag and drop a file to upload</p>
-        <input type="file" class="form-control d-none" name="product_image" id="product_image">
-    </div>
+                            <div class="upload-container">
+                                <input type="file" name="product_image" id="product_image" class="d-none" accept="image/*" onchange="previewImage(event)">
+                                <label for="product_image" class="upload-button">Browse for Image</label>
+                                <div id="imagePreviewContainer">
+                                    <img id="imagePreview" class="image-preview" />
+                                </div>
+                            </div>
                         </div>
+                        <!-- Product Name -->
+                        <div class="col-md-3">
+                            <label class="form-label">Product Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <!-- Available Quantity -->
                         <div class="col-md-3">
                             <label class="form-label">Available Quantity</label>
-                            <input type="text" class="form-control" id="available" name="available_quantity">
+                            <input type="number" class="form-control" id="available" name="available_quantity" required>
                         </div>
+                        <!-- Product Price -->
                         <div class="col-md-3">
-                            <label class="form-label">Product Quantity</label>
-                            <input type="text" class="form-control" id="quantity" name="price">
+                            <label class="form-label">Price ($)</label>
+                            <input type="number" class="form-control" id="price" name="price" step="0.01" required>
                         </div>
+                        <!-- Submit and Cancel buttons -->
                         <div class="col-md-12 d-flex justify-content-end gap-2">
                             <button type="submit" class="btn btn-primary">Submit</button>
-                            <a href="productlist.html" class="btn btn-secondary">Cancel</a>
+                            <a href="/product_list" class="btn btn-secondary">Cancel</a>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
+    <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
-        document.querySelector('.image-upload').addEventListener('click', function() {
-            this.querySelector('input[type=file]').click();
-        });
+        function previewImage(event) {
+            const preview = document.getElementById('imagePreview');
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function () {
+                preview.src = reader.result;
+                preview.style.display = 'block'; // Show the image preview
+            };
+            if (file) {
+                reader.readAsDataURL(file); // Convert the image to base64 and display it
+            }
+        }
     </script>
 </body>
 </html>
