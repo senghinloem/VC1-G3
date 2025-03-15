@@ -22,6 +22,8 @@ $route->get("/users/edit/{user_id}", [UserController::class, 'edit']);
 $route->put("/users/update/{user_id}", [UserController::class, 'update']);
 $route->delete("/users/destroy/{user_id}", [UserController::class, 'destroy']);
 $route->post("/users/authenticate", [UserController::class, 'authenticate']);
+$route->get ("/users/logout", [UserController::class, 'logout']);
+$route->get("/users/search", [UserController::class, 'search']);
 // welcome
 $route->get("/", [WelcomeController::class, 'welcome']);
 $route->get("/dashboard", [DashboardController::class, 'dashboard']);
@@ -39,9 +41,7 @@ $route->post("/product_list/store", [ProductListController::class, 'store']);
 $route->get("/product_list/edit/{product_list_id}", [ProductListController::class, 'edit']);
 $route->put("/product_list/update/{product_list_id}", [ProductListController::class, 'update']);
 $route->delete("/product_list/destroy/{product_list_id}", [ProductListController::class, 'destroy']);
-$route->get("/product_list/view_detail/{product_list_id}", [ProductListController::class, 'viewDetailProductList']);
 $route->get('/product_list/search', [ProductListController::class, 'search']);
-
 
 
 // suppliers
