@@ -161,7 +161,7 @@
                         <?php endif; ?>
                         <!-- Placeholder for "Product not found" message -->
                         <tr id="no-products-message" style="display: none;">
-                            <td colspan="6" class="text-center text-danger">គ្មានទេ​ !!</td>
+                            <td colspan="6" class="text-center text-danger">Not Porduct Found !!</td>
                         </tr>
                     </tbody>
 
