@@ -1,5 +1,4 @@
 <?php
-
 class ProductListModel
 {
     private $db;
@@ -18,10 +17,11 @@ class ProductListModel
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function addProductList($image, $available_quantity, $price) {
+    public function addProductList($image, $name, $available_quantity, $price) {
         try {
-            $this->db->query("INSERT INTO product_list (image, available_quantity, price) VALUES (:image, :available_quantity, :price)", [
+            $this->db->query("INSERT INTO product_list (image, name, available_quantity, price) VALUES (:image, :name, :available_quantity, :price)", [
                 ':image' => $image,
+                ':name' => $name,
                 ':available_quantity' => $available_quantity,
                 ':price' => $price
             ]);
@@ -30,11 +30,12 @@ class ProductListModel
         }
     }
 
-    public function updateProductList($product_list_id, $image, $available_quantity, $price) {
+    public function updateProductList($product_list_id, $image, $name, $available_quantity, $price) {
         try {
-            $query = "UPDATE product_list SET available_quantity = :available_quantity, price = :price";
+            $query = "UPDATE product_list SET name = :name, available_quantity = :available_quantity, price = :price";
             $params = [
                 ':product_list_id' => $product_list_id,
+                ':name' => $name,
                 ':available_quantity' => $available_quantity,
                 ':price' => $price
             ];
@@ -56,5 +57,16 @@ class ProductListModel
             echo "Error deleting product: " . $e->getMessage();
         }
     }
+
+    public function searchProductByName($name) {
+        $query = "SELECT * FROM product_list WHERE name LIKE :name";
+        $products = $this->db->query($query, [':name' => "%$name%"])->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Ensure the image path is correct
+        foreach ($products as &$product) {
+            $product['image'] = "/uploads/" . basename($product['image']); // Update image path
+        }
+
+        return $products;
+    }
 }
-?>

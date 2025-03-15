@@ -1,4 +1,3 @@
-
 <?php
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -51,7 +50,6 @@ if (session_status() == PHP_SESSION_NONE) {
               </div>
             </li>
             <!--end::Notifications Dropdown-->
-
 
 
             <!--begin::User Menu Dropdown-->
@@ -109,7 +107,6 @@ if (session_status() == PHP_SESSION_NONE) {
         <div class="sidebar-brand text-center py-3">
           <a href="#" class="brand-link text-white fw-bold fs-5">PNN SHOP</a>
         </div>
-
 
 
         <div class="sidebar-wrapper">
