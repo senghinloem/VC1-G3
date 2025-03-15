@@ -12,6 +12,12 @@
             padding: 30px;
             cursor: pointer;
             transition: border-color 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 150px; 
+            position: relative;
         }
         .image-upload:hover {
             border-color: #007bff;
@@ -20,6 +26,13 @@
             width: 50px;
             margin-bottom: 10px;
         }
+
+        .image-upload img.preview {
+            max-width: 100%;
+            max-height: 150px;
+            object-fit: contain;
+        }
+
     </style>
 </head>
 <body>
