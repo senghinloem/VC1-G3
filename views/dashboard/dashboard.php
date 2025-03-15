@@ -71,18 +71,16 @@
         <div class="card p-3 mt-4">
             <h4>Filter product</h4>
             <div class="selection">
-                <form method="GET" action="search.php" >
+                <form method="GET" action="#">
                     <input
                         type="text"
+                        id="form-control"
                         name="query"
                         class="form-control"
-                        placeholder="Search products..."
+                        placeholder="Search...."
                         aria-label="Search"
                         value="<?= htmlspecialchars($_GET['query'] ?? '') ?>">
                 </form>
-
-
-
 
                 <select class="form-select" aria-label="Default select example">
                     <option selected>Select category</option>
@@ -92,9 +90,48 @@
                 </select>
 
             </div>
+            <script>
+                document.getElementById('form-control').addEventListener('keyup', filterProductsByName);
+
+                function filterProductsByName() {
+                    const input = document.getElementById("form-control");
+                    const filter = input.value.toUpperCase();
+
+                    const table = document.getElementById("productTable");
+                    const rows = table.getElementsByTagName("tr");
+                    let visibleRowCount = 0;
+
+                    for (let i = 1; i < rows.length; i++) {
+                        const nameCell = rows[i].getElementsByTagName("td")[1];
+                        const priceCell = rows[i].getElementsByTagName("td")[3];
+
+                        if (nameCell && priceCell) {
+                            const nameValue = nameCell.textContent || nameCell.innerText;
+                            const priceValue = parseFloat(priceCell.textContent || priceCell.innerText);
+
+                            const matchesName = nameValue.toUpperCase().includes(filter);
+                            const matchesPrice = priceValue.toString().includes(filter);
+
+                            if (matchesName || matchesPrice) {
+                                rows[i].style.display = "";
+                                visibleRowCount++;
+                            } else {
+                                rows[i].style.display = "none";
+                            }
+                        }
+                    }
+
+                    const noProductsMessage = document.getElementById("no-products-message");
+                    if (visibleRowCount === 0) {
+                        noProductsMessage.style.display = "";
+                    } else {
+                        noProductsMessage.style.display = "none";
+                    }
+                }
+            </script>
 
             <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
-                <table class="table table-striped">
+                <table id="productTable" class="table table-striped">
                     <thead>
                         <tr>
                             <th>Product ID</th>
@@ -115,17 +152,20 @@
                                     <td><?= htmlspecialchars($product['price']) ?></td>
                                     <td><?= htmlspecialchars($product['unit']) ?></td>
                                     <td><?= htmlspecialchars($product['created_at']) ?></td>
-
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="8" class="text-center">There Is No products.</td>
+                                <td colspan="6" class="text-center">There Are No Products.</td>
                             </tr>
                         <?php endif; ?>
+                        <!-- Placeholder for "Product not found" message -->
+                        <tr id="no-products-message" style="display: none;">
+                            <td colspan="6" class="text-center text-danger">គ្មានទេ​ !!</td>
+                        </tr>
                     </tbody>
-                </table>
 
+                </table>
             </div>
 
         </div>
