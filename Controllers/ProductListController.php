@@ -57,11 +57,6 @@ class ProductListController extends BaseController
         header("Location: /product_list");
     }
 
-<<<<<<< HEAD
-    // view detail of product list
-
-=======
->>>>>>> feature/product_list
     public function detail($product_list_id) {
         $list = $this->list->getProductListById($product_list_id);
         if ($list) {
@@ -70,10 +65,6 @@ class ProductListController extends BaseController
             echo "Product not found.";
         }
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> feature/product_list
     public function destroy($product_list_id) {
         $this->list->deleteProductList($product_list_id);
         header("Location: /product_list");
