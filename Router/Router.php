@@ -86,6 +86,7 @@ class Router
                 $function = $route['action'][1];
 
                 $controller = new $controllerClass();
+                
                 $controller->$function(...$matches); // Pass extracted parameters
                 exit;
             }
