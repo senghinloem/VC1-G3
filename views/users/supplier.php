@@ -56,11 +56,12 @@
             </div>
             <div class="card-body bg-light">
                 <p><strong>Supplier ID:</strong> <span id="supplierDetailId"></span></p>
-                <p><strong>Contact Name:</strong> <span id="supplierDetailContact"></span></p>
-                <p><strong>Address:</strong> <span id="supplierDetailAddress"></span></p>
-                <p><strong>City:</strong> <span id="supplierDetailCity"></span></p>
-                <p><strong>Postal Code:</strong> <span id="supplierDetailPostal"></span></p>
-                <p><strong>Phone Number:</strong> <span id="supplierDetailPhone"></span></p>
+                <p><strong>Supplier Name:</strong> <span id="supplierDetailContact"></span></p>
+                <p><strong>Email:</strong> <span id="supplierDetailAddress"></span></p>
+                <p><strong>Phone:</strong> <span id="supplierDetailCity"></span></p>
+                <p><strong>Address:</strong> <span id="supplierDetailPostal"></span></p>
+                <p><strong>Create At:</strong> <span id="supplierDetailPhone"></span></p>
+                <p><strong>Actions:</strong> <span id="supplierDetailPhone"></span></p>
                 <button class="btn btn-secondary mt-3" onclick="goBack()">Back</button>
             </div>
         </div>
@@ -82,25 +83,25 @@
                             <input type="text" id="supplierName" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Contact Name</label>
-                            <input type="text" id="contactName" class="form-control" required>
+                            <label class="form-label">Email</label>
+                            <input type="text" id="Email" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Phone</label>
+                            <input type="text" id="Phone" class="form-control" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Address</label>
-                            <input type="text" id="address" class="form-control" required>
+                            <input type="text" id="Address" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">City</label>
-                            <input type="text" id="city" class="form-control" required>
+                            <label class="form-label">Create At</label>
+                            <input type="text" id="Create At" class="form-control" required>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Postal Code</label>
-                            <input type="text" id="postalCode" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Phone Number</label>
-                            <input type="text" id="phoneNumber" class="form-control" required>
-                        </div>
+                        <!-- <div class="mb-3">
+                            <label class="form-label">Actions</label>
+                            <input type="text" id="Actions" class="form-control" required>
+                        </div> -->
                         <button type="submit" class="btn btn-success" id="saveButton">Add Supplier</button>
                         <button type="button" class="btn btn-warning d-none" id="updateButton" onclick="updateSupplier()">Update Supplier</button>
                     </form>
