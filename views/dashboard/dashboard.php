@@ -135,11 +135,12 @@
                     <thead>
                         <tr>
                             <th>Product ID</th>
+                            <th>Image</th>
                             <th>Name</th>
                             <th>Description</th>
                             <th>Price</th>
                             <th>Unit</th>
-                            <th>Created At</th>
+                            <th>Quanlity</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -147,11 +148,13 @@
                             <?php foreach ($products as $product): ?>
                                 <tr>
                                     <td><?= htmlspecialchars($product['product_id']) ?></td>
+                                    <td><img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" style="width: 50px; height: 50px; border-radius: 50px" ></td>
+
                                     <td><?= htmlspecialchars($product['name']) ?></td>
                                     <td><?= htmlspecialchars($product['description']) ?></td>
                                     <td><?= htmlspecialchars($product['price']) ?></td>
                                     <td><?= htmlspecialchars($product['unit']) ?></td>
-                                    <td><?= htmlspecialchars($product['created_at']) ?></td>
+                                    <td><?= htmlspecialchars($product['quantity']) ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
