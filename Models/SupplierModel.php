@@ -16,7 +16,7 @@ class SupplierModel
 
     // Get supplier by ID
     public function getSupplierById($supplier_id) {
-        $result = $this->db->query("SELECT * FROM suppliers WHERE supplier_id = :supplier_id", ['supplier_id' => $supplier_id]);
+        $result = $this->db->query("SELECT * FROM suppliers WHERE supplier_id = :supplier_id", [':supplier_id' => $supplier_id]);
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -60,10 +60,11 @@ class SupplierModel
     // Delete supplier
     public function deleteSupplier($supplier_id) {
         try {
-            $this->db->query("DELETE FROM suppliers WHERE supplier_id = :supplier_id", ['supplier_id' => $supplier_id]);
+            $this->db->query("DELETE FROM suppliers WHERE supplier_id = :supplier_id", [':supplier_id' => $supplier_id]);
         } catch (PDOException $e) {
             echo "Error deleting supplier: " . $e->getMessage();
         }
     }
 }
+
 ?>
