@@ -74,7 +74,9 @@
                                 <img src="views/assets/images/upload.svg" alt="Upload Icon" >
                                 <p>Drag and drop a file to upload</p>
                                 <input type="file" class="form-control d-none" id="image" name="image">
+                                <div id="image-preview"></div>
                             </div>
+                            <input type="text" class="form-control mt-2" id="imageUrl" placeholder="Enter Image URL">
                         </div>
 
                         <div class="col-md-12 d-flex justify-content-end gap-2">
@@ -88,8 +90,77 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.querySelector('.image-upload').addEventListener('click', function() {
-            this.querySelector('input[type=file]').click();
+        const imageInput = document.querySelector('#image');
+        const imageUrlInput = document.querySelector('#imageUrl');
+        const imageUpload = document.querySelector('.image-upload');
+        const previewContainer = document.getElementById('image-preview');
+        const preview = document.createElement('img');
+        preview.style.maxWidth = '200px';
+
+        const uploadIcon = imageUpload.querySelector('img');
+        const uploadText = imageUpload.querySelector('p');
+
+        // Function to show or hide default UI elements
+        function updateUploadUI(showPreview) {
+            if (showPreview) {
+                uploadIcon.style.display = 'none';
+                uploadText.style.display = 'none';
+            } else {
+                uploadIcon.style.display = 'block';
+                uploadText.style.display = 'block';
+                previewContainer.innerHTML = '';  // Remove preview
+            }
+        }
+
+        // File Upload Preview
+        imageInput.addEventListener('change', function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    previewContainer.innerHTML = '';
+                    previewContainer.appendChild(preview);
+                    updateUploadUI(true);
+                };
+                reader.readAsDataURL(file);
+
+                // Reset the URL input and enable it again
+                imageUrlInput.value = '';
+                imageUrlInput.disabled = false;
+            } else {
+                updateUploadUI(false);
+            }
         });
+
+        // URL Input Preview
+        imageUrlInput.addEventListener('input', function () {
+            if (this.value.trim()) {
+                preview.src = this.value.trim();
+                previewContainer.innerHTML = '';
+                previewContainer.appendChild(preview);
+                updateUploadUI(true);
+
+                // Disable file input since a URL is provided
+                imageInput.value = '';
+                imageInput.disabled = true;
+            } else {
+                // If URL is cleared, enable file input again
+                imageInput.disabled = false;
+                updateUploadUI(false);
+            }
+        });
+
+        // Click on upload area to trigger file selection
+        imageUpload.addEventListener('click', function () {
+            imageInput.click();
+        });
+
+
+        
+
+        // document.querySelector('.image-upload').addEventListener('click', function() {
+        //     this.querySelector('input[type=file]').click();
+        // });
     </script>
     

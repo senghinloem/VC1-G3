@@ -21,30 +21,36 @@ class ProductController extends BaseController
     }
 
     public function store() {
+        $imagePath = "uploads/default.png"; 
+    
         if (!empty($_FILES['image']['name'])) {
             $imageInfo = getimagesize($_FILES['image']['tmp_name']);
-            
-            if ($imageInfo !== false) {
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    
+            if ($imageInfo && in_array($imageInfo['mime'], $allowedTypes)) {
                 $uploadDir = "uploads/";
-                $imageName = time() . "_" . basename($_FILES['image']['name']); 
-                $imagePath = $uploadDir . $imageName;
-
-                move_uploaded_file($_FILES['image']['tmp_name'], $imagePath);
+                $imageName = time() . "_" . basename($_FILES['image']['name']);
+                $imagePath = $uploadDir . preg_replace("/[^a-zA-Z0-9.\-_]/", "", $imageName);
+                if (!move_uploaded_file($_FILES['image']['tmp_name'], $imagePath)) {
+                    die("Error uploading the file.");
+                }
             } else {
-                echo "Invalid file type. Only image files are allowed.";
-                exit();
+                die("Invalid image file. Only JPG, PNG, GIF, and WEBP files are allowed.");
             }
-        } elseif (!empty($_POST['image_url'])) {
-            $imagePath = filter_var($_POST['image_url'], FILTER_VALIDATE_URL) ? $_POST['image_url'] : "uploads/default.png";
-        } else {
-            $imagePath = "uploads/default.png"; 
+        } elseif (!empty($_POST['image_url']) && filter_var($_POST['image_url'], FILTER_VALIDATE_URL)) {
+            $imagePath = $_POST['image_url'];
         }
-        
-        $name = $_POST['name'];
-        $description = $_POST['description'];
+
+        $name = trim($_POST['name']);
+        $description = trim($_POST['description']);
         $price = floatval($_POST['price']);
-        $unit = $_POST['unit'];
+        $unit = trim($_POST['unit']);
         $quantity = intval($_POST['quantity']);
+
+        if (!$name || !$price || !$quantity || $price <= 0 || $quantity < 0) {
+            die("Invalid input. Please check required fields.");
+        }
+
         $this->product->addProduct($imagePath, $name, $description, $price, $unit, $quantity);
 
         header("Location: /products");
