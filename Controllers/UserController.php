@@ -90,10 +90,15 @@ class UserController extends BaseController
         $this->redirect("/");
     }
 
+    public function search()
+{
+    $query = isset($_GET['search']) ? $_GET['search'] : '';
+    $users = $this->user->searchUsers($query);
+    $this->view('users/user', ['users' => $users, 'searchQuery' => $query]);
 }
 
-    
+
+}
+
 
 ?>
-
-    

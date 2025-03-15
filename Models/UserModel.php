@@ -1,4 +1,3 @@
-
 <?php
 
 class UserModel
@@ -78,6 +77,12 @@ public function addUser($first_name, $last_name, $email, $password, $role, $phon
     }
 }
 
+public function searchUsers($query)
+{
+    $sql = "SELECT * FROM users WHERE first_name LIKE :query OR last_name LIKE :query OR email LIKE :query";
+    $stmt = $this->db->query($sql, ['query' => '%' . $query . '%']);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
     
 }
 
