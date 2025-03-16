@@ -22,8 +22,8 @@
         .image-upload:hover {
             border-color: #007bff;
         }
-        .image-upload img {
-            width: 50px;
+        .image-upload {
+            width: 100%;
             margin-bottom: 10px;
         }
 
@@ -48,35 +48,22 @@
                         
                         <div class="col-md-3">
                             <label class="form-label">Product Name</label>
-                            <input type="text" class="form-control" id="name" name="name">
+                            <input type="text" class="form-control">
                         </div>
 
                         <div class="col-md-3">
                             <label class="form-label">Product Quantity</label>
-                            <input type="text" class="form-control" id="quantity" name="quantity">
+                            <input type="text" class="form-control">
                         </div>
 
                         <div class="col-md-3">
                             <label class="form-label">Description</label>
-                            <input type="text" class="form-control" id="description" name="description">
+                            <input type="text" class="form-control">
                         </div>
 
                         <div class="col-md-3">
-                            <label class="form-label">Product Price</label>
-                            <input type="text" class="form-control" id="price" name="price">
-                        </div>
-
-                        <div class="col-md-3">
-                            <label class="form-label">Unit</label>
-                            <select class="form-select" id="unit" name="unit">
-                                <option value="pcs">Pieces (pcs)</option>
-                                <option value="kg">Kilograms (kg)</option>
-                                <option value="L">Liters (L)</option>
-                                <option value="m">Meters (m)</option>
-                                <option value="box">Boxes</option>
-                                <option value="pack">Packs</option>
-                                <option value="carton">Cartons</option>
-                            </select>
+                            <label class="form-label">Stock Location</label>
+                            <input type="text" class="form-control">
                         </div>
 
                     
@@ -103,77 +90,8 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const imageInput = document.querySelector('#image');
-        const imageUrlInput = document.querySelector('#imageUrl');
-        const imageUpload = document.querySelector('.image-upload');
-        const previewContainer = document.getElementById('image-preview');
-        const preview = document.createElement('img');
-        preview.style.maxWidth = '200px';
-
-        const uploadIcon = imageUpload.querySelector('img');
-        const uploadText = imageUpload.querySelector('p');
-
-        // Function to show or hide default UI elements
-        function updateUploadUI(showPreview) {
-            if (showPreview) {
-                uploadIcon.style.display = 'none';
-                uploadText.style.display = 'none';
-            } else {
-                uploadIcon.style.display = 'block';
-                uploadText.style.display = 'block';
-                previewContainer.innerHTML = '';  // Remove preview
-            }
-        }
-
-        // File Upload Preview
-        imageInput.addEventListener('change', function () {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    preview.src = e.target.result;
-                    previewContainer.innerHTML = '';
-                    previewContainer.appendChild(preview);
-                    updateUploadUI(true);
-                };
-                reader.readAsDataURL(file);
-
-                // Reset the URL input and enable it again
-                imageUrlInput.value = '';
-                imageUrlInput.disabled = false;
-            } else {
-                updateUploadUI(false);
-            }
+        document.querySelector('.image-upload').addEventListener('click', function() {
+            this.querySelector('input[type=file]').click();
         });
-
-        // URL Input Preview
-        imageUrlInput.addEventListener('input', function () {
-            if (this.value.trim()) {
-                preview.src = this.value.trim();
-                previewContainer.innerHTML = '';
-                previewContainer.appendChild(preview);
-                updateUploadUI(true);
-
-                // Disable file input since a URL is provided
-                imageInput.value = '';
-                imageInput.disabled = true;
-            } else {
-                // If URL is cleared, enable file input again
-                imageInput.disabled = false;
-                updateUploadUI(false);
-            }
-        });
-
-        // Click on upload area to trigger file selection
-        imageUpload.addEventListener('click', function () {
-            imageInput.click();
-        });
-
-
-        
-
-        // document.querySelector('.image-upload').addEventListener('click', function() {
-        //     this.querySelector('input[type=file]').click();
-        // });
     </script>
     
