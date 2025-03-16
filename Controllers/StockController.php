@@ -16,51 +16,37 @@ class StockController extends BaseController
         $stock_management = $this->stockModel->getStock();
         $this->view("products/stock", ["stock_management" => $stock_management]);
     }
-    public function create_stock() {
+
+    public function create_stock () {
         $this->view("products/create_stock");
-    }
-    public function store()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $stock_name = $_POST['stock_name'] ?? '';
-            $quantity = $_POST['quantity'] ?? 0;
-            $this->stockModel->addStock($stock_name, $quantity);
-            header('Location: /stock');
-        }
-    }
-    public function edit($stock)
-    {
-        $stock_item = $this->stockModel->getStock($stock);
-        include 'views/edit_stock_view.php';
-    }
-    public function update($stock)
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $stock_name = $_POST['stock_name'] ?? '';
-            $quantity = $_POST['quantity'] ?? 0;
-            $updated = $this->stockModel->updateStock($stock, $stock_name, $quantity);
 
-            if ($updated) {
-                header('Location: /stock');
-            } else {
-                echo "Failed to update stock.";
-            }
-        }
     }
-    public function delete($stock)
-    {
-        $this->stockModel->deleteStock($stock);
-        header('Location: /stock');
+
+    public function store() {
+        $quantity = $_POST['quantity'];
+        $stock_type = $_POST['stock_type'];
+
+        $this->stockModel->addStock($quantity, $stock_type);
+        header("Location: /products/stock");
     }
-    // public function search()
-    // {
-    //     $query = $_GET['query'] ?? '';
-    //     $stock_management = $this->stockModel->searchStock($query);
 
-    //     // Include the view with filtered search results
-    //     include 'views/stock_view.php';
-    // }
+    public function edit($stock_id) {
+        $stock = $this->stockModel->getStockById($stock_id);
+        $this->view("products/edit_stock", ["stock" => $stock]);
+    }
 
+    public function update($stock_id) {
+        $quantity = $_POST['quantity'];
+        $stock_type = $_POST['stock_type'];
 
+        $this->stockModel->updateStock($stock_id, $quantity, $stock_type);
+        header("Location: /products/stock");
+    }
+
+    public function delete($stock_id) {
+        $this->stockModel->deleteStock($stock_id);
+        header("Location: /products/stock");
+    }
+    
 }
 ?>
