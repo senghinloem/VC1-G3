@@ -14,11 +14,10 @@ class StockModel
         return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function addStock($quantity, $stock_type)
+    public function addStock($stock_name)
     {
-        $result = $this->db->query("INSERT INTO stock_management (quantity, stock_type) VALUES (:quantity, :stock_type)", [
-            'quantity' => $quantity,
-            'stock_type' => $stock_type
+        $result = $this->db->query("INSERT INTO stock_management (stock_name) VALUES (:stock_name)", [
+            'stock_name' => $stock_name
         ]);
         return $result;
     }
@@ -29,30 +28,6 @@ class StockModel
             'stock_id' => $stock_id
         ]);
         return $result->fetch(PDO::FETCH_ASSOC);
-    }
-
-
-    public function updateStock($stock_id, $quantity, $stock_type)
-    {
-        $result = $this->db->query(
-            "UPDATE stock_management 
-             SET quantity = :quantity, stock_type = :stock_type
-             WHERE stock_id = :stock_id",
-            [
-                'stock_id' => $stock_id,
-                'quantity' => $quantity,
-                'stock_type' => $stock_type
-            ]
-        );
-        return $result;
-    }
-
-    public function deleteStock($stock_id)
-    {
-        $result = $this->db->query("DELETE FROM stock_management WHERE stock_id = :stock_id", [
-            'stock_id' => $stock_id
-        ]);
-        return $result;
     }
 }
 ?>
