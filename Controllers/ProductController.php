@@ -22,6 +22,7 @@ class ProductController extends BaseController
 
     public function store() {
         $imagePath = "uploads/default.png"; 
+        $errors = [];
     
         if (!empty($_FILES['image']['name'])) {
             $imageInfo = getimagesize($_FILES['image']['tmp_name']);
@@ -47,14 +48,31 @@ class ProductController extends BaseController
         $unit = trim($_POST['unit']);
         $quantity = intval($_POST['quantity']);
 
-        if (!$name || !$price || !$quantity || $price <= 0 || $quantity < 0) {
-            die("Invalid input. Please check required fields.");
+
+        if (!$name) {
+            $errors['name'] = "Product name is required.";
+        }
+        if (!$price || $price <= 0) {
+            $errors['price'] = "Product price must be a positive number.";
+        }
+        if (!$quantity || $quantity < 0) {
+            $errors['quantity'] = "Product quantity must be a non-negative integer.";
         }
 
-        $this->product->addProduct($imagePath, $name, $description, $price, $unit, $quantity);
+        if (empty($errors)) {
+            $this->product->addProduct($imagePath, $name, $description, $price, $unit, $quantity);
 
-        header("Location: /products");
-        exit();
+            header("Location: /products");
+            exit();
+
+        } else {
+            $this->view('products/create', [
+                'errors' => $errors,
+                'old' => $_POST
+            ]);
+        }
+
+
     }
     
 
