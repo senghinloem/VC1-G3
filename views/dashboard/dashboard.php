@@ -37,10 +37,59 @@
         <h2>Dashboard</h2>
 
         <div class="row text-center mb-4">
-            <div class="col-md-3"><span class="text-danger stat-number">+200</span><br>Total Products</div>
-            <div class="col-md-3"><span class="text-primary stat-number">+27</span><br>Out of Stock</div>
-            <div class="col-md-3"><span class="text-danger stat-number">+08</span><br>Total Supplier</div>
-            <div class="col-md-3"><span class="text-primary stat-number">-27</span><br>Total Supplier</div>
+            
+        <?php
+            $count = 0;
+            foreach ($products as $product) {
+                $count += 1;
+            }
+            ?>
+
+            <div class="col-md-3">
+                <span class="text-danger stat-number">
+                    <?= $count; ?>
+                </span>
+                <br>
+                Total Products
+            </div>
+            <?php
+            $countQuantity = 0;
+            foreach ($products as $product) {
+                if (isset($product['quantity']) && is_numeric($product['quantity'])) {
+                    $countQuantity += (int)$product['quantity'];
+                }
+            }
+            ?>
+
+            <div class="col-md-3"><span class="text-primary stat-number"><?= $countQuantity; ?></span><br>Total Items</div>
+
+
+            <?php
+            $countPrices = 0;
+            $text = "$ ";
+            foreach ($products as $product) {
+                foreach ($product as $quantities => $quantity) {
+                    if (is_numeric($quantity)) {
+                        $countPrices += (int)$quantity;
+                    } else {
+                        // Handle the case where $quantity is not numeric (optional)
+                    }
+                }
+            }
+            ?>
+            <div class="col-md-3"><span class="text-danger stat-number"><?= $text . $countPrices ?></span><br>Total price</div>
+
+            <?php
+            $countLowStocks = 0;
+            foreach ($products as $product) {
+                if (isset($product['quantity']) && is_numeric($product['quantity'])) {
+                    if ($product['quantity'] < 10) {
+                        $countLowStocks += 1;
+                    }
+                }
+            }
+            ?>
+            <div class="col-md-3"><span class="text-primary stat-number"><?= $countLowStocks ?></span><br>Stock Low</div>
         </div>
 
         <div class="row">
@@ -82,14 +131,40 @@
                         value="<?= htmlspecialchars($_GET['query'] ?? '') ?>">
                 </form>
 
-                <select class="form-select" aria-label="Default select example">
-                    <option selected>Select category</option>
-                    <option value="1">plastic</option>
-                    <option value="2">Iron</option>
-                    <option value="3">plastic</option>
+                <select id="form-select" class="form-select" aria-label="Default select example">
+                    <option selected value="">Select by unit</option>
+                    <?php
+                    $units = [];
+                    foreach ($products as $product) {
+                        if (!empty($product['unit']) && !in_array($product['unit'], $units)) {
+                            $units[] = $product['unit'];
+                            echo '<option value="' . htmlspecialchars($product['unit']) . '">' . htmlspecialchars($product['unit']) . '</option>';
+                        }
+                    }
+                    ?>
                 </select>
 
+
             </div>
+            <script>
+                document.getElementById('form-select').addEventListener('change', function() {
+                    const selectedUnit = this.value.toUpperCase();
+                    const table = document.getElementById("productTable");
+                    const rows = table.getElementsByTagName("tr");
+
+                    for (let i = 1; i < rows.length; i++) { // Skip header row
+                        const unitCell = rows[i].getElementsByTagName("td")[5]; // Unit column
+                        if (unitCell) {
+                            const unitValue = unitCell.textContent || unitCell.innerText;
+                            if (selectedUnit === "" || unitValue.toUpperCase() === selectedUnit) {
+                                rows[i].style.display = ""; // Show row
+                            } else {
+                                rows[i].style.display = "none"; // Hide row
+                            }
+                        }
+                    }
+                });
+            </script>
             <script>
                 document.getElementById('form-control').addEventListener('keyup', filterProductsByName);
 
@@ -102,8 +177,8 @@
                     let visibleRowCount = 0;
 
                     for (let i = 1; i < rows.length; i++) {
-                        const nameCell = rows[i].getElementsByTagName("td")[1];
-                        const priceCell = rows[i].getElementsByTagName("td")[3];
+                        const nameCell = rows[i].getElementsByTagName("td")[2];
+                        const priceCell = rows[i].getElementsByTagName("td")[4];
 
                         if (nameCell && priceCell) {
                             const nameValue = nameCell.textContent || nameCell.innerText;
@@ -128,7 +203,7 @@
                         noProductsMessage.style.display = "none";
                     }
                 }
-            </script>
+            </script> 
 
             <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
                 <table id="productTable" class="table table-striped">
@@ -148,7 +223,7 @@
                             <?php foreach ($products as $product): ?>
                                 <tr>
                                     <td><?= htmlspecialchars($product['product_id']) ?></td>
-                                    <td><img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" style="width: 50px; height: 50px; border-radius: 50px" ></td>
+                                    <td><img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" style="width: 50px; height: 50px; border-radius: 50px"></td>
 
                                     <td><?= htmlspecialchars($product['name']) ?></td>
                                     <td><?= htmlspecialchars($product['description']) ?></td>
