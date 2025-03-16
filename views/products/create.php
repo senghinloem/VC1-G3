@@ -22,8 +22,8 @@
         .image-upload:hover {
             border-color: #007bff;
         }
-        .image-upload img {
-            width: 50px;
+        .image-upload {
+            width: 100%;
             margin-bottom: 10px;
         }
 
@@ -48,35 +48,50 @@
                         
                         <div class="col-md-3">
                             <label class="form-label">Product Name</label>
-                            <input type="text" class="form-control" id="name" name="name">
+                            <input type="text" class="form-control <?= isset($errors['name']) ? 'is-invalid' : '' ?>" id="name" name="name" value="<?= isset($old['name']) ? htmlspecialchars($old['name']) : '' ?>">
+                            <?php if (isset($errors['name'])): ?>
+                                <div class="invalid-feedback"><?= $errors['name'] ?></div>
+                            <?php endif; ?>
                         </div>
 
                         <div class="col-md-3">
                             <label class="form-label">Product Quantity</label>
-                            <input type="text" class="form-control" id="quantity" name="quantity">
+                            <input type="text" class="form-control <?= isset($errors['quantity']) ? 'is-invalid' : '' ?>" id="quantity" name="quantity" value="<?= isset($old['quantity']) ? htmlspecialchars($old['quantity']) : '' ?>">
+                            <?php if (isset($errors['quantity'])): ?>
+                                <div class="invalid-feedback"><?= $errors['quantity'] ?></div>
+                            <?php endif; ?>
                         </div>
 
                         <div class="col-md-3">
                             <label class="form-label">Description</label>
-                            <input type="text" class="form-control" id="description" name="description">
+                            <input type="text" class="form-control <?= isset($errors['description']) ? 'is-invalid' : '' ?>" id="description" name="description" value="<?= isset($old['description']) ? htmlspecialchars($old['description']) : '' ?>">
+                            <?php if (isset($errors['description'])): ?>
+                                <div class="invalid-feedback"><?= $errors['description'] ?></div>
+                            <?php endif; ?>
                         </div>
 
                         <div class="col-md-3">
                             <label class="form-label">Product Price</label>
-                            <input type="text" class="form-control" id="price" name="price">
+                            <input type="text" class="form-control <?= isset($errors['price']) ? 'is-invalid' : '' ?>" id="price" name="price" value="<?= isset($old['price']) ? htmlspecialchars($old['price']) : '' ?>">
+                            <?php if (isset($errors['price'])): ?>
+                                <div class="invalid-feedback"><?= $errors['price'] ?></div>
+                            <?php endif; ?>
                         </div>
 
                         <div class="col-md-3">
                             <label class="form-label">Unit</label>
-                            <select class="form-select" id="unit" name="unit">
-                                <option value="pcs">Pieces (pcs)</option>
-                                <option value="kg">Kilograms (kg)</option>
-                                <option value="L">Liters (L)</option>
-                                <option value="m">Meters (m)</option>
-                                <option value="box">Boxes</option>
-                                <option value="pack">Packs</option>
-                                <option value="carton">Cartons</option>
+                            <select class="form-select <?= isset($errors['unit']) ? 'is-invalid' : '' ?>" id="unit" name="unit">
+                                <option value="pcs" <?= isset($old['unit']) && $old['unit'] == 'pcs' ? 'selected' : '' ?>>Pieces (pcs)</option>
+                                <option value="kg" <?= isset($old['unit']) && $old['unit'] == 'kg' ? 'selected' : '' ?>>Kilograms (kg)</option>
+                                <option value="L" <?= isset($old['unit']) && $old['unit'] == 'L' ? 'selected' : '' ?>>Liters (L)</option>
+                                <option value="m" <?= isset($old['unit']) && $old['unit'] == 'm' ? 'selected' : '' ?>>Meters (m)</option>
+                                <option value="box" <?= isset($old['unit']) && $old['unit'] == 'box' ? 'selected' : '' ?>>Boxes</option>
+                                <option value="pack" <?= isset($old['unit']) && $old['unit'] == 'pack' ? 'selected' : '' ?>>Packs</option>
+                                <option value="carton" <?= isset($old['unit']) && $old['unit'] == 'carton' ? 'selected' : '' ?>>Cartons</option>
                             </select>
+                            <?php if (isset($errors['unit'])): ?>
+                                <div class="invalid-feedback"><?= $errors['unit'] ?></div>
+                            <?php endif; ?>
                         </div>
 
                     
@@ -108,7 +123,7 @@
         const imageUpload = document.querySelector('.image-upload');
         const previewContainer = document.getElementById('image-preview');
         const preview = document.createElement('img');
-        preview.style.maxWidth = '200px';
+        preview.style.maxWidth = '1000px';
 
         const uploadIcon = imageUpload.querySelector('img');
         const uploadText = imageUpload.querySelector('p');
@@ -116,16 +131,15 @@
         // Function to show or hide default UI elements
         function updateUploadUI(showPreview) {
             if (showPreview) {
-                uploadIcon.style.display = 'none';
-                uploadText.style.display = 'none';
+                uploadIcon.style.display = 'none';  // Hide upload icon when image is uploaded
+                uploadText.style.display = 'none';  // Hide upload text when image is uploaded
             } else {
-                uploadIcon.style.display = 'block';
-                uploadText.style.display = 'block';
+                uploadIcon.style.display = 'block'; // Show upload icon when no image is uploaded
+                uploadText.style.display = 'block'; // Show upload text when no image is uploaded
                 previewContainer.innerHTML = '';  // Remove preview
             }
         }
 
-        // File Upload Preview
         imageInput.addEventListener('change', function () {
             const file = this.files[0];
             if (file) {
@@ -134,46 +148,40 @@
                     preview.src = e.target.result;
                     previewContainer.innerHTML = '';
                     previewContainer.appendChild(preview);
-                    updateUploadUI(true);
+                    updateUploadUI(true);  
                 };
                 reader.readAsDataURL(file);
 
-                // Reset the URL input and enable it again
+
                 imageUrlInput.value = '';
                 imageUrlInput.disabled = false;
             } else {
-                updateUploadUI(false);
+                updateUploadUI(false);  
             }
         });
 
-        // URL Input Preview
+
         imageUrlInput.addEventListener('input', function () {
             if (this.value.trim()) {
                 preview.src = this.value.trim();
                 previewContainer.innerHTML = '';
                 previewContainer.appendChild(preview);
-                updateUploadUI(true);
+                updateUploadUI(true);  
 
-                // Disable file input since a URL is provided
+
                 imageInput.value = '';
                 imageInput.disabled = true;
             } else {
-                // If URL is cleared, enable file input again
+
                 imageInput.disabled = false;
-                updateUploadUI(false);
+                updateUploadUI(false);  
             }
         });
 
-        // Click on upload area to trigger file selection
+
         imageUpload.addEventListener('click', function () {
             imageInput.click();
         });
 
-
-        
-
-        // document.querySelector('.image-upload').addEventListener('click', function() {
-        //     this.querySelector('input[type=file]').click();
-        // });
     </script>
     
