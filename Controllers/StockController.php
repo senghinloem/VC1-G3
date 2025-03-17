@@ -17,11 +17,6 @@ class StockController extends BaseController
         $this->view("stocks/stock", ["stock_management" => $stock_management]);
     }
 
-
-    public function create_stock() {
-        $this->view("products/create_stock");
-    }
-    
     public function create_stock()
     {
         $this->view("stocks/create_stock");
@@ -72,7 +67,6 @@ class StockController extends BaseController
         header("Location: /stock");
         exit();
     }
-
 
     public function destroy($stock_id)
     {

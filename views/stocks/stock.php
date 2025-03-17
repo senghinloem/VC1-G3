@@ -16,7 +16,7 @@
                 <table class="table table-bordered table-hover">
                     <thead class="table-light" style="position: sticky; top: 0; z-index: 10;">
                         <tr>
-                            <th scope="col">Stock Id</th>
+                            <th scope="col">Id</th>
                             <th scope="col">Stock Name</th>
                             <th scope="col">Action</th>
                         </tr>
@@ -26,16 +26,6 @@
                         <?php if (!empty($stock_management)): ?>
                             <?php foreach ($stock_management as $item): ?>
                                 <tr>
-
-                                    <td><?= htmlspecialchars($item['stock_id'] ?? 'N/A') ?></td>
-                                    <td><?= htmlspecialchars($item['stock_name'] ?? 'N/A') ?></td>
-                                    <td>
-                                        <a href=""> <span class="ms-5 btn btn-success btn-sm">View Detail</span></a>
-                                        <a href="/stock/create_stock" class="ms-5 btn btn-success btn-sm">ADD</a>
-                                        <a href="" class="btn btn-warning btn-sm">Edit</a>
-                                        <a href="" class="btn btn-danger">Delete</a>
-                                        
-
                                     <td><?= htmlspecialchars($item['stock_id']) ?></td>
                                     <td><?= htmlspecialchars($item['stock_name']) ?></td>
 
@@ -43,17 +33,14 @@
                                         <a href="/stock/create" class="btn btn-success btn-sm">ADD</a>
                                         <a href="/stock/edit/<?= htmlspecialchars($item['stock_id']) ?>" class="btn btn-warning btn-sm">Edit</a>
                                         <a href="/stock/destroy/<?= htmlspecialchars($item['stock_id']) ?>" class="btn btn-danger btn-sm">Delete</a>
-
                                     </td>
-                                   
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="2">No stock items available.</td>
+                                <td colspan="3" class="text-center">No products available.</td>
                             </tr>
                         <?php endif; ?>
-
                     </tbody>
                 </table>
             </div>
@@ -61,11 +48,7 @@
     </div>
 
     <!-- Product out of stock -->
-
-    <!-- <h4 class="text-danger">Product out of stock</h4>
-
     <h4 class="text-danger">Product Out of Stock</h4>
-
     <div class="row g-3">
         <div class="col-md-12">
             <div class="table-responsive" style="height: calc(100vh - 150px); overflow-y: auto;">
@@ -91,7 +74,8 @@
     <button type="submit" class="btn btn-danger btn-sm">Delete</button>
 </form>
 
-                                    </td>
+
+</td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
@@ -103,5 +87,5 @@
                 </table>
             </div>
         </div>
-    </div> -->
+    </div>
 </div>
