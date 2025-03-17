@@ -1,3 +1,4 @@
+
 <?php
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -92,7 +93,7 @@ if (!isset($_SESSION['user_id'])) {
 <div class="container">
     
     <div class="card p-4">
-    <h2>Product List</h2>
+    <h2>Product Lists</h2>
         <!-- Row for Search Bar and Product List -->
         <div class="row justify-content-between align-items-center mt-4 mb-4">
             <!-- Search Bar -->

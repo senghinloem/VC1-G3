@@ -44,6 +44,7 @@ $route->delete("/product_list/destroy/{product_list_id}", [ProductListController
 $route->get('/product_list/search', [ProductListController::class, 'search']);
 
 
+
 // suppliers
 $route->get("/supplier", [SupplierController::class, 'supplier']);
 $route->get("/create_suppliers", [SupplierController::class, 'create']);

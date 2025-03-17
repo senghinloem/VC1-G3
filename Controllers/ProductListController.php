@@ -16,6 +16,7 @@ class ProductListController extends BaseController
         $this->view('products/product_list', ['product_list' => $list]);
     }
 
+
     public function create_list() {
         $this->view("products/create_list");
     }
