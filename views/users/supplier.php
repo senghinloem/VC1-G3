@@ -9,11 +9,9 @@
 <body>
     <div class="container mt-4" id="supplierListView">
         <div class="d-flex justify-content-between align-items-center mb-3">
+
             <input type="text" id="searchInput" class="form-control w-50" placeholder="Search for supplier...">
-
-            <a href="/supplier/create" class="btn btn-info">+Add new</a>
-
-            <!-- <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#supplierModal" onclick="openAddModal()">+ Add New Supplier</button> -->
+            <a href="/supplier/create" class="btn btn-info">+ Add New Supplier</a>
 
         </div>
 
@@ -21,6 +19,7 @@
         <div class="table-responsive">
             <table class="table table-bordered table-striped">
                 <thead class="table-secondary">
+
                     <tr>
                         <th>Supplier ID</th>
                         <th>Supplier Name</th>
@@ -30,10 +29,13 @@
                         <th>Created At</th>
                         <th>Actions</th>
                     </tr>
+
                 </thead>
                 <tbody>
+
                     <?php if (!empty($suppliers) && is_array($suppliers)): ?>
                         <?php foreach ($suppliers as $supplier): ?>
+
                             <tr>
                                 <td><?= htmlspecialchars($supplier['supplier_id']) ?></td>
                                 <td><?= htmlspecialchars($supplier['supplier_name']) ?></td>
@@ -42,19 +44,12 @@
                                 <td><?= htmlspecialchars($supplier['address']) ?></td>
                                 <td><?= htmlspecialchars($supplier['created_at']) ?></td>
                                 <td>
-
-
                                     <a href="/supplier/detail/<?= $supplier['supplier_id']?>" class="btn btn-success">Detail</a>
                                     <a href="/supplier/edit/<?= $supplier['supplier_id']?>" class="btn btn-warning">Edit</a>
                                     <a href="/supplier/destroy/<?= $supplier['supplier_id']?>" class="btn btn-danger">Delete</a>
-    
-
-                                    <!-- <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#viewSupplierModal" onclick="viewSupplier(<?= htmlspecialchars(json_encode($supplier)) ?>)">Details</button>
-                                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#updateSupplierModal" onclick="editSupplier(<?= htmlspecialchars(json_encode($supplier)) ?>)">Update</button> -->
-                                    <!-- <button class="btn btn-danger btn-sm" onclick="deleteSupplier(<?= $supplier['supplier_id'] ?>)">Delete</button> -->
-
                                 </td>
                             </tr>
+                            
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </tbody>
@@ -62,8 +57,5 @@
         </div>
     </div>
 
-    <!-- Modal Form for Adding Supplier -->
-   
-   
 </body>
 </html>
