@@ -35,6 +35,8 @@ class ProductController extends BaseController
                 if (!move_uploaded_file($_FILES['image']['tmp_name'], $imagePath)) {
                     die("Error uploading the file.");
                 }
+                $_SESSION['uploaded_image'] = $imagePath;
+
             } else {
                 die("Invalid image file. Only JPG, PNG, GIF, and WEBP files are allowed.");
             }
@@ -62,7 +64,7 @@ class ProductController extends BaseController
         if (empty($errors)) {
             $this->product->addProduct($imagePath, $name, $description, $price, $unit, $quantity);
 
-            header("Location: /products");
+            header('Location: /products');
             exit();
 
         } else {
