@@ -35,6 +35,7 @@ $route->post("/products/store", [ProductController::class, 'store']);
 $route->delete("/products/destroy/{product_id}", [ProductController::class, 'delete']);
 
 // stock routes
+$route->get("/stock/view_stock", [StockController::class, 'view_stock']);
 $route->get("/stock", [StockController::class, 'stock']);
 $route->get("/stock/create", [StockController::class, 'create_stock']);
 $route->post("/stock/store", [StockController::class, 'store']);
