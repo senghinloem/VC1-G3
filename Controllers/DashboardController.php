@@ -18,8 +18,29 @@ class DashboardController extends BaseController
 
     public function dashboard()
     {
-        // Example: Redirect to the product method for simplicity
-        $this->product();
+        $totalProducts = $this->product->getTotalProducts();
+        $products = $this->product->getAllProducts(); 
+        $totalQuantity = $this->product->getTotalQuantity(); 
+        $totalPrice = $this->product->getTotalPrice(); 
+        $totalLowStock = $this->product->getLowStockCount(); 
+        
+        $this->view('dashboard/dashboard', [
+            'products' => $products,
+            'totalProducts' => $totalProducts,
+            'totalQuantity' => $totalQuantity,
+            'totalPrice' => $totalPrice,
+            'totalLowStock' => $totalLowStock,
+        ]);
     }
+    
+
+
+    
+    
+    
+
+   
+
+    
 }
 
