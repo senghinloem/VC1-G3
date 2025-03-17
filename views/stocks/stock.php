@@ -7,8 +7,9 @@
             </button>
         </div>
     </div>
+
     <!-- Product in stock -->
-    <h4 class="text-primary">Product in stock</h4>
+    <h4 class="text-primary">Product in Stock</h4>
     <div class="row g-3">
         <div class="col-md-12">
             <div class="table-responsive" style="height: calc(100vh - 150px); overflow-y: auto;">
@@ -21,9 +22,11 @@
                         </tr>
                     </thead>
                     <tbody>
+                
                         <?php if (!empty($stock_management)): ?>
                             <?php foreach ($stock_management as $item): ?>
                                 <tr>
+
                                     <td><?= htmlspecialchars($item['stock_id'] ?? 'N/A') ?></td>
                                     <td><?= htmlspecialchars($item['stock_name'] ?? 'N/A') ?></td>
                                     <td>
@@ -32,6 +35,15 @@
                                         <a href="" class="btn btn-warning btn-sm">Edit</a>
                                         <a href="" class="btn btn-danger">Delete</a>
                                         
+
+                                    <td><?= htmlspecialchars($item['stock_id']) ?></td>
+                                    <td><?= htmlspecialchars($item['stock_name']) ?></td>
+
+                                    <td>
+                                        <a href="/stock/create" class="btn btn-success btn-sm">ADD</a>
+                                        <a href="/stock/edit/<?= htmlspecialchars($item['stock_id']) ?>" class="btn btn-warning btn-sm">Edit</a>
+                                        <a href="/stock/destroy/<?= htmlspecialchars($item['stock_id']) ?>" class="btn btn-danger btn-sm">Delete</a>
+
                                     </td>
                                    
                                 </tr>
@@ -47,8 +59,13 @@
             </div>
         </div>
     </div>
+
     <!-- Product out of stock -->
+
     <!-- <h4 class="text-danger">Product out of stock</h4>
+
+    <h4 class="text-danger">Product Out of Stock</h4>
+
     <div class="row g-3">
         <div class="col-md-12">
             <div class="table-responsive" style="height: calc(100vh - 150px); overflow-y: auto;">
@@ -64,13 +81,16 @@
                         <?php if (!empty($stock_management)): ?>
                             <?php foreach ($stock_management as $item): ?>
                                 <tr>
-                                    <td><?= htmlspecialchars($item['stock_id'] ?? 'N/A') ?></td>
-                                    <td><?= htmlspecialchars($item['stock_name'] ?? 'Unnamed Product') ?></td>
+                                    <td><?= htmlspecialchars($item['stock_id']) ?></td>
+                                    <td><?= htmlspecialchars($item['stock_name']) ?></td>
+                                 
                                     <td>
-                                        <span class="">View Detail</span>
-                                        <a href="/stock/add/<?= $item['stock_id'] ?? '#' ?>" class="ms-5 btn btn-success btn-sm">ADD</a>
-                                        <a href="/stock/edit/<?= $item['stock_id'] ?? '#' ?>" class="btn btn-warning btn-sm">Edit</a>
-                                        <a href="/stock/destroy/<?= $item['stock_id'] ?? '#' ?>" class="btn btn-danger btn-sm">Delete</a>
+                                        <a href="/stock/create" class="btn btn-success btn-sm">ADD</a>
+                                        <a href="/stock/edit/<?= htmlspecialchars($item['stock_id']) ?>" class="btn btn-warning btn-sm">Edit</a>
+                                        <form action="/stock/destroy/<?= $item['stock_id'] ?>" method="POST" onsubmit="return confirm('Are you sure?');">
+    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+</form>
+
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
