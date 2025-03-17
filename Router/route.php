@@ -68,3 +68,5 @@ $route->get("/register", [LoginRegisterController::class, 'register']);
 
 $route->route();
 ?>
+
+?>
