@@ -8,6 +8,7 @@ class SupplierController extends BaseController
 
     public function __construct() {
         $this->supply = new SupplierModel();
+<<<<<<< HEAD
     }
 
     public function supplier() {
@@ -62,4 +63,13 @@ class SupplierController extends BaseController
     }
 }
 
+=======
+    }
+
+    public function supplier() {
+        $result = $this->supply->getSupplier();
+        $this->view('users/supplier', ['suppliers' => $result]); // Fixed variable name
+    }
+}
+>>>>>>> 3e7eef96232f951822103f82481f073d5cd8de16
 ?>
