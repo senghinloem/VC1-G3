@@ -22,14 +22,14 @@ if (session_status() == PHP_SESSION_NONE) {
           </ul>
           <!--end::Start Navbar Links-->
           <!-- Search Bar (Centered) -->
-          <form class="d-flex mx-auto" action="/search" method="GET" style="max-width: 400px; width: 100%;">
+          <!-- <form class="d-flex mx-auto" action="/search" method="GET" style="max-width: 400px; width: 100%;">
             <div class="input-group">
                 <input type="text" name="query" class="form-control" placeholder="Search..." aria-label="Search">
                 <button class="btn btn-outline-secondary" type="#">
                     <i class="bi bi-search"></i>
                 </button>
             </div>
-        </form>
+        </form> -->
           <!--begin::End Navbar Links-->
           <ul class="navbar-nav ms-auto">
             <!--begin::Notifications Dropdown-->
