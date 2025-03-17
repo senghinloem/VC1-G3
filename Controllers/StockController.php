@@ -14,53 +14,65 @@ class StockController extends BaseController
     public function stock()
     {
         $stock_management = $this->stockModel->getStock();
-        $this->view("products/stock", ["stock_management" => $stock_management]);
+        $this->view("stocks/stock", ["stock_management" => $stock_management]);
     }
-    public function create_stock() {
-        $this->view("products/create_stock");
-    }
-    public function store()
+
+    public function create_stock()
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $stock_name = $_POST['stock_name'] ?? '';
-            $quantity = $_POST['quantity'] ?? 0;
-            $this->stockModel->addStock($stock_name, $quantity);
-            header('Location: /stock');
+        $this->view("stocks/create_stock");
+    }
+
+    public function edit($stock_id)
+    {
+        $stock = $this->stockModel->getStockById($stock_id);
+        if ($stock) {
+            $this->view('stocks/edit', ['stock' => $stock]);
+        } else {
+            echo "Stock not found.";
         }
     }
-    public function edit($stock)
-    {
-        $stock_item = $this->stockModel->getStock($stock);
-        include 'views/edit_stock_view.php';
-    }
-    public function update($stock)
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $stock_name = $_POST['stock_name'] ?? '';
-            $quantity = $_POST['quantity'] ?? 0;
-            $updated = $this->stockModel->updateStock($stock, $stock_name, $quantity);
 
-            if ($updated) {
-                header('Location: /stock');
+    public function store()
+    {
+        if (!isset($_POST['stock_name']) || empty(trim($_POST['stock_name']))) {
+            $this->view("stocks/create_stock", ['error' => 'Stock name is required.']);
+            return;
+        }
+
+        $stock_name = trim($_POST['stock_name']);
+
+        try {
+            $this->stockModel->addStock($stock_name);
+            header("Location: /stock");
+            exit();
+        } catch (PDOException $e) {
+            if ($e->getCode() == 23000) {
+                $this->view("stocks/create_stock", ['error' => 'Stock already exists.']);
             } else {
-                echo "Failed to update stock.";
+                throw $e;
             }
         }
     }
-    public function delete($stock)
+
+    public function update($stock_id)
     {
-        $this->stockModel->deleteStock($stock);
-        header('Location: /stock');
+        if (!isset($_POST['stock_name']) || empty(trim($_POST['stock_name']))) {
+            $this->view("stocks/edit", ['error' => 'Stock name is required.', 'stock_id' => $stock_id]);
+            return;
+        }
+
+        $stock_name = trim($_POST['stock_name']);
+
+        $this->stockModel->updateStock($stock_id, $stock_name);
+        header("Location: /stock");
+        exit();
     }
-    // public function search()
-    // {
-    //     $query = $_GET['query'] ?? '';
-    //     $stock_management = $this->stockModel->searchStock($query);
 
-    //     // Include the view with filtered search results
-    //     include 'views/stock_view.php';
-    // }
-
-
+    public function destroy($stock_id)
+    {
+        $this->stockModel->deleteStock($stock_id);
+        header("Location: /stock");
+        exit();
+    }
 }
 ?>

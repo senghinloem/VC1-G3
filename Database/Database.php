@@ -2,7 +2,7 @@
 
 class Database
 {
-    private $db;
+    private $pdo;
 
     /**
      * Constructor to initialize the database connection.
@@ -17,10 +17,11 @@ class Database
         $dsn = "mysql:host=$host;dbname=$dbname;charset=UTF8";
 
         try {
-            $this->db = new PDO($dsn, $username, $password);
-            $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->pdo = new PDO($dsn, $username, $password);
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            echo "Connection failed: " . $e->getMessage();
+            die("Connection failed: " . $e->getMessage());
         }
     }
 
@@ -33,9 +34,19 @@ class Database
      */
     public function query($sql, $params = [])
     {
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
         return $stmt;
     }
-    
+
+    /**
+     * Prepares a SQL statement for execution.
+     *
+     * @param string $sql The SQL query to prepare.
+     * @return PDOStatement The prepared statement.
+     */
+    public function prepare($sql)
+    {
+        return $this->pdo->prepare($sql);
+    }
 }

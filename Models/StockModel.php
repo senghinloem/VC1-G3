@@ -10,35 +10,39 @@ class StockModel
 
     public function getStock()
     {
-        $result = $this->db->query("SELECT stock_id, quantity, stock_type, last_updated FROM stock_management");
+        $result = $this->db->query("SELECT * FROM stock_management");
         return $result->fetchAll(PDO::FETCH_ASSOC);
     }
-    public function addStock($stockName, $quantity)
+
+    public function getStockById($stock_id)
     {
-        $stmt = $this->db->query("INSERT INTO stocks (stock_name, quantity) VALUES (:stock_name, :quantity)");
-        $stmt->bindParam(':stock_name', $stockName, PDO::PARAM_STR);
-        $stmt->bindParam(':quantity', $quantity, PDO::PARAM_INT);
+        $result = $this->db->query("SELECT * FROM stock_management WHERE stock_id = :stock_id", ["stock_id" => $stock_id]);
+        return $result->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function addStock($stock_name)
+    {
+        $sql = "INSERT INTO stock_management (stock_name) VALUES (:stock_name)";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':stock_name', $stock_name, PDO::PARAM_STR);
         return $stmt->execute();
     }
-    public function updateStock($stock, $stockName, $quantity)
+
+    public function updateStock($stock_id, $stock_name)
     {
-        $stmt = $this->db->query("UPDATE stocks SET stock_name = :stock_name, quantity = :quantity WHERE stock_id = :stock_id");
-        $stmt->bindParam(':stock_name', $stockName, PDO::PARAM_STR);
-        $stmt->bindParam(':quantity', $quantity, PDO::PARAM_INT);
-        $stmt->bindParam(':stock_id', $stock, PDO::PARAM_INT);
+        $sql = "UPDATE stock_management SET stock_name = :stock_name WHERE stock_id = :stock_id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':stock_name', $stock_name, PDO::PARAM_STR);
+        $stmt->bindParam(':stock_id', $stock_id, PDO::PARAM_INT);
         return $stmt->execute();
     }
-    public function deleteStock($stockId)
+
+    public function deleteStock($stock_id)
     {
-        $stmt = $this->db->query("DELETE FROM stocks WHERE stock_id = :stock_id");
-        $stmt->bindParam(':stock_id', $stockId, PDO::PARAM_INT);
+        $sql = "DELETE FROM stock_management WHERE stock_id = :stock_id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':stock_id', $stock_id, PDO::PARAM_INT);
         return $stmt->execute();
     }
-    // public function searchStock($query)
-    // {
-    //     $stmt = $this->db->query("SELECT * FROM stocks WHERE stock_name LIKE :query");
-    //     $stmt->bindValue(':query', '%'.$query.'%', PDO::PARAM_STR);
-    //     $stmt->execute();
-    //     return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    // }
 }
+?>
