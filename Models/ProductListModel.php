@@ -66,7 +66,7 @@ class ProductListModel
         
         // Ensure the image path is correct
         foreach ($products as &$product) {
-            $product['image'] = "/uploads/" . basename($product['image']); // Update image path
+            $product['image'] = "/uploads" . basename($product['image']); // Update image path
         }
 
         return $products;

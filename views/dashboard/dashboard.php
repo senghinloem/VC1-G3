@@ -35,61 +35,12 @@
 <body>
     <div class="container mt-4">
         <h2>Dashboard</h2>
-
         <div class="row text-center mb-4">
-            
-        <?php
-            $count = 0;
-            foreach ($products as $product) {
-                $count += 1;
-            }
-            ?>
-
-            <div class="col-md-3">
-                <span class="text-danger stat-number">
-                    <?= $count; ?>
-                </span>
-                <br>
-                Total Products
-            </div>
-            <?php
-            $countQuantity = 0;
-            foreach ($products as $product) {
-                if (isset($product['quantity']) && is_numeric($product['quantity'])) {
-                    $countQuantity += (int)$product['quantity'];
-                }
-            }
-            ?>
-
-            <div class="col-md-3"><span class="text-primary stat-number"><?= $countQuantity; ?></span><br>Total Items</div>
-
-
-            <?php
-            $countPrices = 0;
-            $text = "$ ";
-            foreach ($products as $product) {
-                foreach ($product as $quantities => $quantity) {
-                    if (is_numeric($quantity)) {
-                        $countPrices += (int)$quantity;
-                    } else {
-                        // Handle the case where $quantity is not numeric (optional)
-                    }
-                }
-            }
-            ?>
-            <div class="col-md-3"><span class="text-danger stat-number"><?= $text . $countPrices ?></span><br>Total price</div>
-
-            <?php
-            $countLowStocks = 0;
-            foreach ($products as $product) {
-                if (isset($product['quantity']) && is_numeric($product['quantity'])) {
-                    if ($product['quantity'] < 10) {
-                        $countLowStocks += 1;
-                    }
-                }
-            }
-            ?>
-            <div class="col-md-3"><span class="text-primary stat-number"><?= $countLowStocks ?></span><br>Stock Low</div>
+            <?php $text = "$ " ?>
+            <div class="col-md-3"><span class="text-danger stat-number"><?= $totalProducts; ?></span><br> Total Products</div>
+            <div class="col-md-3"><span class="text-primary stat-number"><?= $totalQuantity; ?></span><br>Total Items</div>
+            <div class="col-md-3"><span class="text-danger stat-number"><?= $text . $totalPrice ?></span><br>Total price</div>           
+            <div class="col-md-3"><span class="text-primary stat-number"><?= $totalLowStock ?></span><br>Stock Low</div>
         </div>
 
         <div class="row">
@@ -203,7 +154,7 @@
                         noProductsMessage.style.display = "none";
                     }
                 }
-            </script> 
+            </script>
 
             <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
                 <table id="productTable" class="table table-striped">
@@ -223,7 +174,7 @@
                             <?php foreach ($products as $product): ?>
                                 <tr>
                                     <td><?= htmlspecialchars($product['product_id']) ?></td>
-                                    <td><img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" style="width: 50px; height: 50px; border-radius: 50px"></td>
+                                    <td><img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" style="width: 50px; height: 50px; border-radius: 50px; object-fit: cover"></td>
 
                                     <td><?= htmlspecialchars($product['name']) ?></td>
                                     <td><?= htmlspecialchars($product['description']) ?></td>
