@@ -7,8 +7,9 @@
         <label for="stock_name" style="font-size: 18px;" class="mt-4">Stock Name</label>
         <input type="text" id="stock_name" name="stock_name" class="form-control" required placeholder="Enter Stock Name" style="width: 100%; padding: 12px; font-size: 16px; border-radius: 4px; border: 1px solid #ccc;">
     </div>
-    <div style="text-align: right;">
-        <button type="submit" class="btn btn-primary mt-4" style="background-color: #007bff; color: white; padding: 10px 20px; font-size: 18px; border: none; border-radius: 4px; cursor: pointer; width: auto;">Submit</button>
+    <!-- Wrap the button in a flex container to push it to the right -->
+    <div class="d-flex justify-content-end mt-4">
+        <button type="submit" class="btn btn-primary" style="background-color: #007bff; color: white; padding: 10px 20px; font-size: 18px; border: none; border-radius: 4px; cursor: pointer;">Submit</button>
     </div>
 </form>
 
