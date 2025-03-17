@@ -11,10 +11,9 @@ require_once "Controllers/SupplierController.php";
 require_once "Controllers/LoginRegisterController.php";
 require_once "Controllers/UserController.php";
 
-
 $route = new Router();
 
-// user
+// user routes
 $route->get("/users", [UserController::class, 'user']);
 $route->get("/users/create", [UserController::class, 'create']);
 $route->post("/users/store", [UserController::class, 'store']);
@@ -24,6 +23,7 @@ $route->delete("/users/destroy/{user_id}", [UserController::class, 'destroy']);
 $route->post("/users/authenticate", [UserController::class, 'authenticate']);
 $route->get ("/users/logout", [UserController::class, 'logout']);
 $route->get("/users/search", [UserController::class, 'search']);
+
 // welcome
 $route->get("/", [WelcomeController::class, 'welcome']);
 $route->get("/dashboard", [DashboardController::class, 'dashboard']);
@@ -52,13 +52,18 @@ $route->put("/product_list/update/{product_list_id}", [ProductListController::cl
 $route->delete("/product_list/destroy/{product_list_id}", [ProductListController::class, 'destroy']);
 $route->get('/product_list/search', [ProductListController::class, 'search']);
 
-
 // suppliers
 $route->get("/supplier", [SupplierController::class, 'supplier']);
-$route->get("/create_suppliers", [SupplierController::class, 'create']);
+$route->get("/supplier/create", [SupplierController::class, 'create']);
+$route->post("/supplier/store", [SupplierController::class, 'store']);
+$route->get("/supplier/edit/{supplier_id}", [SupplierController::class, 'edit']);
+$route->get("/supplier/detail/{supplier_id}", [SupplierController::class, 'detail']);
+$route->post("/supplier/update/{supplier_id}", [SupplierController::class, 'update']); // Changed PUT to POST
+$route->delete("/supplier/destroy/{supplier_id}", [SupplierController::class, 'destroy']);
 
 // login and register
 $route->get("/login", [LoginRegisterController::class, 'login']);
 $route->get("/register", [LoginRegisterController::class, 'register']);
 
 $route->route();
+?>
