@@ -54,7 +54,12 @@ $route->get('/product_list/search', [ProductListController::class, 'search']);
 
 // suppliers
 $route->get("/supplier", [SupplierController::class, 'supplier']);
-$route->get("/create_suppliers", [SupplierController::class, 'create']);
+$route->get("/supplier/create", [SupplierController::class, 'create']);
+$route->put("/supplier/store", [SupplierController::class, 'store']);
+$route->post("/supplier/update/{supplier_id}", [SupplierController::class, 'update']);
+$route->get("/supplier/edit/{supplier_id}", [SupplierController::class, 'edit']);
+$route->delete("/supplier/destroy/{supplier_id}", [SupplierController::class, 'destroy']);
+$route->get("/supplier/detail/{supplier_id}", [SupplierController::class, 'detail']);
 
 // login and register
 $route->get("/login", [LoginRegisterController::class, 'login']);
