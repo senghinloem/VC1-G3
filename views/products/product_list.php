@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 if (!isset($_SESSION['user_id'])) {
-    header("Location: /");
+    header("Location: /dashboard");
     exit;
 }
 ?>
@@ -42,6 +42,23 @@ if (!isset($_SESSION['user_id'])) {
             border-radius: 25px;
             box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.12);
         }
+
+        table {
+    width: 80%; /* Reduce width */
+    font-size: 12px; /* Smaller text */
+    margin: auto; /* Center the table */
+}
+
+table th, table td {
+    padding: 5px; /* Reduce padding */
+    white-space: nowrap; /* Prevent wrapping */
+}
+
+table th {
+    background-color: #f8f9fa; /* Light gray background */
+    font-weight: bold;
+}
+
         .search-bar button {
             border-radius: 50%;
             background-color: #007bff;
@@ -86,7 +103,31 @@ if (!isset($_SESSION['user_id'])) {
         .add-product-btn i {
             margin-right: 5px;
         }
+
+        body {
+            background-color: #f8f9fa;
+        }
+        .table-container {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .dropdown-toggle::after {
+            display: none;
+        }
+        .dropdown-menu {
+            min-width: 120px;
+        }
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
     </style>
+    <!-- Font Awesome Icons -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
 </head>
 <body>
 
@@ -132,23 +173,36 @@ if (!isset($_SESSION['user_id'])) {
                                 <td><?= htmlspecialchars($list['name']) ?></td>
                                 <td><?= (int)$list['available_quantity'] ?></td>
                                 <td>$<?= number_format((float)$list['price'], 2) ?></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <a href="/product_list/view/<?= $list['product_list_id'] ?>" class="text-primary" title="View">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="/product_list/edit/<?= $list['product_list_id'] ?>" class="text-secondary" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <form action="/product_list/destroy/<?= $list['product_list_id'] ?>" method="POST" style="display:inline;">
-                                            <input type="hidden" name="_method" value="DELETE">
-                                            <button type="submit" class="text-danger border-0 bg-transparent"
-                                                onclick="return confirm('Are you sure you want to delete this product?');" title="Delete">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
+                                <td class="text-center">
+                                <!-- Action Dropdown -->
+                                <div class="dropdown">
+                                    <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="dropdownMenuButton<?= $list['product_list_id'] ?>" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-ellipsis-v"></i> <!-- Three-dot icon -->
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton<?= $list['product_list_id'] ?>">
+            <li>
+                <a class="dropdown-item" href="/product_list/view/<?= $list['product_list_id'] ?>">
+                    <i class="fas fa-eye text-primary me-2"></i> View
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" href="/product_list/edit/<?= $list['product_list_id'] ?>">
+                    <i class="fas fa-edit text-secondary me-2"></i> Edit
+                </a>
+            </li>
+            <li>
+                <form action="/product_list/destroy/<?= $list['product_list_id'] ?>" method="POST" class="d-inline">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="dropdown-item text-danger"
+                        onclick="return confirm('Are you sure you want to delete this product?');">
+                        <i class="fas fa-trash me-2"></i> Delete
+                    </button>
+                </form>
+            </li>
+        </ul>
+                                </div>
+                            </td>
+
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
@@ -158,9 +212,47 @@ if (!isset($_SESSION['user_id'])) {
                     <?php endif; ?>
                 </tbody>
             </table>
+
+            <table class="table table-bordered table-hover">
+                <!-- <h2>Table product List From product </h2> -->
+            <thead>
+                <tr>
+                    <th>Product ID</th>
+                    <th>Product Name</th>
+                    <th>Price</th>
+                    <th>Unit</th>
+                    <th>Stock ID</th>
+                    <th>Stock Name</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>             
+                <?php if (!empty($product_stock_list) && is_array($product_stock_list)): ?>
+                    <?php foreach ($product_stock_list as $stock): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($stock['product_id']) ?></td>
+                            <td><?= htmlspecialchars($stock['product_name']) ?></td>
+                            <td>$<?= number_format((float)$stock['price'], 2) ?></td>
+                            <td><?= htmlspecialchars($stock['unit']) ?></td>
+                            <td><?= htmlspecialchars($stock['stock_id']) ?></td>
+                            <td><?= htmlspecialchars($stock['stock_name']) ?></td>
+                            <td><?= (int)$stock['quantity'] ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="10" class="text-center text-muted">No stock data available</td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
         </div>
     </div>
 </div>
+
+
+<!-- Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- Bootstrap 5 JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

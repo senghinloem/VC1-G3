@@ -10,11 +10,23 @@ class ProductListController extends BaseController
         $this->list = new ProductListModel();
     }
 
+    // public function product_list() 
+    // {
+    //     $list = $this->list->getProductList();
+    //     $this->view('products/product_list', ['product_list' => $list]);
+    // }
+
     public function product_list() 
-    {
-        $list = $this->list->getProductList();
-        $this->view('products/product_list', ['product_list' => $list]);
-    }
+{
+    $list = $this->list->getProductList();
+    $stockList = $this->list->getProductStockList(); // Fetch stock data
+
+    $this->view('products/product_list', [
+        'product_list' => $list,
+        'product_stock_list' => $stockList // Pass to the view
+    ]);
+}
+
 
     public function create_list() {
         $this->view("products/create_list");
