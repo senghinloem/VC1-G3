@@ -1,4 +1,3 @@
-
 <?php
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -44,20 +43,20 @@ if (!isset($_SESSION['user_id'])) {
         }
 
         table {
-    width: 80%; /* Reduce width */
-    font-size: 12px; /* Smaller text */
-    margin: auto; /* Center the table */
-}
+            width: 80%; /* Reduce width */
+            font-size: 12px; /* Smaller text */
+            margin: auto; /* Center the table */
+        }
 
-table th, table td {
-    padding: 5px; /* Reduce padding */
-    white-space: nowrap; /* Prevent wrapping */
-}
+        table th, table td {
+            padding: 5px; /* Reduce padding */
+            white-space: nowrap; /* Prevent wrapping */
+        }
 
-table th {
-    background-color: #f8f9fa; /* Light gray background */
-    font-weight: bold;
-}
+        table th {
+            background-color: #f8f9fa; /* Light gray background */
+            font-weight: bold;
+        }
 
         .search-bar button {
             border-radius: 50%;
@@ -104,9 +103,6 @@ table th {
             margin-right: 5px;
         }
 
-        body {
-            background-color: #f8f9fa;
-        }
         .table-container {
             background: #fff;
             border-radius: 10px;
@@ -125,16 +121,12 @@ table th {
             gap: 5px;
         }
     </style>
-    <!-- Font Awesome Icons -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-
 </head>
 <body>
 
 <div class="container">
-    
     <div class="card p-4">
-    <h2>Product Lists</h2>
+        <h2>Product Lists</h2>
         <!-- Row for Search Bar and Product List -->
         <div class="row justify-content-between align-items-center mt-4 mb-4">
             <!-- Search Bar -->
@@ -151,7 +143,6 @@ table th {
                 <a href="/product_list/create_list" class="btn btn-success add-product-btn"><i class="fas fa-plus"></i> Add Product</a>
             </div>
         </div>
-
 
         <!-- Product Table -->
         <div class="table-responsive">
@@ -174,9 +165,9 @@ table th {
                                 <td><?= (int)$list['available_quantity'] ?></td>
                                 <td>$<?= number_format((float)$list['price'], 2) ?></td>
                                 <td class="text-center">
-                                <!-- Action Dropdown -->
-                                <div class="dropdown">
-                                    <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="dropdownMenuButton<?= $list['product_list_id'] ?>" data-bs-toggle="dropdown" aria-expanded="false">
+    <!-- Action Dropdown -->
+    <div class="dropdown">
+        <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="dropdownMenuButton<?= $list['product_list_id'] ?>" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="fas fa-ellipsis-v"></i> <!-- Three-dot icon -->
         </button>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton<?= $list['product_list_id'] ?>">
@@ -191,17 +182,33 @@ table th {
                 </a>
             </li>
             <li>
-                <form action="/product_list/destroy/<?= $list['product_list_id'] ?>" method="POST" class="d-inline">
-                    <input type="hidden" name="_method" value="DELETE">
-                    <button type="submit" class="dropdown-item text-danger"
-                        onclick="return confirm('Are you sure you want to delete this product?');">
-                        <i class="fas fa-trash me-2"></i> Delete
-                    </button>
-                </form>
+                <a class="dropdown-item text-danger" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#deleteModal<?= $list['product_list_id'] ?>">
+                    <i class="fas fa-trash me-2"></i> Delete
+                </a>
             </li>
         </ul>
-                                </div>
-                            </td>
+    </div>
+</td>
+
+<!-- Modal for Deletion -->
+<!-- Modal for Deletion -->
+<div class="modal fade" id="deleteModal<?= $list['product_list_id'] ?>" tabindex="-1" aria-labelledby="deleteModalLabel<?= $list['product_list_id'] ?>" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>Do you want to delete this product?</p>
+            </div>
+            <div class="modal-footer">
+                <form action="/product_list/destroy/<?= $list['product_list_id'] ?>" method="POST" class="d-inline">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
                             </tr>
                         <?php endforeach; ?>
@@ -212,50 +219,69 @@ table th {
                     <?php endif; ?>
                 </tbody>
             </table>
-
-            <table class="table table-bordered table-hover">
-                <!-- <h2>Table product List From product </h2> -->
-            <thead>
-                <tr>
-                    <th>Product ID</th>
-                    <th>Product Name</th>
-                    <th>Price</th>
-                    <th>Unit</th>
-                    <th>Stock ID</th>
-                    <th>Stock Name</th>
-                    <th>Quantity</th>
-                </tr>
-            </thead>
-            <tbody>             
-                <?php if (!empty($product_stock_list) && is_array($product_stock_list)): ?>
-                    <?php foreach ($product_stock_list as $stock): ?>
-                        <tr>
-                            <td><?= htmlspecialchars($stock['product_id']) ?></td>
-                            <td><?= htmlspecialchars($stock['product_name']) ?></td>
-                            <td>$<?= number_format((float)$stock['price'], 2) ?></td>
-                            <td><?= htmlspecialchars($stock['unit']) ?></td>
-                            <td><?= htmlspecialchars($stock['stock_id']) ?></td>
-                            <td><?= htmlspecialchars($stock['stock_name']) ?></td>
-                            <td><?= (int)$stock['quantity'] ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <tr>
-                        <td colspan="10" class="text-center text-muted">No stock data available</td>
-                    </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
         </div>
+
+        <!-- Product Stock Table -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Product ID</th>
+                        <th>Product Name</th>
+                        <th>Price</th>
+                        <th>Unit</th>
+                        <th>Stock ID</th>
+                        <th>Stock Name</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>             
+                    <?php if (!empty($product_stock_list) && is_array($product_stock_list)): ?>
+                        <?php foreach ($product_stock_list as $stock): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($stock['product_id']) ?></td>
+                                <td><?= htmlspecialchars($stock['product_name']) ?></td>
+                                <td>$<?= number_format((float)$stock['price'], 2) ?></td>
+                                <td><?= htmlspecialchars($stock['unit']) ?></td>
+                                <td><?= htmlspecialchars($stock['stock_id']) ?></td>
+                                <td><?= htmlspecialchars($stock['stock_name']) ?></td>
+                                <td><?= (int)$stock['quantity'] ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="7" class="text-center text-muted">No stock data available</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+
     </div>
 </div>
-
 
 <!-- Bootstrap Bundle with Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Bootstrap 5 JS -->
+<!-- Success & Error Alert Messages -->
+<?php if (isset($_SESSION['success'])): ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <?= $_SESSION['success']; ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <?php unset($_SESSION['success']); ?>
+<?php endif; ?>
+
+<?php if (isset($_SESSION['error'])): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <?= $_SESSION['error']; ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <?php unset($_SESSION['error']); ?>
+<?php endif; ?>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
 
 </body>
 </html>

@@ -50,13 +50,15 @@ class ProductListModel
         }
     }
 
-    public function deleteProductList($product_list_id) {
+    public function deleteProduct($product_list_id) { // Corrected name from deleteProductList to deleteProduct
         try {
             $this->db->query("DELETE FROM product_list WHERE product_list_id = :product_list_id", ['product_list_id' => $product_list_id]);
         } catch (PDOException $e) {
             echo "Error deleting product: " . $e->getMessage();
         }
     }
+    
+    
 
     public function searchProductByName($name) {
         $query = "SELECT * FROM product_list WHERE name LIKE :name";

@@ -77,10 +77,7 @@ class ProductListController extends BaseController
             echo "Product not found.";
         }
     }
-    public function destroy($product_list_id) {
-        $this->list->deleteProductList($product_list_id);
-        header("Location: /product_list");
-    }
+ 
 
     private function handleImageUpload() {
         $target_dir = "uploads/";
@@ -126,5 +123,25 @@ class ProductListController extends BaseController
         $list = $this->list->searchProductByName($searchQuery);
         $this->view('products/product_list', ['product_list' => $list, 'searchQuery' => $searchQuery]);
     }
+
+    public function destroy($product_list_id)
+    {
+        // No need to start a session here, as it's already handled globally
+        // session_start();
+        
+        // Delete product from database
+        if ($this->list->deleteProduct($product_list_id)) { // Make sure deleteProduct is used here, not deleteProductList
+            $_SESSION['success'] = "Product deleted successfully!";
+        } else {
+            $_SESSION['error'] = "Failed to delete product.";
+        }
+        
+        // Redirect back to the product list
+        header("Location: /product_list");
+        exit();
+    }
+    
+    
+
 }
 ?>
