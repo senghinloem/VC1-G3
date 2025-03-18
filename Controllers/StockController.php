@@ -1,5 +1,4 @@
 <?php
-
 require_once "Models/StockModel.php";
 
 class StockController extends BaseController
@@ -11,36 +10,40 @@ class StockController extends BaseController
         $this->stockModel = new StockModel();
     }
 
-    public function view_stock()
+    // Fetch and pass stock data to the view
+    public function stock()
     {
-        if (isset($_GET['stock_id']) && !empty($_GET['stock_id'])) {
-            $stock_id = $_GET['stock_id']; // Get the stock_id from the query string
-
-            // Fetch the stock details from the model using the stock_id
-            $stock = $this->stockModel->getStockById($stock_id);
-
-            if ($stock) {
-                // Pass the stock data to the view
-                $this->view('stocks/view_stock', ['stock' => $stock]);
-            } else {
-                echo "Stock not found.";
-            }
+        // Fetch stock data
+        $stock_management = $this->stockModel->getStock();
+    
+        // Debugging: Check if data is retrieved properly
+        var_dump($stock_management);
+    
+        // Pass the stock data to the view
+        $this->view('stocks/view_stock', ['stock_management' => $stock_management]);
+    }
+    
+    // View a specific stock item
+    public function details($stock_id)
+    {
+        $stock = $this->stockModel->getStockById($stock_id);
+        if ($stock) {
+            $this->view('stocks/view_stock', ['stock' => $stock]);
         } else {
-            echo "Stock ID is required.";
+            echo "Stock not found.";
         }
     }
 
-    public function stock()
-    {
-        $stock_management = $this->stockModel->getStock();
-        $this->view("stocks/stock", ["stock_management" => $stock_management]);
-    }
 
+   
+
+    // Show create stock form
     public function create_stock()
     {
         $this->view("stocks/create_stock");
     }
 
+    // Show edit form for a stock item
     public function edit($stock_id)
     {
         $stock = $this->stockModel->getStockById($stock_id);
@@ -51,6 +54,7 @@ class StockController extends BaseController
         }
     }
 
+    // Save a new stock item
     public function store()
     {
         if (!isset($_POST['stock_name']) || empty(trim($_POST['stock_name']))) {
@@ -73,6 +77,7 @@ class StockController extends BaseController
         }
     }
 
+    // Update an existing stock item
     public function update($stock_id)
     {
         if (!isset($_POST['stock_name']) || empty(trim($_POST['stock_name']))) {
@@ -87,6 +92,7 @@ class StockController extends BaseController
         exit();
     }
 
+    // Delete a stock item
     public function destroy($stock_id)
     {
         $this->stockModel->deleteStock($stock_id);
@@ -94,3 +100,4 @@ class StockController extends BaseController
         exit();
     }
 }
+?>

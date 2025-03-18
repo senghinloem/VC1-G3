@@ -5,35 +5,36 @@ class StockModel
 
     public function __construct()
     {
-        $this->db = new Database("localhost", "vc1_db", "root", "");
-    }
-
-    public function getStock()
-    {
-        $result = $this->db->query("SELECT * FROM stock_management");
-        return $result->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-
-    public function view_stock($stock_id)
-    {
-        // Fetch the stock details from the database
-        $stock = $this->getStockById($stock_id);
-
-        if ($stock) {
-            return $stock;
-        } else {
-            // Handle the case if no stock is found
-            return false; // Or return some other indication
+        try {
+            // Only initialize the database once
+            $this->db = new Database("localhost", "vc1_db", "root", "");
+        } catch (PDOException $e) {
+            die("Could not connect to the database: " . $e->getMessage());
         }
     }
 
+    // Get all stock items
+    public function getStock()
+{
+    // Fetch all stock items
+    $sql = "SELECT * FROM stock_management";
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute();
+    
+    // Fetch results and return them
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
+
+    // Get a specific stock item by ID
     public function getStockById($stock_id)
     {
         $result = $this->db->query("SELECT * FROM stock_management WHERE stock_id = :stock_id", ["stock_id" => $stock_id]);
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 
+    // Add a new stock item
     public function addStock($stock_name)
     {
         $sql = "INSERT INTO stock_management (stock_name, last_updated) VALUES (:stock_name, NOW())";
@@ -42,6 +43,7 @@ class StockModel
         return $stmt->execute();
     }
 
+    // Update an existing stock item
     public function updateStock($stock_id, $stock_name)
     {
         $sql = "UPDATE stock_management SET stock_name = :stock_name, last_updated = NOW() WHERE stock_id = :stock_id";
@@ -51,6 +53,7 @@ class StockModel
         return $stmt->execute();
     }
 
+    // Delete a stock item
     public function deleteStock($stock_id)
     {
         $sql = "DELETE FROM stock_management WHERE stock_id = :stock_id";
@@ -60,4 +63,3 @@ class StockModel
     }
 }
 ?>
-

@@ -17,11 +17,11 @@ $route = new Router();
 $route->get("/users", [UserController::class, 'user']);
 $route->get("/users/create", [UserController::class, 'create']);
 $route->post("/users/store", [UserController::class, 'store']);
-$route->get("/users/edit/{user_id}", [UserController::class, 'edit']); 
+$route->get("/users/edit/{user_id}", [UserController::class, 'edit']);
 $route->put("/users/update/{user_id}", [UserController::class, 'update']);
 $route->delete("/users/destroy/{user_id}", [UserController::class, 'destroy']);
 $route->post("/users/authenticate", [UserController::class, 'authenticate']);
-$route->get ("/users/logout", [UserController::class, 'logout']);
+$route->get("/users/logout", [UserController::class, 'logout']);
 $route->get("/users/search", [UserController::class, 'search']);
 
 // welcome
@@ -35,13 +35,13 @@ $route->post("/products/store", [ProductController::class, 'store']);
 $route->delete("/products/destroy/{product_id}", [ProductController::class, 'delete']);
 
 // stock routes
-$route->get("/stock/view_stock", [StockController::class, 'view_stock']);
 $route->get("/stock", [StockController::class, 'stock']);
 $route->get("/stock/create", [StockController::class, 'create_stock']);
+$route->get("/stock/view/{stock_id}", [StockController::class, 'details']);
 $route->post("/stock/store", [StockController::class, 'store']);
 $route->get("/stock/edit/{stock_id}", [StockController::class, 'edit']);
-$route->post("/stock/update/{stock_id}", [StockController::class, 'update']);
-$route->post("/stock/destroy/{stock_id}", [StockController::class, 'destroy']);
+$route->put("/stock/update/{stock_id}", [StockController::class, 'update']);
+$route->delete("/stock/destroy/{stock_id}", [StockController::class, 'destroy']); 
 
 
 // product list
@@ -67,4 +67,3 @@ $route->get("/login", [LoginRegisterController::class, 'login']);
 $route->get("/register", [LoginRegisterController::class, 'register']);
 
 $route->route();
-?>
