@@ -7,14 +7,11 @@ if (session_status() == PHP_SESSION_NONE) {
 <?php if (isset($_SESSION['user_id'])): ?>
 <footer class="app-footer">
         <!--begin::To the end-->
-        <div class="float-end d-none d-sm-inline">PNN Give something that you want</div>
+        <div class="float-end d-none d-sm-inline"></div>
         <!--end::To the end-->
         <!--begin::Copyright-->
-        <strong>
-          Copyright &copy; 2025&nbsp;
-          <a href="https://adminlte.io" class="text-decoration-none">PNN SHOP</a>.
-        </strong>
-        All rights reserved.
+    
+    
         <!--end::Copyright-->
       </footer>
 

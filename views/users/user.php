@@ -22,52 +22,108 @@ if (!isset($_SESSION['user_id'])) {
     <style>
         body {
             background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
         }
         .table-container {
-            background: #fff;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .dropdown-toggle::after {
-            display: none;
-        }
-        .dropdown-menu {
-            min-width: 120px;
-        }
-        .dropdown-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
+    background: #fff;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-toggle::after {
+    display: none;
+}
+
+.dropdown-menu {
+    min-width: 150px;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.table-responsive {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+table {
+    width: 100%;
+}
+
+table tbody {
+    display: block;
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+table thead, table tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+thead th {
+    position: sticky;
+    top: 0;
+    background-color: #007bff;
+    color: #fff;
+    z-index: 1;
+}
+
+tbody tr {
+    display: table-row;
+}
+
+.dropdown-toggle {
+    border: none; /* Remove border around the button */
+    background: transparent; /* Make the background transparent */
+    padding: 0; /* Remove padding to avoid the circle effect */
+    box-shadow: none; /* Remove any shadow around the button */
+}
+
+.dropdown-toggle:focus {
+    outline: none; /* Remove the focus outline */
+}
+
     </style>
 </head>
 <body>
-
 <div class="container mt-3 mb-3">
     <!-- User List Card -->
     <div class="table-container">
-        <!-- Search Bar -->
-        <form action="/users/search" method="GET" class="d-flex mb-3">
-            <input type="text" name="search" class="form-control w-50" placeholder="Search for users" value="<?= htmlspecialchars($searchQuery ?? '') ?>">
-            <button type="submit" class="btn btn-primary ms-2"><i class="fas fa-search"></i> Search</button>
-        </form>
+        <!-- User List Title, Search Bar, and Create User Button -->
+        <div class="d-flex justify-content-between align-items-center mb-4 mt-4 ">
+            <!-- Title -->
+            <h4 class="mb-0"><i class="fas fa-users"></i> User List</h4>
 
-        <!-- User List Title -->
-        <h4 class="mb-3 text-primary"><i class="fas fa-users"></i> User List</h4>
-        
+            <!-- Search Bar -->
+            <form action="/users/search" method="GET" class="d-flex">
+                <div class="input-group" style="width: 400px;"> <!-- Adjust width as needed -->
+                    
+                    <input type="text" name="search" class="form-control" placeholder="Search for users" value="<?= htmlspecialchars($searchQuery ?? '') ?>">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                </div>
+            </form>
 
+            <!-- Create User Button -->
+            <a href="/users/create" class="btn btn-primary">Create User</a>
+        </div>
+
+        <!-- Table with User Data -->
         <div class="table-responsive">
-        <a href="/users/create" class="btn btn-primary mb-2">Create User</a>
             <table class="table table-hover align-middle">
-                <thead class="text-white">
+                <thead class="bg-secondary">
                     <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Phone</th>
-                        <th class="text-center">Actions</th>
+                        <th class="text-white">First Name</th>
+                        <th class="text-white">Last Name</th>
+                        <th class="text-white">Email</th>
+                        <th class="text-white">Role</th>
+                        <th class="text-white">Phone</th>
+                        <th class="text-center text-white">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -109,8 +165,6 @@ if (!isset($_SESSION['user_id'])) {
 </div>
 
 <!-- Bootstrap 5 JS (Ensure This is Included) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>

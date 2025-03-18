@@ -1,258 +1,173 @@
-
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+session_start();
 if (!isset($_SESSION['user_id'])) {
-    header("Location: /dashboard");
-    exit;
+    header("Location: /login");
+    exit();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product List</title>
+
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome for icons -->
+    
+    <!-- Font Awesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    <!-- Custom Styles -->
     <style>
-        /* Custom Styles */
         body {
             background-color: #f8f9fa;
             font-family: 'Arial', sans-serif;
         }
-        .container {
-            margin-top: 30px;
-        }
-        .card {
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .card-header {
-            background-color: #007bff;
-            color: #fff;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-        }
-        .search-bar input {
-            border-radius: 25px;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.12);
-        }
 
-        table {
-    width: 80%; /* Reduce width */
-    font-size: 12px; /* Smaller text */
-    margin: auto; /* Center the table */
-}
-
-table th, table td {
-    padding: 5px; /* Reduce padding */
-    white-space: nowrap; /* Prevent wrapping */
-}
-
-table th {
-    background-color: #f8f9fa; /* Light gray background */
-    font-weight: bold;
-}
-
-        .search-bar button {
-            border-radius: 50%;
-            background-color: #007bff;
-            color: #fff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .table th, .table td {
-            vertical-align: middle;
-            text-align: center;
-        }
-        .table th {
-            background-color: #f1f1f1;
-            color: #007bff;
-        }
-        .product-img {
-            width: 50px;
-            height: 50px;
-            object-fit: cover;
-            border-radius: 5px;
-        }
-        .action-buttons a {
-            font-size: 16px;
-            margin: 0 5px;
-            transition: transform 0.3s ease;
-        }
-        .action-buttons a:hover {
-            transform: scale(1.1);
-        }
-        .action-buttons .text-danger {
-            color: #dc3545 !important;
-        }
-        .action-buttons .text-primary {
-            color: #007bff !important;
-        }
-        .action-buttons .text-secondary {
-            color: #6c757d !important;
-        }
-        .add-product-btn {
-            border-radius: 30px;
-            font-size: 16px;
-        }
-        .add-product-btn i {
-            margin-right: 5px;
-        }
-
-        body {
-            background-color: #f8f9fa;
-        }
         .table-container {
             background: #fff;
-            border-radius: 10px;
+            border-radius: 15px;
             padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
+
         .dropdown-toggle::after {
             display: none;
         }
+
         .dropdown-menu {
-            min-width: 120px;
+            min-width: 150px;
         }
+
         .dropdown-item {
             display: flex;
             align-items: center;
             gap: 5px;
         }
-    </style>
-    <!-- Font Awesome Icons -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
+        .table-responsive {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        table tbody {
+            display: block;
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        table thead, table tbody tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        thead th {
+            position: sticky;
+            top: 0;
+            background-color: #007bff;
+            color: #fff;
+            z-index: 1;
+        }
+
+        tbody tr {
+            display: table-row;
+        }
+
+        .dropdown-toggle {
+            border: none;
+            background: transparent;
+            padding: 0;
+            box-shadow: none;
+        }
+
+        .dropdown-toggle:focus {
+            outline: none;
+        }
+
+    </style>
 </head>
 <body>
+<div class="container mt-3 mb-3">
+    <!-- Product List Card -->
+    <div class="table-container">
+        <!-- Title, Search Bar, and Add Product Button -->
+        <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
+            <h4 class="mb-0"><i class="fas fa-cogs"></i> Product List</h4>
 
-<div class="container">
-    
-    <div class="card p-4">
-    <h2>Product Lists</h2>
-        <!-- Row for Search Bar and Product List -->
-        <div class="row justify-content-between align-items-center mt-4 mb-4">
             <!-- Search Bar -->
-            <div class="col-md-6">
-                <form action="/product_list/search" method="GET" class="search-bar d-flex">
-                    <input type="text" name="q" value="<?= isset($searchQuery) ? htmlspecialchars($searchQuery) : ''; ?>" 
-                        placeholder="Search products..." class="form-control shadow-sm">
-                    <button type="submit" class="btn btn-primary px-4 ms-2"><i class="fas fa-search"></i></button>
-                </form>
-            </div>
+            <form action="/product_list/search" method="GET" class="d-flex">
+                <div class="input-group" style="width: 400px;">
+                    <input type="text" name="q" class="form-control" placeholder="Search for products" value="<?= htmlspecialchars($searchQuery ?? '') ?>">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                </div>
+            </form>
 
-            <!-- Add Product Button -->
-            <div class="col-md-3 text-end">
-                <a href="/product_list/create_list" class="btn btn-success add-product-btn"><i class="fas fa-plus"></i> Add Product</a>
-            </div>
         </div>
 
-
-        <!-- Product Table -->
+        <!-- Product Stock Table -->
         <div class="table-responsive">
-            <table class="table table-bordered table-hover">
-                <thead>
+            <table class="table table-hover align-middle">
+                <thead class="bg-secondary">
                     <tr>
-                        <th>Image</th>
-                        <th>Name</th>
-                        <th>Available</th>
-                        <th>Price</th>
-                        <th>Actions</th>
+                        <th class="text-white">Product ID</th>
+                        <th class="text-white">Product Name</th>
+                        <th class="text-white">Price</th>
+                        <th class="text-white">Unit</th>
+                        <th class="text-white">Stock ID</th>
+                        <th class="text-white">Stock Name</th>
+                        <th class="text-center text-white">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if (!empty($product_list) && is_array($product_list)): ?>
-                        <?php foreach ($product_list as $list): ?>
+                    <?php if (!empty($products) && is_array($products)): ?>
+                        <?php foreach ($products as $product): ?>
                             <tr>
-                                <td><img src="<?= htmlspecialchars($list['image']) ?>" alt="Product Image" class="product-img"></td>
-                                <td><?= htmlspecialchars($list['name']) ?></td>
-                                <td><?= (int)$list['available_quantity'] ?></td>
-                                <td>$<?= number_format((float)$list['price'], 2) ?></td>
+                                <td><?= htmlspecialchars($product['product_id']) ?></td>
+                                <td><?= htmlspecialchars($product['product_name']) ?></td>
+                                <td>$<?= number_format((float)$product['price'], 2) ?></td>
+                                <td><?= htmlspecialchars($product['unit']) ?></td>
+                                <td><?= htmlspecialchars($product['stock_id'] ?? '') ?></td>
+                                <td><?= htmlspecialchars($product['stock_name'] ?? 'N/A') ?></td>
                                 <td class="text-center">
-                                <!-- Action Dropdown -->
-                                <div class="dropdown">
-                                    <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="dropdownMenuButton<?= $list['product_list_id'] ?>" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="fas fa-ellipsis-v"></i> <!-- Three-dot icon -->
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton<?= $list['product_list_id'] ?>">
-            <li>
-                <a class="dropdown-item" href="/product_list/view/<?= $list['product_list_id'] ?>">
-                    <i class="fas fa-eye text-primary me-2"></i> View
-                </a>
-            </li>
-            <li>
-                <a class="dropdown-item" href="/product_list/edit/<?= $list['product_list_id'] ?>">
-                    <i class="fas fa-edit text-secondary me-2"></i> Edit
-                </a>
-            </li>
-            <li>
-                <form action="/product_list/destroy/<?= $list['product_list_id'] ?>" method="POST" class="d-inline">
-                    <input type="hidden" name="_method" value="DELETE">
-                    <button type="submit" class="dropdown-item text-danger"
-                        onclick="return confirm('Are you sure you want to delete this product?');">
-                        <i class="fas fa-trash me-2"></i> Delete
-                    </button>
-                </form>
-            </li>
-        </ul>
-                                </div>
-                            </td>
-
+                                    <!-- Action Dropdown -->
+                                    <div class="dropdown">
+                                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton<?= $product['product_id'] ?>" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton<?= $product['product_id'] ?>">
+                                            <li>
+                                                <a class="dropdown-item text-primary" href="/product_list/edit/<?= $product['product_id'] ?>">
+                                                    <i class="fas fa-edit"></i> Edit
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <form action="/product_list/destroy/<?= $product['product_id'] ?>" method="POST" onsubmit="return confirm('Are you sure you want to delete this product?');">
+                                                    <button type="submit" class="dropdown-item text-danger">
+                                                        <i class="fas fa-trash"></i> Delete
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="5" class="text-center text-muted">No products available</td>
+                            <td colspan="7" class="text-center text-muted">No products found.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
             </table>
-
-            <table class="table table-bordered table-hover">
-                <!-- <h2>Table product List From product </h2> -->
-            <thead>
-                <tr>
-                    <th>Product ID</th>
-                    <th>Product Name</th>
-                    <th>Price</th>
-                    <th>Unit</th>
-                    <th>Stock ID</th>
-                    <th>Stock Name</th>
-                    <th>Quantity</th>
-                </tr>
-            </thead>
-            <tbody>             
-                <?php if (!empty($product_stock_list) && is_array($product_stock_list)): ?>
-                    <?php foreach ($product_stock_list as $stock): ?>
-                        <tr>
-                            <td><?= htmlspecialchars($stock['product_id']) ?></td>
-                            <td><?= htmlspecialchars($stock['product_name']) ?></td>
-                            <td>$<?= number_format((float)$stock['price'], 2) ?></td>
-                            <td><?= htmlspecialchars($stock['unit']) ?></td>
-                            <td><?= htmlspecialchars($stock['stock_id']) ?></td>
-                            <td><?= htmlspecialchars($stock['stock_name']) ?></td>
-                            <td><?= (int)$stock['quantity'] ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <tr>
-                        <td colspan="10" class="text-center text-muted">No stock data available</td>
-                    </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
         </div>
     </div>
 </div>
-
-
-<!-- Bootstrap Bundle with Popper -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- Bootstrap 5 JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
