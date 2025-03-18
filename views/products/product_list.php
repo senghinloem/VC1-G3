@@ -108,8 +108,6 @@ if (!isset($_SESSION['user_id'])) {
                 </div>
             </form>
 
-            <!-- Add Product Button -->
-            <a href="/product_list/create" class="btn btn-primary">Add Product</a>
         </div>
 
         <!-- Product Stock Table -->
