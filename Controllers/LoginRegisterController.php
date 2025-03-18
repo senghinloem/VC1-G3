@@ -11,6 +11,9 @@ class LoginRegisterController extends BaseController
     {
         $this->view("auth/register");
     }
+    public function error() {
+        $this->view("errors/404");
+    }
 }
 
 ?>
