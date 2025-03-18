@@ -149,7 +149,7 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row" style="margin-top: 20px;">
             <div class="col-md-8">
                 <div class="card p-3">
                     <canvas id="stockChart"></canvas>
@@ -166,11 +166,7 @@
                     <hr>
                     <p class="stat-number">1 Items</p>
                 </div>
-                <div class="card bg-primary text-white p-3 mb-2">
-                    <h5>Total Items</h5>
-                    <hr>
-                    <p class="stat-number">60 Items</p>
-                </div>
+                
             </div>
         </div>
 
