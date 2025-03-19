@@ -24,9 +24,11 @@ $route->delete("/users/destroy/{user_id}", [UserController::class, 'destroy']);
 $route->post("/users/authenticate", [UserController::class, 'authenticate']);
 $route->get ("/users/logout", [UserController::class, 'logout']);
 $route->get("/users/search", [UserController::class, 'search']);
+
 // welcome
 $route->get("/", [WelcomeController::class, 'welcome']);
 $route->get("/dashboard", [DashboardController::class, 'dashboard']);
+
 // product_management
 $route->get("/products", [ProductController::class, 'product']);
 $route->get("/create", [ProductController::class, 'create']);
