@@ -15,15 +15,10 @@ class StockModel
 
     // Get all stock items
     public function getStock()
-{
-    // Fetch all stock items
-    $sql = "SELECT * FROM stock_management";
-    $stmt = $this->db->prepare($sql);
-    $stmt->execute();
-    
-    // Fetch results and return them
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+    {
+        $result = $this->db->query("SELECT * FROM stock_management");
+        return $result->fetchAll(PDO::FETCH_ASSOC);
+    }
 
 
 

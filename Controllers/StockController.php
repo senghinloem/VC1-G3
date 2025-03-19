@@ -17,7 +17,7 @@ class StockController extends BaseController
         $stock_management = $this->stockModel->getStock();
     
         // Debugging: Check if data is retrieved properly
-        var_dump($stock_management);
+        // var_dump($stock_management);
     
         // Pass the stock data to the view
         $this->view('stocks/view_stock', ['stock_management' => $stock_management]);
