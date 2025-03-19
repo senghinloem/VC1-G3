@@ -135,27 +135,62 @@ tbody tr {
                             <td><?= htmlspecialchars($user['role']) ?></td>
                             <td><?= htmlspecialchars($user['phone']) ?></td>
                             <td class="text-center">
-                                <!-- Action Dropdown -->
-                                <div class="dropdown">
-                                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton<?= $user['user_id'] ?>" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fas fa-ellipsis-v"></i>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton<?= $user['user_id'] ?>">
-                                        <li>
-                                            <a class="dropdown-item text-primary" href="/users/edit/<?= $user['user_id'] ?>">
-                                                <i class="fas fa-edit"></i> Edit
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <form action="/users/destroy/<?= $user['user_id'] ?>" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
-                                                <button type="submit" class="dropdown-item text-danger">
-                                                    <i class="fas fa-trash"></i> Delete
-                                                </button>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
+    <!-- Action Dropdown -->
+    <div class="dropdown">
+        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton<?= $user['user_id'] ?>" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-ellipsis-v"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton<?= $user['user_id'] ?>">
+            <li>
+                <a class="dropdown-item text-primary" href="/users/edit/<?= $user['user_id'] ?>">
+                    <i class="fas fa-edit"></i> Edit
+                </a>
+            </li>
+            <li>
+                <!-- Button to trigger modal -->
+                <button type="button" class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" 
+                        data-userid="<?= $user['user_id'] ?>">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </li>
+        </ul>
+    </div>
+</td>
+
+<!-- Bootstrap Delete Confirmation Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Delete User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this user?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <form id="deleteForm" method="POST">
+                    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript to Update Form Action -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var confirmDeleteModal = document.getElementById('confirmDeleteModal');
+        confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget; // Button that triggered the modal
+            var userId = button.getAttribute('data-userid'); // Extract user ID
+            var form = document.getElementById('deleteForm');
+            form.action = "/users/destroy/" + userId; // Update form action dynamically
+        });
+    });
+</script>
+
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

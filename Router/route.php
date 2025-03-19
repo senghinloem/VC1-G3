@@ -46,9 +46,9 @@ $route->post("/stock/destroy/{stock_id}", [StockController::class, 'destroy']);
 $route->get("/product_list", [ProductListController::class, 'product_list']);
 $route->get("/product_list/create_list", [ProductListController::class, 'create_list']);
 $route->post("/product_list/store", [ProductListController::class, 'store']);
-$route->get("/product_list/edit/{product_list_id}", [ProductListController::class, 'edit']);
-$route->put("/product_list/update/{product_list_id}", [ProductListController::class, 'update']);
-$route->delete("/product_list/destroy/{product_list_id}", [ProductListController::class, 'destroy']);
+$route->get("/product_list/edit/{id}", [ProductListController::class, 'edit']);
+$route->put("/product_list/update", [ProductListController::class, 'update']);
+$route->delete("/product_list/destroy/{id}", [ProductListController::class, 'destroy']);
 $route->get('/product_list/search', [ProductListController::class, 'search']);
 
 
