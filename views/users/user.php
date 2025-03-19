@@ -70,6 +70,32 @@ if (!isset($_SESSION['user_id'])) {
         .dropdown-toggle:focus {
             outline: none;
         }
+        /* Define explicit column widths */
+        th:nth-child(1), td:nth-child(1) { /* Image */
+            width: 10%;
+        }
+        th:nth-child(2), td:nth-child(2) { /* First Name */
+            width: 15%;
+        }
+        th:nth-child(3), td:nth-child(3) { /* Last Name */
+            width: 15%;
+        }
+        th:nth-child(4), td:nth-child(4) { /* Email */
+            width: 25%;
+        }
+        th:nth-child(5), td:nth-child(5) { /* Role */
+            width: 15%;
+        }
+        th:nth-child(6), td:nth-child(6) { /* Phone */
+            width: 15%;
+        }
+        th:nth-child(7), td:nth-child(7) { /* Actions */
+            width: 5%;
+        }
+        /* Use padding-left instead of margin-left for Role column */
+        .role-column {
+            padding-left: 20px;
+        }
     </style>
 </head>
 <body>
@@ -93,7 +119,7 @@ if (!isset($_SESSION['user_id'])) {
                         <th class="text-white">First Name</th>
                         <th class="text-white">Last Name</th>
                         <th class="text-white">Email</th>
-                        <th class="text-white">Role</th>
+                        <th class="text-white role-column">Role</th>
                         <th class="text-white">Phone</th>
                         <th class="text-center text-white">Actions</th>
                     </tr>
@@ -113,10 +139,9 @@ if (!isset($_SESSION['user_id'])) {
                             <td><?= htmlspecialchars($user['first_name']) ?></td>
                             <td><?= htmlspecialchars($user['last_name']) ?></td>
                             <td><?= htmlspecialchars($user['email']) ?></td>
-                            <td><?= htmlspecialchars($user['role']) ?></td>
+                            <td class="role-column"><?= htmlspecialchars($user['role']) ?></td>
                             <td><?= htmlspecialchars($user['phone']) ?></td>
                             <td class="text-center">
-                                <!-- Action Dropdown -->
                                 <div class="dropdown">
                                     <button class="dropdown-toggle" type="button" id="dropdownMenuButton<?= $user['user_id'] ?>" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="fas fa-ellipsis-v"></i>
@@ -128,7 +153,6 @@ if (!isset($_SESSION['user_id'])) {
                                             </a>
                                         </li>
                                         <li>
-                                            <!-- Button to trigger modal -->
                                             <button type="button" class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" 
                                                     data-userid="<?= $user['user_id'] ?>">
                                                 <i class="fas fa-trash"></i> Delete
@@ -171,10 +195,10 @@ if (!isset($_SESSION['user_id'])) {
     document.addEventListener('DOMContentLoaded', function () {
         var confirmDeleteModal = document.getElementById('confirmDeleteModal');
         confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget; // Button that triggered the modal
-            var userId = button.getAttribute('data-userid'); // Extract user ID
+            var button = event.relatedTarget;
+            var userId = button.getAttribute('data-userid');
             var form = document.getElementById('deleteForm');
-            form.action = "/users/destroy/" + userId; // Update form action dynamically
+            form.action = "/users/destroy/" + userId;
         });
     });
 </script>
