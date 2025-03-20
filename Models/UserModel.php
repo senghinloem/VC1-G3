@@ -94,4 +94,11 @@ class UserModel
         $stmt = $this->db->query($sql, ['query' => '%' . $query . '%']);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getUserByEmail($email)
+{
+    $result = $this->db->query("SELECT * FROM users WHERE email = :email", [':email' => $email]);
+    return $result->fetch(PDO::FETCH_ASSOC);
+}
+
 }

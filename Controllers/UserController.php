@@ -132,4 +132,25 @@ class UserController extends BaseController
         }
         return false;
     }
+
+    public function authenticate()
+{
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+
+        $user = $this->user->getUserByEmail($email);
+
+        if ($user && password_verify($password, $user['password'])) {
+            $_SESSION['user_id'] = $user['user_id'];
+            $_SESSION['role'] = $user['role'];
+            header("Location: /dashboard");
+            exit();
+        } else {
+            header("Location: /login?error=Invalid credentials");
+            exit();
+        }
+    }
+}
+
 }
