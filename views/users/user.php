@@ -599,9 +599,6 @@ if (!isset($_SESSION['user_id'])) {
                                             <!-- NEW ENHANCED ACTION BUTTONS -->
                                             <div class="action-buttons">
                                                 <!-- View button -->
-                                                <a href="/users/view/<?= $user['user_id'] ?>" class="action-btn view-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="View User">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
                                                 
                                                 <!-- Edit button -->
                                                 <a href="/users/edit/<?= $user['user_id'] ?>" class="action-btn edit-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit User">
@@ -619,11 +616,6 @@ if (!isset($_SESSION['user_id'])) {
                                                         <i class="fas fa-ellipsis-vertical"></i>
                                                     </button>
                                                     <ul class="dropdown-menu dropdown-menu-end">
-                                                        <li>
-                                                            <a class="dropdown-item" href="/users/view/<?= $user['user_id'] ?>">
-                                                                <i class="fas fa-eye text-primary"></i> View
-                                                            </a>
-                                                        </li>
                                                         <li>
                                                             <a class="dropdown-item" href="/users/edit/<?= $user['user_id'] ?>">
                                                                 <i class="fas fa-edit text-success"></i> Edit
