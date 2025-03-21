@@ -12,6 +12,7 @@ require_once "Controllers/LoginRegisterController.php";
 require_once "Controllers/UserController.php";
 require_once "Controllers/HelpController.php";
 require_once "Controllers/SettingController.php";
+require_once "Controllers/ReportController.php";
 
 $route = new Router();
 
@@ -75,4 +76,9 @@ $route->get("/help", [HelpController::class, 'help']);
 // setting the route
 
 $route->get("/setting", [SettingController::class, 'setting']);
+
+// report
+
+$route->get("/report", [ReportController::class, "report"]);
+
 $route->route();

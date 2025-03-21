@@ -137,7 +137,7 @@ if (session_status() == PHP_SESSION_NONE) {
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link text-white">
+                <a href="/report" class="nav-link text-white">
                   <i class="bi bi-pencil-square"></i>
                   <span class="ms-2">Reports</span>
                 </a>
