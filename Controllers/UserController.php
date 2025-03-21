@@ -133,24 +133,108 @@ class UserController extends BaseController
         return false;
     }
 
-    public function authenticate()
-{
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $email = $_POST['email'];
-        $password = $_POST['password'];
+//     public function authenticate()
+// {
+//     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+//         $email = $_POST['email'];
+//         $password = $_POST['password'];
 
-        $user = $this->user->getUserByEmail($email);
+//         $user = $this->user->getUserByEmail($email);
 
-        if ($user && password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['user_id'];
-            $_SESSION['role'] = $user['role'];
-            header("Location: /dashboard");
-            exit();
+//         if ($user && password_verify($password, $user['password'])) {
+//             $_SESSION['user_id'] = $user['user_id'];
+//             $_SESSION['role'] = $user['role'];
+//             header("Location: /dashboard");
+//             exit();
+//         } else {
+//             header("Location: /login?error=Invalid credentials");
+//             exit();
+//         }
+//     }
+// }
+
+
+public function authenticate()
+    {
+        session_start();
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                // Input validation
+                $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+                $password = trim($_POST['password'] ?? '');
+
+                if (!$email) {
+                    $_SESSION['email_error'] = 'Please enter a valid email address';
+                    $_SESSION['error_message'] = 'missing_fields';
+                    header('Location: /login');
+                    exit();
+                }
+
+                if (empty($password)) {
+                    $_SESSION['password_error'] = 'Password is required';
+                    $_SESSION['error_message'] = 'missing_fields';
+                    $_SESSION['email_value'] = $email;
+                    header('Location: /login');
+                    exit();
+                }
+
+                // Get user by email
+                $user = $this->user->getUserByEmail($email);
+                if (!$user) {
+                    $_SESSION['error_message'] = 'invalid_credentials';
+                    $_SESSION['email_value'] = $email;
+                    header('Location: /login');
+                    exit();
+                }
+
+                // Verify password
+                if (!password_verify($password, $user['password'])) {
+                    $_SESSION['error_message'] = 'invalid_credentials';
+                    $_SESSION['email_value'] = $email;
+                    header('Location: /login');
+                    exit();
+                }
+
+                // Check if account is locked (if you have this feature)
+                if (isset($user['locked']) && $user['locked']) {
+                    $_SESSION['error_message'] = 'account_locked';
+                    header('Location: /login');
+                    exit();
+                }
+
+                // Successful login
+                $_SESSION['user_id'] = $user['user_id'];
+                $_SESSION['first_name'] = $user['first_name'];
+                $_SESSION['last_name'] = $user['last_name'];
+                $_SESSION['user_role'] = $user['role'];
+                $_SESSION['email'] = $user['email'];
+                $_SESSION['phone'] = $user['phone'];
+                $_SESSION['success'] = 'Login successful! Welcome, ' . $user['first_name'] . '!';
+
+                header("Location: /dashboard");
+                exit();
+
+            } catch (Exception $e) {
+                error_log("Login error: " . $e->getMessage());
+                $_SESSION['error_message'] = 'system_error';
+                header('Location: /login');
+                exit();
+            }
         } else {
-            header("Location: /login?error=Invalid credentials");
+            $_SESSION['error_message'] = 'invalid_access';
+            header('Location: /login');
             exit();
         }
     }
+
+public function logout()
+{
+    session_start();
+    session_unset();
+    session_destroy();
+    $_SESSION['success'] = 'Logged out successfully';
+    $this->redirect("/");
 }
 
 }
