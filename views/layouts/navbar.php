@@ -159,7 +159,7 @@ if (session_status() == PHP_SESSION_NONE) {
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="#" class="nav-link text-white">
+                  <a href="/help" class="nav-link text-white">
                     <i class="bi bi-question-circle-fill"></i>
                     <span class="ms-2">Help</span>
                   </a>
