@@ -4,13 +4,16 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: /login");
     exit();
 }
+
+// Sample data to match the image table (replace with your actual data source
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Management</title>
+    <title>Restaurant Orders</title>
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -29,128 +32,85 @@ if (!isset($_SESSION['user_id'])) {
             --light: #f5f7fa;
             --gray: #7f8c8d;
             --white: #ffffff;
-            --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         body {
             background: var(--light);
             min-height: 100vh;
             font-family: 'Segoe UI', sans-serif;
-            margin: 0;
-            display: flex;
         }
 
-        /* Sidebar */
-        .sidebar {
-            width: 80px;
-            background: var(--primary);
-            padding: 2rem 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 100vh;
-            position: fixed;
-            transition: width 0.3s ease;
+        /* Sidebar (Offcanvas) */
+        .offcanvas {
+            background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+            color: var(--primary);
+            width: 250px !important;
         }
 
-        .sidebar:hover {
-            width: 200px;
+        .offcanvas .offcanvas-header {
+            padding: 1.5rem;
         }
 
-        .sidebar .logo {
+        .offcanvas .offcanvas-title {
             font-size: 1.2rem;
             font-weight: 700;
-            color: var(--white);
-            margin-bottom: 2rem;
-            text-align: center;
-            display: block;
-            width: 100%;
         }
 
-        .sidebar .nav-item {
-            position: relative;
-            width: 100%;
-            margin: 1rem 0;
-        }
-
-        .sidebar .nav-item a {
-            color: var(--white);
-            font-size: 1.2rem;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
+        .offcanvas .nav-link {
+            color: var(--primary);
             padding: 0.75rem 1.5rem;
+            font-size: 1rem;
             transition: all 0.3s ease;
         }
 
-        .sidebar .nav-item a i {
-            font-size: 1.5rem;
+        .offcanvas .nav-link:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
 
-        .sidebar .nav-item a span {
-            margin-left: 1rem;
-            display: none;
-            font-size: 1rem;
+        .offcanvas .nav-link i {
+            margin-right: 0.5rem;
         }
 
-        .sidebar:hover .nav-item a span {
-            display: inline;
-        }
-
-        .sidebar .nav-item a:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .sidebar .nav-item.logout a {
+        .offcanvas .nav-link.logout {
             color: var(--danger);
+        }
+
+        /* User Profile in Sidebar */
+        .user-profile {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .user-profile img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-profile p {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 500;
         }
 
         /* Main Content */
         .main-content {
-            margin-left: 80px;
             padding: 2rem;
-            flex: 1;
-            transition: margin-left 0.3s ease;
-        }
-
-        .sidebar:hover ~ .main-content {
-            margin-left: 200px;
         }
 
         .card-container {
             background: var(--white);
             border-radius: 15px;
             padding: 2rem;
-            box-shadow: var(--shadow);
-            margin: 0 auto;
-            max-width: 1600px;
-            width: 100%;
-        }
-
-        /* Header Section */
-        .header-section {
-            margin-bottom: 2rem;
-        }
-
-        .header-section h3 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         /* Statistics Cards */
-        .stats-container {
-            display: flex;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
         .stat-card {
             background: var(--white);
             border-radius: 10px;
             padding: 1.5rem;
-            flex: 1;
             text-align: center;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -179,293 +139,126 @@ if (!isset($_SESSION['user_id'])) {
             color: var(--danger);
         }
 
-        /* Search and Add Button */
-        .search-container {
-            position: relative;
-            max-width: 300px;
-        }
-
-        .search-container input {
-            border-radius: 25px;
-            padding: 0.75rem 1.5rem;
-            border: 1px solid #ddd;
-            box-shadow: none;
-            transition: all 0.3s ease;
-        }
-
-        .search-container input:focus {
-            border-color: var(--secondary);
-            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
-            outline: none;
-        }
-
-        .btn-add {
-            background: var(--secondary);
-            color: var(--white);
-            border-radius: 25px;
-            padding: 0.75rem 1.5rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            border: none;
-        }
-
-        .btn-add:hover {
-            background: var(--primary);
-            transform: translateY(-2px);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-        }
-
         /* Table Styling */
-        .table-responsive {
-            border-radius: 10px;
-            overflow-x: auto;
+        .table th, .table td {
+            vertical-align: middle;
+            border: none; /* Remove borders to match the image */
+            padding: 0.75rem; /* Match padding in the image */
         }
 
-        .table {
-            margin-bottom: 0;
-            background: var(--white);
-            width: 100%;
-            table-layout: fixed;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        thead th {
-            background: var(--light);
+        .table thead th {
+            background: #f8f9fa; /* Light gray header background */
             color: var(--primary);
-            padding: 1rem;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid #e9ecef;
-        }
-
-        tbody tr {
-            transition: all 0.3s ease;
-        }
-
-        tbody tr:hover {
-            background: rgba(0, 0, 0, 0.02);
-            transform: translateY(-2px);
-        }
-
-        tbody td {
-            padding: 1rem;
-            vertical-align: middle;
-            color: var(--primary);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* Adjusted Column Widths */
-        .table th:nth-child(1), .table td:nth-child(1) { width: 10%; } /* Product ID */
-        .table th:nth-child(2), .table td:nth-child(2) { width: 20%; } /* Product Name */
-        .table th:nth-child(3), .table td:nth-child(3) { width: 20%; } /* Stock Name */
-        .table th:nth-child(4), .table td:nth-child(4) { width: 15%; } /* Price */
-        .table th:nth-child(5), .table td:nth-child(5) { width: 10%; } /* Unit */
-        .table th:nth-child(6), .table td:nth-child(6) { width: 10%; } /* Stock ID */
-        .table th:nth-child(7), .table td:nth-child(7) { width: 10%; } /* Status */
-        .table th:nth-child(8), .table td:nth-child(8) { width: 5%; }  /* Actions */
-
-        /* Status Badges */
-        .status-badge {
-            display: inline-block;
-            padding: 0.4rem 1rem;
-            border-radius: 15px;
             font-size: 0.85rem;
-            font-weight: 500;
-            text-transform: uppercase;
         }
 
-        .status-pending {
-            background: rgba(241, 196, 15, 0.2);
-            color: var(--warning);
+        .table tbody tr {
+            background: #f8f9fa; /* Light gray background for rows */
         }
 
-        .status-paid {
-            background: rgba(46, 204, 113, 0.2);
-            color: var(--success);
+        .table tbody tr:hover {
+            background: #e9ecef; /* Slightly darker on hover */
         }
 
-        .status-hold {
-            background: rgba(231, 76, 60, 0.2);
-            color: var(--danger);
-        }
-
-        /* Action Menu Styles */
-        .action-menu {
-            position: relative;
-            display: inline-block;
-        }
-
-        .action-toggle {
+        /* Action Dropdown Styling */
+        .action-btn {
             background: transparent;
-            color: var(--gray);
-            border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .action-toggle:hover {
-            background: var(--light);
-            color: var(--secondary);
-        }
-
-        .action-options {
-            position: absolute;
-            right: 0;
-            top: 100%;
-            background: var(--white);
-            border-radius: 10px;
-            box-shadow: var(--shadow);
-            min-width: 120px;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(10px);
-            transition: all 0.3s ease;
-            z-index: 1000; /* Ensure it appears above other elements */
-        }
-
-        .action-menu:hover .action-options {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(5px);
-        }
-
-        .action-item {
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            width: 24px;
+            height: 24px;
             display: flex;
             align-items: center;
-            padding: 0.75rem 1rem;
-            color: var(--primary);
-            text-decoration: none;
-            transition: all 0.3s ease;
+            justify-content: center;
+            transition: background 0.3s ease;
         }
 
-        .action-item:hover {
-            background: var(--light);
+        .action-btn:hover {
+            background: #e9ecef;
+        }
+
+        .dropdown-menu {
+            border: none;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 0.25rem 0;
+            min-width: 120px;
+        }
+
+        .dropdown-item {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .dropdown-item i {
+            margin-right: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .dropdown-item.edit {
             color: var(--secondary);
         }
 
-        .action-item.danger {
-            color: var(--danger);
+        .dropdown-item.danger {
+            color: #343a40; /* Dark gray to match the image */
         }
 
-        .action-item i {
-            margin-right: 0.5rem;
+        .dropdown-item:hover {
+            background: #f8f9fa;
         }
 
-        /* Modal Styling */
-        .modal-content {
-            border-radius: 15px;
-            border: none;
-            box-shadow: var(--shadow);
+        .dropdown-item.edit:hover {
+            color: #2980b9;
         }
 
-        .modal-header {
-            background: var(--danger);
-            color: var(--white);
-            border-radius: 15px 15px 0 0;
-        }
-
-        .btn-custom {
-            border-radius: 25px;
-            padding: 0.75rem 1.5rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .btn-custom:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Responsive Adjustments */
-        @media (max-width: 1600px) {
-            .card-container {
-                max-width: 1400px;
-            }
-        }
-
-        @media (max-width: 1400px) {
-            .card-container {
-                max-width: 1200px;
-            }
-        }
-
-        @media (max-width: 1200px) {
-            .card-container {
-                max-width: 1000px;
-            }
-
-            .table th:nth-child(1), .table td:nth-child(1) { width: 8%; }
-            .table th:nth-child(2), .table td:nth-child(2) { width: 18%; }
-            .table th:nth-child(3), .table td:nth-child(3) { width: 18%; }
-            .table th:nth-child(4), .table td:nth-child(4) { width: 14%; }
-            .table th:nth-child(5), .table td:nth-child(5) { width: 12%; }
-            .table th:nth-child(6), .table td:nth-child(6) { width: 12%; }
-            .table th:nth-child(7), .table td:nth-child(7) { width: 12%; }
-            .table th:nth-child(8), .table td:nth-child(8) { width: 6%; }
-        }
-
-        @media (max-width: 992px) {
-            .main-content {
-                margin-left: 0;
-            }
-
-            .sidebar {
-                width: 60px;
-            }
-
-            .sidebar:hover {
-                width: 60px;
-            }
-
-            .sidebar:hover .nav-item a span {
-                display: none;
-            }
-
-            .card-container {
-                max-width: 100%;
-                padding: 1rem;
-            }
-
-            .stats-container {
-                flex-direction: column;
-            }
-
-            .stat-card {
-                margin-bottom: 1rem;
-            }
-
-            .table th:nth-child(5),
-            .table td:nth-child(5),
-            .table th:nth-child(6),
-            .table td:nth-child(6) {
-                display: none;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .table th:nth-child(3),
-            .table td:nth-child(3) {
-                display: none;
-            }
-
-            .table th:nth-child(1), .table td:nth-child(1) { width: 15%; }
-            .table th:nth-child(2), .table td:nth-child(2) { width: 30%; }
-            .table th:nth-child(4), .table td:nth-child(4) { width: 25%; }
-            .table th:nth-child(7), .table td:nth-child(7) { width: 20%; }
-            .table th:nth-child(8), .table td:nth-child(8) { width: 10%; }
+        .dropdown-item.danger:hover {
+            color: #212529;
         }
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
+    <!-- Sidebar (Offcanvas) -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="sidebarMenuLabel">PNN SHOP</h5>
+            <button type="button" class="btn-close btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <!-- User Profile -->
+            <div class="user-profile">
+                <img src="https://via.placeholder.com/60" alt="User Avatar">
+                <p>John Smith</p>
+            </div>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="fas fa-tachometer-alt"></i> Overview</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="fas fa-box"></i> Orders</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="fas fa-users"></i> Customers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="fas fa-list"></i> Menus</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="fas fa-box-open"></i> Packages</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="fas fa-envelope"></i> Messages</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link logout" href="#"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+                </li>
+            </ul>
+        </div>
+    </div>
 
     <!-- Main Content -->
     <div class="main-content">
@@ -473,34 +266,42 @@ if (!isset($_SESSION['user_id'])) {
             <!-- Header Section -->
             <div class="header-section">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h3 class="mb-0"><i class="fas fa-cubes me-2"></i> Product List</h3>
+                    <h3 class="mb-0"><i class="fas fa-cubes me-2"></i> Restaurant Orders</h3>
                     <div class="d-flex gap-3">
-                        <form action="/product_list/search" method="GET" class="search-container">
-                            <input type="text" name="q" class="form-control" 
-                                   placeholder="Search products..." 
+                        <form action="/orders/search" method="GET" class="search-container">
+                            <input type="text" name="q" class="form-control rounded-pill" 
+                                   placeholder="Search orders..." 
                                    value="<?= htmlspecialchars($searchQuery ?? '') ?>">
                         </form>
-                        <button class="btn-add"><i class="fas fa-plus me-2"></i>Add Product</button>
+                        <button class="btn btn-primary rounded-pill btn-add"><i class="fas fa-plus me-2"></i>Add New Order</button>
                     </div>
                 </div>
 
                 <!-- Statistics Cards -->
-                <div class="stats-container">
-                    <div class="stat-card">
-                        <h5>27500</h5>
-                        <p>Total Products</p>
+                <div class="row row-cols-1 row-cols-md-4 g-4 mb-4">
+                    <div class="col">
+                        <div class="stat-card">
+                            <h5>27500</h5>
+                            <p>Total Orders</p>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <h5>4500</h5>
-                        <p>In Stock</p>
+                    <div class="col">
+                        <div class="stat-card">
+                            <h5>4500</h5>
+                            <p>Total Delivered</p>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <h5>1500</h5>
-                        <p>Low Stock</p>
+                    <div class="col">
+                        <div class="stat-card">
+                            <h5>1500</h5>
+                            <p>Pending Orders</p>
+                        </div>
                     </div>
-                    <div class="stat-card orders-hold">
-                        <h5>750</h5>
-                        <p>Out of Stock</p>
+                    <div class="col">
+                        <div class="stat-card orders-hold">
+                            <h5>750</h5>
+                            <p>Orders Hold</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -508,62 +309,54 @@ if (!isset($_SESSION['user_id'])) {
             <!-- Product Table -->
             <div class="table-responsive">
                 <table class="table table-hover">
-                    <thead>
+                    <thead class="table-light">
                         <tr>
-                            <th>Product ID</th>
-                            <th>Product Name</th>
-                            <th>Stock Name</th>
-                            <th>Price</th>
-                            <th>Unit</th>
-                            <th>Stock ID</th>
-                            <th class="text-center">Status</th> <!-- Added Status column -->
-                            <th class="text-center">Actions</th>
+                            <th scope="col">ID</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Unit</th>
+                            <th scope="col">Stock ID</th>
+                            <th scope="col">Stock Name</th>
+                            <th scope="col" class="text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (!empty($products) && is_array($products)): ?>
-                            <?php foreach ($products as $index => $product): ?>
+                            <?php foreach ($products as $product): ?>
                                 <tr>
-                                    <td><?= $index + 1 ?></td>
+                                    <td><?= htmlspecialchars($product['product_id']) ?></td>
                                     <td><?= htmlspecialchars($product['product_name']) ?></td>
-                                    <td><?= htmlspecialchars($product['stock_name'] ?? 'N/A') ?></td>
                                     <td>$<?= number_format((float)$product['price'], 2) ?></td>
                                     <td><?= htmlspecialchars($product['unit']) ?></td>
                                     <td><?= htmlspecialchars($product['stock_id'] ?? '') ?></td>
+                                    <td><?= htmlspecialchars($product['stock_name'] ?? 'N/A') ?></td>
                                     <td class="text-center">
-                                        <?php
-                                        // Simulate status based on index for demo purposes
-                                        $status = $index % 3 == 0 ? 'pending' : ($index % 3 == 1 ? 'paid' : 'hold');
-                                        $statusClass = "status-$status";
-                                        ?>
-                                        <span class="status-badge <?= $statusClass ?>">
-                                            <?= ucfirst($status) ?>
-                                        </span>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="action-menu">
-                                            <button class="action-toggle">
+                                        <div class="dropdown">
+                                            <button class="action-btn" type="button" id="dropdownMenuButton-<?= $product['product_id'] ?>" data-bs-toggle="dropdown" aria-expanded="false">
                                                 <i class="fas fa-ellipsis-h"></i>
                                             </button>
-                                            <div class="action-options">
-                                                <a href="/product_list/edit/<?= $product['product_id'] ?>" 
-                                                   class="action-item">
-                                                    <i class="fas fa-edit"></i> Edit
-                                                </a>
-                                                <button class="action-item danger" 
-                                                        data-bs-toggle="modal" 
-                                                        data-bs-target="#confirmDeleteModal"
-                                                        data-productid="<?= $product['product_id'] ?>">
-                                                    <i class="fas fa-trash"></i> Delete
-                                                </button>
-                                            </div>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton-<?= $product['product_id'] ?>">
+                                                <li>
+                                                    <a class="dropdown-item edit" href="/product_list/edit/<?= htmlspecialchars($product['product_id']) ?>">
+                                                        <i class="fas fa-edit"></i> Edit
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <button class="dropdown-item danger" 
+                                                            data-bs-toggle="modal" 
+                                                            data-bs-target="#confirmDeleteModal"
+                                                            data-productid="<?= htmlspecialchars($product['product_id']) ?>">
+                                                        <i class="fas fa-trash"></i> Delete
+                                                    </button>
+                                                </li>
+                                            </ul>
                                         </div>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="8" class="text-center py-4">
+                                <td colspan="7" class="text-center py-4">
                                     <i class="fas fa-box-open me-2"></i> No products found
                                 </td>
                             </tr>
@@ -578,7 +371,7 @@ if (!isset($_SESSION['user_id'])) {
     <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header bg-danger text-white">
                     <h5 class="modal-title" id="confirmDeleteModalLabel">
                         <i class="fas fa-exclamation-triangle me-2"></i> Confirm Deletion
                     </h5>
@@ -588,11 +381,11 @@ if (!isset($_SESSION['user_id'])) {
                     Are you sure you want to delete this product? This action cannot be undone.
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-custom" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">
                         <i class="fas fa-times me-1"></i> Cancel
                     </button>
                     <form id="deleteForm" method="POST">
-                        <button type="submit" class="btn btn-danger btn-custom">
+                        <button type="submit" class="btn btn-danger rounded-pill">
                             <i class="fas fa-trash me-1"></i> Delete
                         </button>
                     </form>
@@ -601,7 +394,7 @@ if (!isset($_SESSION['user_id'])) {
         </div>
     </div>
 
-    <!-- Bootstrap JS and Custom Script -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
