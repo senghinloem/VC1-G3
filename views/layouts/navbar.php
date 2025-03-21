@@ -153,7 +153,7 @@ if (session_status() == PHP_SESSION_NONE) {
             <div class="mt-4 border-top pt-3">
               <ul class="nav sidebar-menu flex-column">
                 <li class="nav-item">
-                  <a href="#" class="nav-link text-white">
+                  <a href="/setting" class="nav-link text-white">
                     <i class="bi bi-gear-fill"></i>
                     <span class="ms-2">Settings</span>
                   </a>
