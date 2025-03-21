@@ -230,7 +230,6 @@ session_start();
                 <div class="col-md-6">
                     <div class="login-card">
                         <h2>Login</h2>
-                        <p class="subtitle">See your growth and get support!</p>
 
                         <!-- Display message if user is already logged in -->
                         <?php if (isset($_SESSION['user_id'])): ?>
@@ -253,11 +252,6 @@ session_start();
                                 <?php unset($_SESSION['error_message']); ?>
                             <?php endif; ?>
 
-                            <!-- Sign in with Google button -->
-                            <a href="/google-signin" class="google-signin-btn">
-                                <img src="https://www.google.com/favicon.ico" alt="Google Icon">
-                                Sign in with Google
-                            </a>
 
                             <!-- Login form -->
                             <form action="/users/authenticate" method="POST">
