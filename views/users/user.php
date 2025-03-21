@@ -247,7 +247,7 @@ if (!isset($_SESSION['user_id'])) {
         .action-btn.view-btn {
             background-color: rgba(67, 97, 238, 0.1);
             color: var(--primary-color);
-        }
+        }   
         
         .action-btn.view-btn:hover {
             background-color: var(--primary-color);
