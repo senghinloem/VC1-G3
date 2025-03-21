@@ -1,9 +1,5 @@
 <?php
 session_start();
-if (isset($_SESSION['user_id'])) {
-    header("Location: /dashboard");
-    exit();
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,7 +13,7 @@ if (isset($_SESSION['user_id'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         body {
-            background: #f5f7fa; /* Light background similar to the image */
+            background: #f5f7fa;
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
             margin: 0;
@@ -189,7 +185,7 @@ if (isset($_SESSION['user_id'])) {
         }
 
         .password-toggle .form-control {
-            padding-right: 40px; /* Space for the eye icon */
+            padding-right: 40px;
         }
 
         .password-toggle .toggle-password {
@@ -205,6 +201,13 @@ if (isset($_SESSION['user_id'])) {
 
         .password-toggle .toggle-password:hover {
             color: #007bff;
+        }
+
+        /* Success message styling */
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
         }
 
         /* Responsive adjustments */
@@ -227,41 +230,61 @@ if (isset($_SESSION['user_id'])) {
                 <div class="col-md-6">
                     <div class="login-card">
                         <h2>Login</h2>
-                        <!-- Display error message if login fails -->
-                        <?php if (isset($_SESSION['error_message'])): ?>
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <?= $_SESSION['error_message']; ?>
+                        <p class="subtitle">See your growth and get support!</p>
+
+                        <!-- Display message if user is already logged in -->
+                        <?php if (isset($_SESSION['user_id'])): ?>
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                You are already logged in! Redirecting to dashboard...
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
-                            <?php unset($_SESSION['error_message']); ?>
-                        <?php endif; ?>
-
-
-                        <!-- Login form -->
-                        <form action="/users/authenticate" method="POST">
-                            <div class="mb-3">
-                                <label class="form-label">Email <span class="text-danger">*</span></label>
-                                <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
-                            </div>
-                            <div class="mb-3 password-toggle">
-                                <label class="form-label">Password <span class="text-danger">*</span></label>
-                                <input type="password" name="password" id="password" class="form-control" required>
-                                <i class="fas fa-eye toggle-password" id="togglePassword"></i>
-                                <div class="form-text">minimum 8 characters</div>
-                            </div>
-                            <div class="d-flex justify-content-between mb-3">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="rememberMe">
-                                    <label class="form-check-label" for="rememberMe">Remember me</label>
+                            <script>
+                                setTimeout(() => {
+                                    window.location.href = '/dashboard';
+                                }, 2000);
+                            </script>
+                        <?php else: ?>
+                            <!-- Display error message if login fails -->
+                            <?php if (isset($_SESSION['error_message'])): ?>
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <?= $_SESSION['error_message']; ?>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                 </div>
-                                <a href="/forgot-password" class="forgot-password">Forgot password?</a>
-                            </div>
-                            <button type="submit" class="btn btn-login">Login</button>
-                        </form>
+                                <?php unset($_SESSION['error_message']); ?>
+                            <?php endif; ?>
 
-                        <p class="mt-3 text-center">
-                            Not registered yet? <a href="/register" class="register-link">Create a new account</a>
-                        </p>
+                            <!-- Sign in with Google button -->
+                            <a href="/google-signin" class="google-signin-btn">
+                                <img src="https://www.google.com/favicon.ico" alt="Google Icon">
+                                Sign in with Google
+                            </a>
+
+                            <!-- Login form -->
+                            <form action="/users/authenticate" method="POST">
+                                <div class="mb-3">
+                                    <label class="form-label">Email <span class="text-danger">*</span></label>
+                                    <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+                                </div>
+                                <div class="mb-3 password-toggle">
+                                    <label class="form-label">Password <span class="text-danger">*</span></label>
+                                    <input type="password" name="password" id="password" class="form-control" required>
+                                    <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+                                    <div class="form-text">minimum 8 characters</div>
+                                </div>
+                                <div class="d-flex justify-content-between mb-3">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="rememberMe">
+                                        <label class="form-check-label" for="rememberMe">Remember me</label>
+                                    </div>
+                                    <a href="/forgot-password" class="forgot-password">Forgot password?</a>
+                                </div>
+                                <button type="submit" class="btn btn-login">Login</button>
+                            </form>
+
+                            <p class="mt-3 text-center">
+                                Not registered yet? <a href="/register" class="register-link">Create a new account</a>
+                            </p>
+                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -278,15 +301,14 @@ if (isset($_SESSION['user_id'])) {
         const togglePassword = document.querySelector('#togglePassword');
         const passwordInput = document.querySelector('#password');
 
-        togglePassword.addEventListener('click', function () {
-            // Toggle the type attribute
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-
-            // Toggle the eye icon
-            this.classList.toggle('fa-eye');
-            this.classList.toggle('fa-eye-slash');
-        });
+        if (togglePassword && passwordInput) {
+            togglePassword.addEventListener('click', function () {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+        }
     </script>
 </body>
 </html>
