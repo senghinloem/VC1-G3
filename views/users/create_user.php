@@ -29,7 +29,7 @@ if (!isset($_SESSION['user_id'])) {
     </style>
 </head>
 <body>
-<div class="container">
+<div class="container mb-5">
     <div class="card">
         <div class="card-body">
             <h5 class="card-title text-center mb-4"><i class="fas fa-user-plus"></i> Create New User</h5>
