@@ -137,7 +137,7 @@ if (session_status() == PHP_SESSION_NONE) {
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link text-white">
+                <a href="/report" class="nav-link text-white">
                   <i class="bi bi-pencil-square"></i>
                   <span class="ms-2">Reports</span>
                 </a>
@@ -153,13 +153,13 @@ if (session_status() == PHP_SESSION_NONE) {
             <div class="mt-4 border-top pt-3">
               <ul class="nav sidebar-menu flex-column">
                 <li class="nav-item">
-                  <a href="#" class="nav-link text-white">
+                  <a href="/setting" class="nav-link text-white">
                     <i class="bi bi-gear-fill"></i>
                     <span class="ms-2">Settings</span>
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="#" class="nav-link text-white">
+                  <a href="/help" class="nav-link text-white">
                     <i class="bi bi-question-circle-fill"></i>
                     <span class="ms-2">Help</span>
                   </a>

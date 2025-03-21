@@ -1,73 +1,86 @@
-
-<style>
-    .container {
-        width: 600px;
-    }
-</style>
-
-<div class="container mt-4">
-    <div class="card shadow-sm border-0 rounded-1">
-        <div class="card-body p-2">
-            <h6 class="text-center text-primary mb-2"><i class="bi bi-pencil-square"></i> Edit User</h6>
-
-            <form action="/users/update/<?= $user['user_id'] ?>" method="POST">
-                <div class="row g-1">
-                    <div class="col-6">
-                        <label for="firstName" class="form-label small mb-0">First Name</label>
-                        <input type="text" class="form-control form-control-sm" id="firstName" name="first_name" value="<?= htmlspecialchars($user['first_name']) ?>" required>
-                    </div>
-                    <div class="col-6">
-                        <label for="lastName" class="form-label small mb-0">Last Name</label>
-                        <input type="text" class="form-control form-control-sm" id="lastName" name="last_name" value="<?= htmlspecialchars($user['last_name']) ?>" required>
-                    </div>
+<?php
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    header("Location: /login");
+    exit();
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit User</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin-top: 50px;
+        }
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title text-center mb-4"><i class="fas fa-user-edit"></i> Edit User</h5>
+            <form action="/users/update/<?= $user['user_id'] ?>" method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="first_name" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="first_name" name="first_name" value="<?= htmlspecialchars($user['first_name']) ?>" required>
                 </div>
-
-                <div class="mt-1">
-                    <label for="email" class="form-label small mb-0">Email</label>
-                    <input type="email" class="form-control form-control-sm" id="email" name="email" value="<?= htmlspecialchars($user['email']) ?>" required>
+                <div class="mb-3">
+                    <label for="last_name" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="last_name" name="last_name" value="<?= htmlspecialchars($user['last_name']) ?>" required>
                 </div>
-
-                <div class="mt-1">
-                    <label for="password" class="form-label small mb-0">Password</label>
-                    <div class="input-group input-group-sm">
-                        <input type="password" class="form-control" id="password" name="password" required>
-                        <button class="btn btn-outline-secondary btn-sm px-2" type="button" id="togglePassword">
-                            <i class="bi bi-eye-slash"></i>
-                        </button>
-                    </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" value="<?= htmlspecialchars($user['email']) ?>" required>
                 </div>
-
-                <div class="mt-1">
-                    <label for="role" class="form-label small mb-0">Role</label>
-                    <select class="form-select form-select-sm" id="role" name="role" required>
-                        <option value="" disabled>Select role</option>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" value="<?= htmlspecialchars($user['password']) ?>" required>
+                </div>
+                <div class="mb-3">
+                    <label for="role" class="form-label">Role</label>
+                    <select class="form-select" id="role" name="role" required>
                         <option value="admin" <?= $user['role'] === 'admin' ? 'selected' : '' ?>>Admin</option>
                         <option value="user" <?= $user['role'] === 'user' ? 'selected' : '' ?>>User</option>
                         <option value="editor" <?= $user['role'] === 'editor' ? 'selected' : '' ?>>Editor</option>
                     </select>
                 </div>
-
-                <div class="mt-1">
-                    <label for="phone" class="form-label small mb-0">Phone</label>
-                    <input type="tel" class="form-control form-control-sm" id="phone" name="phone" value="<?= htmlspecialchars($user['phone']) ?>">
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="tel" class="form-control" id="phone" name="phone" value="<?= htmlspecialchars($user['phone']) ?>">
                 </div>
-
-                <div class="d-grid gap-1 mt-2">
-                    <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-save"></i> Update</button>
-                    <a href="/users" class="btn btn-warning btn-sm"><i class="bi bi-x-circle"></i> Cancel</a>
+                <div class="mb-3">
+                    <label for="image" class="form-label">Image</label>
+                    <div class="mb-2">
+                        <?php if ($user['image']): ?>
+                            <img src="/uploads/<?= htmlspecialchars($user['image']) ?>" 
+                                 alt="Current profile" 
+                                 style="max-width: 100px; max-height: 100px; object-fit: cover;">
+                        <?php endif; ?>
+                    </div>
+                    <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                </div>
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update User</button>
+                    <a href="/users" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Cancel</a>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
-<!-- Password Show/Hide Script -->
-<script>
-    document.getElementById('togglePassword').addEventListener('click', function () {
-        let passwordField = document.getElementById('password');
-        let icon = this.querySelector('i');
-        passwordField.type = passwordField.type === "password" ? "text" : "password";
-        icon.classList.toggle("bi-eye");
-        icon.classList.toggle("bi-eye-slash");
-    });
-</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
