@@ -10,8 +10,6 @@ require_once "Controllers/ProductListController.php";
 require_once "Controllers/SupplierController.php";
 require_once "Controllers/LoginRegisterController.php";
 require_once "Controllers/UserController.php";
-require_once "Controllers/HelpController.php";
-
 
 $route = new Router();
 
