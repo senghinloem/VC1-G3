@@ -68,7 +68,7 @@ $route->get("/login", [LoginRegisterController::class, 'login']);
 $route->get("/register", [LoginRegisterController::class, 'register']);
 $route->get("/error", [LoginRegisterController::class, 'error']);
 
-// help 
+// help
 $route->get("/help", [HelpController::class, 'help']);
 
 $route->route();
