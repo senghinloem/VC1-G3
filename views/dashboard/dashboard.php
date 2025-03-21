@@ -6,6 +6,19 @@
             <?php unset($_SESSION['success_message']); ?>
         <?php endif; ?>
 
+        <?php
+session_start();
+
+// Check if there's a success message
+if (isset($_SESSION['success'])) {
+    $successMessage = $_SESSION['success'];
+    // Clear the success message after displaying it (optional)
+    unset($_SESSION['success']);
+} else {
+    $successMessage = null;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -105,7 +118,15 @@
 </head>
 
 <body>
+    
     <div class="container mt-4">
+        <!-- Display Bootstrap alert if success message exists -->
+        <?php if ($successMessage): ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <?php echo htmlspecialchars($successMessage); ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
         <h2>Dashboard</h2>
         <?php $text = "$ " ?>
 
@@ -232,6 +253,8 @@
                 
             </div>
         </div>
+
+        
 
         <script>
 
