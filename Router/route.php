@@ -42,7 +42,7 @@ $route->post("/stock/store", [StockController::class, 'store']);
 $route->get("/stock/edit/{stock_id}", [StockController::class, 'edit']);
 $route->post("/stock/update/{stock_id}", [StockController::class, 'update']);
 $route->post("/stock/destroy/{stock_id}", [StockController::class, 'destroy']);
-
+$route->get("/stock/view/{stock_id}", [StockController::class, 'view_stock']);
 
 // product list
 $route->get("/product_list", [ProductListController::class, 'product_list']);
