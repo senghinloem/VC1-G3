@@ -127,15 +127,15 @@ if (!isset($_SESSION['user_id'])) {
                 <tbody>
                     <?php foreach ($users as $user): ?>
                         <tr>
-                            <td>
-                                <?php if ($user['image']): ?>
-                                    <img src="/uploads/<?= htmlspecialchars($user['image']) ?>" 
-                                         alt="Profile" 
-                                         style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
-                                <?php else: ?>
-                                    <i class="fas fa-user-circle" style="font-size: 40px;"></i>
-                                <?php endif; ?>
-                            </td>
+                        <td>
+    <?php if (array_key_exists('image', $user) && $user['image']): ?>
+        <img src="/uploads/<?= htmlspecialchars($user['image']) ?>" 
+             alt="Profile" 
+             style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+    <?php else: ?>
+        <i class="fas fa-user-circle" style="font-size: 40px;"></i>
+    <?php endif; ?>
+</td>
                             <td><?= htmlspecialchars($user['first_name']) ?></td>
                             <td><?= htmlspecialchars($user['last_name']) ?></td>
                             <td><?= htmlspecialchars($user['email']) ?></td>
