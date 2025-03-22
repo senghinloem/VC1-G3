@@ -99,5 +99,7 @@ class StockController extends BaseController
         header("Location: /stock");
         exit();
     }
+
+    
 }
 ?>

@@ -56,5 +56,6 @@ class StockModel
         $stmt->bindParam(':stock_id', $stock_id, PDO::PARAM_INT);
         return $stmt->execute();
     }
+    
 }
 ?>

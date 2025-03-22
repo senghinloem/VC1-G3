@@ -42,6 +42,7 @@ $route->post("/stock/store", [StockController::class, 'store']);
 $route->get("/stock/edit/{stock_id}", [StockController::class, 'edit']);
 $route->put("/stock/update/{stock_id}", [StockController::class, 'update']);
 $route->delete("/stock/destroy/{stock_id}", [StockController::class, 'destroy']); 
+$route->get("/stock/search", [StockController::class, 'search']);
 
 
 // product list
