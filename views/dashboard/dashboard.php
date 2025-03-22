@@ -15,6 +15,8 @@
 
 
     <link rel="stylesheet" href="../../views/assets/css/dashboard.css">
+    <!-- <link rel="stylesheet" href="../images/user.css"> -->
+
 
     <style>
         .card {
@@ -42,6 +44,7 @@
 </head>
 
 <body>
+
     <div class="container mt-4">
         <h2>Dashboard</h2>
         <?php $text = "$ " ?>
@@ -156,7 +159,7 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card bg-primary text-white p-3 mb-2">
+                <!-- <div class="card bg-primary text-white p-3 mb-2">
                     <h5>Total Items</h5>
                     <hr>
                     <p class="stat-number">60 Items</p>
@@ -165,8 +168,43 @@
                     <h5>Zero Stock Items</h5>
                     <hr>
                     <p class="stat-number">1 Items</p>
-                </div>
+                </div> -->
+
                 
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">All Users</h4>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled team-members">
+                                    <?php if (!empty($users)): ?>
+                                        <?php foreach ($users as $user): ?>
+                                            <li>
+                                                <div class="row">
+                                                    <div class="col-md-2 col-2">
+                                                        <div class="avatar">
+                                                            <img src="../../views/images/user.png" alt="Circle Image" class="img-circle img-no-padding img-responsive" style="border-radius: 50%; width: 40px; height: 40px; object-fit: cover">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-7 col-7">
+                                                        <?= htmlspecialchars($user['username']) ?>
+                                                        <br />
+                                                        <span class="text-muted"><small><?= htmlspecialchars($user['account_status']) ?></small></span>
+                                                    </div>
+                                                    <div class="col-md-3 col-3 text-right">
+                                                        <btn class="btn btn-sm btn-outline-success btn-round btn-icon"><i class="fa fa-envelope"></i></btn>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <li>No users found.</li>
+                                    <?php endif; ?>
+                                </ul>
+                            </div>
+                        </div>
+               
+
             </div>
         </div>
 

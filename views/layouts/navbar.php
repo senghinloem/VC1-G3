@@ -49,12 +49,13 @@ if (session_status() == PHP_SESSION_NONE) {
             <li class="nav-item dropdown user-menu">
               <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
                 <img
-                  src="<?= isset($_SESSION['user_image']) ? $_SESSION['user_image'] : '/views/assets/images/pn-logo.png'; ?>"
+                  src="<?= isset($_SESSION['user_image']) ? $_SESSION['user_image'] : '/views/images/user.png'; ?>"
                   class="user-image rounded-circle shadow-sm me-2"
                   alt="User Image"
                   width="35"
                   height="35"
                 />
+                <!-- admin -->
                 <?php if (isset($_SESSION['user_role'])): ?>
                   <span class="d-none d-md-inline text-dark fw-semibold"><?= $_SESSION['user_role']; ?></span>
                 <?php endif; ?>
@@ -62,7 +63,7 @@ if (session_status() == PHP_SESSION_NONE) {
               <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end shadow border-0 rounded-3">
                 <li class="user-header text-center p-3 bg-light border-bottom">
                   <img
-                    src="<?= isset($_SESSION['user_image']) ? $_SESSION['user_image'] : '/views/assets/img/user2-160x160.jpg'; ?>"
+                    src="<?= isset($_SESSION['user_image']) ? $_SESSION['user_image'] : '/views/images/user.png'; ?>"
                     class="rounded-circle shadow-sm mb-2"
                     alt="User Image"
                     width="80"
