@@ -74,5 +74,20 @@
         </div>
     </div>
 
+    <script>
+        document.getElementById("searchInput").addEventListener("keyup", function() {
+            let filter = this.value.toLowerCase();
+            let rows = document.querySelectorAll("tbody tr");
+        
+            rows.forEach(row => {
+                let supplierID = row.cells[0].textContent.toLowerCase(); // Get Supplier ID (first column)
+                let fullText = row.textContent.toLowerCase(); // Get all text in the row
+        
+                // Show row if the filter matches Supplier ID or any column
+                row.style.display = supplierID.includes(filter) || fullText.includes(filter) ? "" : "none";
+            });
+        });
+    </script>
+        
 </body>
 </html>
