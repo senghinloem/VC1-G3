@@ -10,7 +10,9 @@ require_once "Controllers/ProductListController.php";
 require_once "Controllers/SupplierController.php";
 require_once "Controllers/LoginRegisterController.php";
 require_once "Controllers/UserController.php";
-
+require_once "Controllers/HelpController.php";
+require_once "Controllers/SettingController.php";
+require_once "Controllers/ReportController.php";
 
 $route = new Router();
 
@@ -48,9 +50,9 @@ $route->get("/stock/view/{stock_id}", [StockController::class, 'view_stock']);
 $route->get("/product_list", [ProductListController::class, 'product_list']);
 $route->get("/product_list/create_list", [ProductListController::class, 'create_list']);
 $route->post("/product_list/store", [ProductListController::class, 'store']);
-$route->get("/product_list/edit/{product_list_id}", [ProductListController::class, 'edit']);
-$route->put("/product_list/update/{product_list_id}", [ProductListController::class, 'update']);
-$route->delete("/product_list/destroy/{product_list_id}", [ProductListController::class, 'destroy']);
+$route->get("/product_list/edit/{id}", [ProductListController::class, 'edit']);
+$route->put("/product_list/update", [ProductListController::class, 'update']);
+$route->delete("/product_list/destroy/{id}", [ProductListController::class, 'destroy']);
 $route->get('/product_list/search', [ProductListController::class, 'search']);
 
 
@@ -67,5 +69,16 @@ $route->get("/supplier/detail/{supplier_id}", [SupplierController::class, 'detai
 $route->get("/login", [LoginRegisterController::class, 'login']);
 $route->get("/register", [LoginRegisterController::class, 'register']);
 $route->get("/error", [LoginRegisterController::class, 'error']);
+
+// help
+$route->get("/help", [HelpController::class, 'help']);
+
+// setting the route
+
+$route->get("/setting", [SettingController::class, 'setting']);
+
+// report
+
+$route->get("/report", [ReportController::class, "report"]);
 
 $route->route();

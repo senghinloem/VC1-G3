@@ -1,3 +1,24 @@
+<?php if (isset($_SESSION['success_message'])): ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <?= $_SESSION['success_message']; ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php unset($_SESSION['success_message']); ?>
+        <?php endif; ?>
+
+        <?php
+session_start();
+
+// Check if there's a success message
+if (isset($_SESSION['success'])) {
+    $successMessage = $_SESSION['success'];
+    // Clear the success message after displaying it (optional)
+    unset($_SESSION['success']);
+} else {
+    $successMessage = null;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -38,11 +59,74 @@
             min-width: 150px;
             margin-bottom: 15px;
         }
+
+        font-family: 'Inter', sans-serif;
+            background: #f5f7fa;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .dashboard-container {
+            text-align: center;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .dashboard-container h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #1a252f;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-container p {
+            font-size: 16px;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .btn-logout {
+            background: #dc3545;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #ffffff;
+            transition: background 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            background: #c82333;
+        }
+
+        /* Success message styling */
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 
 <body>
+    
     <div class="container mt-4">
+        <!-- Display Bootstrap alert if success message exists -->
+        <?php if ($successMessage): ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <?php echo htmlspecialchars($successMessage); ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
         <h2>Dashboard</h2>
         <?php $text = "$ " ?>
 
@@ -169,6 +253,8 @@
                 
             </div>
         </div>
+
+        
 
         <script>
 

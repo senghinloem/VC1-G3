@@ -44,9 +44,26 @@
                                 <td><?= htmlspecialchars($supplier['address']) ?></td>
                                 <td><?= htmlspecialchars($supplier['created_at']) ?></td>
                                 <td>
-                                    <a href="/supplier/detail/<?= $supplier['supplier_id']?>" class="btn btn-success">Detail</a>
-                                    <a href="/supplier/edit/<?= $supplier['supplier_id']?>" class="btn btn-warning">Edit</a>
-                                    <a href="/supplier/destroy/<?= $supplier['supplier_id']?>" class="btn btn-danger">Delete</a>
+                                    <div class="dropdown">
+                                        <!-- Three-dot button -->
+                                        <button class="btn btn-light border-0 three-dot-btn">
+                                            <i class="bi bi-three-dots"></i>
+                                        </button>
+                                
+                                        <!-- Dropdown menu -->
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="/supplier/detail/<?= $supplier['supplier_id']?>">Detail</a></li>
+                                            <li><a class="dropdown-item" href="/supplier/edit/<?= $supplier['supplier_id']?>">Edit</a></li>
+                                            <li><a class="dropdown-item text-danger" href="/supplier/destroy/<?= $supplier['supplier_id']?>">Delete</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                                <style>
+                                /* Make the dropdown menu appear when hovering over the button */
+                                .dropdown:hover .dropdown-menu {
+                                    display: block;
+                                }
+                                </style>
                                 </td>
                             </tr>
                             

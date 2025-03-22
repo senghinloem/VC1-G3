@@ -6,7 +6,11 @@
                 <i class="bi bi-search success"></i>
             </button>
         </div>
+<<<<<<< HEAD
         <a href="/stock/create" class="btn btn-primary">Add New</a>
+=======
+        <a href="/stock/create" class="btn btn-primary">Crate Stock</a>
+>>>>>>> f2229961d1ff9b2caa916f7d90ffe9141d16bcf7
     </div>
 
     <div class="row g-3 mt-5">
