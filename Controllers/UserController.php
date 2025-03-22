@@ -133,25 +133,6 @@ class UserController extends BaseController
         return false;
     }
 
-//     public function authenticate()
-// {
-//     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-//         $email = $_POST['email'];
-//         $password = $_POST['password'];
-
-//         $user = $this->user->getUserByEmail($email);
-
-//         if ($user && password_verify($password, $user['password'])) {
-//             $_SESSION['user_id'] = $user['user_id'];
-//             $_SESSION['role'] = $user['role'];
-//             header("Location: /dashboard");
-//             exit();
-//         } else {
-//             header("Location: /login?error=Invalid credentials");
-//             exit();
-//         }
-//     }
-// }
 
 
 public function authenticate()
@@ -182,7 +163,7 @@ public function authenticate()
                 // Get user by email
                 $user = $this->user->getUserByEmail($email);
                 if (!$user) {
-                    $_SESSION['error_message'] = 'invalid_credentials';
+                    $_SESSION['error_message'] = 'You cannot loggin please check your email.';
                     $_SESSION['email_value'] = $email;
                     header('Location: /login');
                     exit();
@@ -190,7 +171,7 @@ public function authenticate()
 
                 // Verify password
                 if (!password_verify($password, $user['password'])) {
-                    $_SESSION['error_message'] = 'invalid_credentials';
+                    $_SESSION['error_message'] = 'You cannot loggin please check your password.';
                     $_SESSION['email_value'] = $email;
                     header('Location: /login');
                     exit();
