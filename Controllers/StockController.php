@@ -23,17 +23,16 @@ class StockController extends BaseController
         }
     }
 
-    public function stock()
-    {
-        $stock_management = $this->stockModel->getStock();
-        $this->view("stocks/stock", ["stock_management" => $stock_management]);
-    }
 
+   
+
+    // Show create stock form
     public function create_stock()
     {
         $this->view("stocks/create_stock");
     }
 
+    // Show edit form for a stock item
     public function edit($stock_id)
     {
         $stock = $this->stockModel->getStockById($stock_id);
@@ -44,6 +43,7 @@ class StockController extends BaseController
         }
     }
 
+    // Save a new stock item
     public function store()
     {
         if (!isset($_POST['stock_name']) || empty(trim($_POST['stock_name']))) {
@@ -66,6 +66,7 @@ class StockController extends BaseController
         }
     }
 
+    // Update an existing stock item
     public function update($stock_id)
     {
         if (!isset($_POST['stock_name']) || empty(trim($_POST['stock_name']))) {
@@ -80,6 +81,7 @@ class StockController extends BaseController
         exit();
     }
 
+    // Delete a stock item
     public function destroy($stock_id)
     {
         $this->stockModel->deleteStock($stock_id);
@@ -89,3 +91,4 @@ class StockController extends BaseController
 
     
 }
+?>
