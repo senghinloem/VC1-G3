@@ -7,37 +7,29 @@ class UserController extends BaseController
 
     public function __construct()
     {
-        $this->user = new UserModel();
+        try {
+            $this->user = new UserModel();
+            session_start();
+            if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
+                $this->user->updateLastActivity($_SESSION['user_id']);
+            }
+        } catch (Exception $e) {
+            die("Controller initialization failed: " . $e->getMessage());
+        }
     }
 
     public function user()
     {
-        $perPage = 10;
-        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        $searchQuery = isset($_GET['search']) ? $_GET['search'] : '';
-
-        if ($searchQuery) {
-            $users = $this->user->searchUsers($searchQuery, $page, $perPage);
-            $totalUsers = $this->user->getSearchUsersCount($searchQuery);
-        } else {
-            $users = $this->user->getUsers($page, $perPage);
-            $totalUsers = $this->user->getTotalUsers();
-        }
-
-        $totalPages = ceil($totalUsers / $perPage);
-        $totalActiveUsers = $this->user->getActiveUsers();
-        $totalInactiveUsers = $this->user->getInactiveUsers();
-        $totalAdminUsers = $this->user->getAdminUsers();
-
+        $users = $this->user->getUsers();
+        $totalUsers = $this->user->getTotalUsers();
+        $activeUsers = $this->user->getActiveUsers();
+        $inactiveUsers = $this->user->getInactiveUsers();
+        
         $this->view('users/user', [
             'users' => $users,
             'totalUsers' => $totalUsers,
-            'totalActiveUsers' => $totalActiveUsers,
-            'totalInactiveUsers' => $totalInactiveUsers,
-            'totalAdminUsers' => $totalAdminUsers,
-            'currentPage' => $page,
-            'totalPages' => $totalPages,
-            'searchQuery' => $searchQuery
+            'activeUsers' => $activeUsers,
+            'inactiveUsers' => $inactiveUsers
         ]);
     }
 
@@ -57,20 +49,20 @@ class UserController extends BaseController
                     exit();
                 }
             }
-
-            $status = isset($_POST['status']) ? (int)$_POST['status'] : 1; // Default to active
-
-            $this->user->addUser(
-                $_POST['first_name'],
-                $_POST['last_name'],
-                $_POST['email'],
-                $_POST['password'],
-                $_POST['role'],
-                $_POST['phone'],
-                $image,
-                $status
-            );
-            header("Location: /users");
+            
+            if ($this->user->addUser(
+                $_POST['first_name'] ?? '',
+                $_POST['last_name'] ?? '',
+                $_POST['email'] ?? '',
+                $_POST['password'] ?? '',
+                $_POST['role'] ?? '',
+                $_POST['phone'] ?? '',
+                $image
+            )) {
+                header("Location: /users");
+            } else {
+                header("Location: /users/create?error=Failed to add user");
+            }
             exit();
         }
     }
@@ -96,21 +88,21 @@ class UserController extends BaseController
                     exit();
                 }
             }
-
-            $status = isset($_POST['status']) ? (int)$_POST['status'] : null;
-
-            $this->user->updateUser(
+            
+            if ($this->user->updateUser(
                 $user_id,
-                $_POST['first_name'],
-                $_POST['last_name'],
-                $_POST['email'],
-                $_POST['password'],
-                $_POST['role'],
-                $_POST['phone'],
-                $image,
-                $status
-            );
-            header("Location: /users");
+                $_POST['first_name'] ?? '',
+                $_POST['last_name'] ?? '',
+                $_POST['email'] ?? '',
+                $_POST['password'] ?? '',
+                $_POST['role'] ?? '',
+                $_POST['phone'] ?? '',
+                $image
+            )) {
+                header("Location: /users");
+            } else {
+                header("Location: /users/edit/$user_id?error=Failed to update user");
+            }
             exit();
         }
     }
@@ -124,33 +116,24 @@ class UserController extends BaseController
                 unlink($imagePath);
             }
         }
-        $this->user->deleteUser($user_id);
-        header("Location: /users");
+        if ($this->user->deleteUser($user_id)) {
+            header("Location: /users");
+        } else {
+            header("Location: /users?error=Failed to delete user");
+        }
         exit();
     }
 
     public function search()
     {
         $query = isset($_GET['search']) ? $_GET['search'] : '';
-        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        $perPage = 10;
-
-        $users = $this->user->searchUsers($query, $page, $perPage);
-        $totalUsers = $this->user->getSearchUsersCount($query);
-        $totalPages = ceil($totalUsers / $perPage);
-        $totalActiveUsers = $this->user->getActiveUsers();
-        $totalInactiveUsers = $this->user->getInactiveUsers();
-        $totalAdminUsers = $this->user->getAdminUsers();
-
+        $users = $this->user->searchUsers($query);
         $this->view('users/user', [
             'users' => $users,
-            'totalUsers' => $totalUsers,
-            'totalActiveUsers' => $totalActiveUsers,
-            'totalInactiveUsers' => $totalInactiveUsers,
-            'totalAdminUsers' => $totalAdminUsers,
-            'currentPage' => $page,
-            'totalPages' => $totalPages,
-            'searchQuery' => $query
+            'searchQuery' => $query,
+            'totalUsers' => $this->user->getTotalUsers(),
+            'activeUsers' => $this->user->getActiveUsers(),
+            'inactiveUsers' => $this->user->getInactiveUsers()
         ]);
     }
 
@@ -207,21 +190,21 @@ class UserController extends BaseController
 
                 $user = $this->user->getUserByEmail($email);
                 if (!$user) {
-                    $_SESSION['error_message'] = 'You cannot login, please check your email.';
+                    $_SESSION['error_message'] = 'You cannot login please check your email.';
                     $_SESSION['email_value'] = $email;
                     header('Location: /login');
                     exit();
                 }
 
                 if (!password_verify($password, $user['password'])) {
-                    $_SESSION['error_message'] = 'You cannot login, please check your password.';
+                    $_SESSION['error_message'] = 'You cannot login please check your password.';
                     $_SESSION['email_value'] = $email;
                     header('Location: /login');
                     exit();
                 }
 
-                if (isset($user['status']) && $user['status'] == 0) {
-                    $_SESSION['error_message'] = 'Your account is inactive. Please contact an administrator.';
+                if (isset($user['locked']) && $user['locked']) {
+                    $_SESSION['error_message'] = 'account_locked';
                     header('Location: /login');
                     exit();
                 }
@@ -233,6 +216,8 @@ class UserController extends BaseController
                 $_SESSION['email'] = $user['email'];
                 $_SESSION['phone'] = $user['phone'];
                 $_SESSION['success'] = 'Login successful! Welcome, ' . $user['first_name'] . '!';
+                
+                $this->user->updateLastActivity($user['user_id']);
 
                 header("Location: /dashboard");
                 exit();
@@ -259,3 +244,4 @@ class UserController extends BaseController
         $this->redirect("/");
     }
 }
+?>
