@@ -63,6 +63,7 @@
     <link rel="stylesheet" href="views/assets/css/animate.css">
     <link rel="stylesheet" href="views/assets/plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="views/assets/css/dataTables.bootstrap4.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <!-- <link rel="stylesheet" href="views/assets/css/style.css"> -->
   </head>
   <!--end::Head-->

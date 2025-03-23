@@ -12,8 +12,33 @@ class UserController extends BaseController
 
     public function user()
     {
-        $users = $this->user->getUsers();
-        $this->view('users/user', ['users' => $users]);
+        $perPage = 10;
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $searchQuery = isset($_GET['search']) ? $_GET['search'] : '';
+
+        if ($searchQuery) {
+            $users = $this->user->searchUsers($searchQuery, $page, $perPage);
+            $totalUsers = $this->user->getSearchUsersCount($searchQuery);
+        } else {
+            $users = $this->user->getUsers($page, $perPage);
+            $totalUsers = $this->user->getTotalUsers();
+        }
+
+        $totalPages = ceil($totalUsers / $perPage);
+        $totalActiveUsers = $this->user->getActiveUsers();
+        $totalInactiveUsers = $this->user->getInactiveUsers();
+        $totalAdminUsers = $this->user->getAdminUsers();
+
+        $this->view('users/user', [
+            'users' => $users,
+            'totalUsers' => $totalUsers,
+            'totalActiveUsers' => $totalActiveUsers,
+            'totalInactiveUsers' => $totalInactiveUsers,
+            'totalAdminUsers' => $totalAdminUsers,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
+            'searchQuery' => $searchQuery
+        ]);
     }
 
     public function create()
@@ -32,7 +57,9 @@ class UserController extends BaseController
                     exit();
                 }
             }
-            
+
+            $status = isset($_POST['status']) ? (int)$_POST['status'] : 1; // Default to active
+
             $this->user->addUser(
                 $_POST['first_name'],
                 $_POST['last_name'],
@@ -40,7 +67,8 @@ class UserController extends BaseController
                 $_POST['password'],
                 $_POST['role'],
                 $_POST['phone'],
-                $image
+                $image,
+                $status
             );
             header("Location: /users");
             exit();
@@ -51,7 +79,6 @@ class UserController extends BaseController
     {
         $user = $this->user->getUserById($user_id);
         if (!$user) {
-            // Handle case where user is not found
             header("Location: /users?error=User not found");
             exit();
         }
@@ -69,7 +96,9 @@ class UserController extends BaseController
                     exit();
                 }
             }
-            
+
+            $status = isset($_POST['status']) ? (int)$_POST['status'] : null;
+
             $this->user->updateUser(
                 $user_id,
                 $_POST['first_name'],
@@ -78,7 +107,8 @@ class UserController extends BaseController
                 $_POST['password'],
                 $_POST['role'],
                 $_POST['phone'],
-                $image
+                $image,
+                $status
             );
             header("Location: /users");
             exit();
@@ -102,8 +132,26 @@ class UserController extends BaseController
     public function search()
     {
         $query = isset($_GET['search']) ? $_GET['search'] : '';
-        $users = $this->user->searchUsers($query);
-        $this->view('users/user', ['users' => $users, 'searchQuery' => $query]);
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $perPage = 10;
+
+        $users = $this->user->searchUsers($query, $page, $perPage);
+        $totalUsers = $this->user->getSearchUsersCount($query);
+        $totalPages = ceil($totalUsers / $perPage);
+        $totalActiveUsers = $this->user->getActiveUsers();
+        $totalInactiveUsers = $this->user->getInactiveUsers();
+        $totalAdminUsers = $this->user->getAdminUsers();
+
+        $this->view('users/user', [
+            'users' => $users,
+            'totalUsers' => $totalUsers,
+            'totalActiveUsers' => $totalActiveUsers,
+            'totalInactiveUsers' => $totalInactiveUsers,
+            'totalAdminUsers' => $totalAdminUsers,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
+            'searchQuery' => $query
+        ]);
     }
 
     private function handleImageUpload($file)
@@ -133,15 +181,12 @@ class UserController extends BaseController
         return false;
     }
 
-
-
-public function authenticate()
+    public function authenticate()
     {
         session_start();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
-                // Input validation
                 $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
                 $password = trim($_POST['password'] ?? '');
 
@@ -160,31 +205,27 @@ public function authenticate()
                     exit();
                 }
 
-                // Get user by email
                 $user = $this->user->getUserByEmail($email);
                 if (!$user) {
-                    $_SESSION['error_message'] = 'You cannot loggin please check your email.';
+                    $_SESSION['error_message'] = 'You cannot login, please check your email.';
                     $_SESSION['email_value'] = $email;
                     header('Location: /login');
                     exit();
                 }
 
-                // Verify password
                 if (!password_verify($password, $user['password'])) {
-                    $_SESSION['error_message'] = 'You cannot loggin please check your password.';
+                    $_SESSION['error_message'] = 'You cannot login, please check your password.';
                     $_SESSION['email_value'] = $email;
                     header('Location: /login');
                     exit();
                 }
 
-                // Check if account is locked (if you have this feature)
-                if (isset($user['locked']) && $user['locked']) {
-                    $_SESSION['error_message'] = 'account_locked';
+                if (isset($user['status']) && $user['status'] == 0) {
+                    $_SESSION['error_message'] = 'Your account is inactive. Please contact an administrator.';
                     header('Location: /login');
                     exit();
                 }
 
-                // Successful login
                 $_SESSION['user_id'] = $user['user_id'];
                 $_SESSION['first_name'] = $user['first_name'];
                 $_SESSION['last_name'] = $user['last_name'];
@@ -209,13 +250,12 @@ public function authenticate()
         }
     }
 
-public function logout()
-{
-    session_start();
-    session_unset();
-    session_destroy();
-    $_SESSION['success'] = 'Logged out successfully';
-    $this->redirect("/");
-}
-
+    public function logout()
+    {
+        session_start();
+        session_unset();
+        session_destroy();
+        $_SESSION['success'] = 'Logged out successfully';
+        $this->redirect("/");
+    }
 }

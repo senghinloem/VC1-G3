@@ -35,7 +35,17 @@ class Database
     public function query($sql, $params = [])
     {
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($params);
+
+        // Bind parameters with the correct type
+        foreach ($params as $key => $value) {
+            if (is_int($value)) {
+                $stmt->bindValue($key, $value, PDO::PARAM_INT);
+            } else {
+                $stmt->bindValue($key, $value, PDO::PARAM_STR);
+            }
+        }
+
+        $stmt->execute();
         return $stmt;
     }
 
