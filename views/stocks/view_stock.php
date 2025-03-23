@@ -1,48 +1,134 @@
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div class="input-group w-50">
-            <input type="text" class="form-control" placeholder="Search for product...">
-            <button class="btn btn-outline-secondary" type="button">
-                <i class="bi bi-search success"></i>
-            </button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Inventory</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .table thead th {
+      background-color: #f8f9fa;
+    }
+    .btn-success, .btn-danger {
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+    <div class="card">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-bordered mb-0">
+            <thead class="bg-light">
+              <tr>
+                <th class="text-center">Id</th>
+                <th class="text-center">Items</th>
+                <th class="text-center">Quantity</th>
+                <th class="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center">1</td>
+                <td class="text-center">Plastic plate</td>
+                <td class="text-center">100</td>
+                <td class="text-center">
+                  <div class="d-flex justify-content-center gap-2">
+                    <button class="btn btn-success" style="width: 40px; height: 40px; padding: 0;">
+                      <span style="font-size: 20px; line-height: 1;">+</span>
+                    </button>
+                    <button class="btn btn-danger" style="width: 40px; height: 40px; padding: 0;">
+                      <span style="font-size: 20px; line-height: 1;">-</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="text-center">2</td>
+                <td class="text-center">Plastic plate</td>
+                <td class="text-center">100</td>
+                <td class="text-center">
+                  <div class="d-flex justify-content-center gap-2">
+                    <button class="btn btn-success" style="width: 40px; height: 40px; padding: 0;">
+                      <span style="font-size: 20px; line-height: 1;">+</span>
+                    </button>
+                    <button class="btn btn-danger" style="width: 40px; height: 40px; padding: 0;">
+                      <span style="font-size: 20px; line-height: 1;">-</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="text-center">3</td>
+                <td class="text-center">Plastic plate</td>
+                <td class="text-center">100</td>
+                <td class="text-center">
+                  <div class="d-flex justify-content-center gap-2">
+                    <button class="btn btn-success" style="width: 40px; height: 40px; padding: 0;">
+                      <span style="font-size: 20px; line-height: 1;">+</span>
+                    </button>
+                    <button class="btn btn-danger" style="width: 40px; height: 40px; padding: 0;">
+                      <span style="font-size: 20px; line-height: 1;">-</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="text-center">4</td>
+                <td class="text-center">Plastic plate</td>
+                <td class="text-center">100</td>
+                <td class="text-center">
+                  <div class="d-flex justify-content-center gap-2">
+                    <button class="btn btn-success" style="width: 40px; height: 40px; padding: 0;">
+                      <span style="font-size: 20px; line-height: 1;">+</span>
+                    </button>
+                    <button class="btn btn-danger" style="width: 40px; height: 40px; padding: 0;">
+                      <span style="font-size: 20px; line-height: 1;">-</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="text-center">5</td>
+                <td class="text-center">Plastic plate</td>
+                <td class="text-center">100</td>
+                <td class="text-center">
+                  <div class="d-flex justify-content-center gap-2">
+                    <button class="btn btn-success" style="width: 40px; height: 40px; padding: 0;">
+                      <span style="font-size: 20px; line-height: 1;">+</span>
+                    </button>
+                    <button class="btn btn-danger" style="width: 40px; height: 40px; padding: 0;">
+                      <span style="font-size: 20px; line-height: 1;">-</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="text-center">6</td>
+                <td class="text-center">Plastic plate</td>
+                <td class="text-center">100</td>
+                <td class="text-center">
+                  <div class="d-flex justify-content-center gap-2">
+                    <button class="btn btn-success" style="width: 40px; height: 40px; padding: 0;">
+                      <span style="font-size: 20px; line-height: 1;">+</span>
+                    </button>
+                    <button class="btn btn-danger" style="width: 40px; height: 40px; padding: 0;">
+                      <span style="font-size: 20px; line-height: 1;">-</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <a href="/stock/create" class="btn btn-primary">Add Product</a>
+      </div>
     </div>
+  </div>
 
-    <div class="row g-3 mt-5">
-        <div class="col-md-6">
-            <h4 class="text-primary">Stock has product</h4>
-            <div class="table-responsive" style="height: calc(100vh - 150px); overflow-y: auto;">
-                <table class="table table-bordered table-hover mt-4">
-                    <thead class="table-light" style="position: sticky; top: 0; z-index: 10;">
-                        <tr>
-                            <th>Id</th>
-                            <th>Stock Name</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (isset($stock_management) && !empty($stock_management)): ?>
-                            <?php foreach ($stock_management as $item): ?>
-                                <tr>
-                                    <td><?= htmlspecialchars($item['stock_id']) ?></td>
-                                    <td><?= htmlspecialchars($item['stock_name']) ?></td>
-                                    <td>
-                                        <a href="/stock/view/<?= htmlspecialchars($item['stock_id']) ?>" class="btn-sm">View</a>
-                                        <a href="/stock/create" class="btn btn-success btn-sm ms-3">Add</a>
-                                        <a href="/stock/edit/<?= htmlspecialchars($item['stock_id']) ?>" class="btn btn-warning btn-sm ms-3">Edit</a>
-                                        <a href="/stock/destroy/<?= htmlspecialchars($item['stock_id']) ?>" class="btn btn-danger btn-sm ms-3">Delete</a>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <tr>
-                                <td colspan="3" class="text-center">No products available.</td>
-                            </tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
+  <!-- Bootstrap JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

@@ -1,4 +1,5 @@
 <?php
+
 require_once "Models/StockModel.php";
 
 class StockController extends BaseController
@@ -10,23 +11,24 @@ class StockController extends BaseController
         $this->stockModel = new StockModel();
     }
 
-    // Fetch and pass stock data to the view
     public function stock()
     {
-        // Fetch stock data
         $stock_management = $this->stockModel->getStock();
-    
-        // Debugging: Check if data is retrieved properly
-        // var_dump($stock_management);
-    
-        // Pass the stock data to the view
-        $this->view('stocks/view_stock', ['stock_management' => $stock_management]);
+
+        // Debugging to confirm data is fetched
+        if (empty($stock_management)) {
+            echo "No data found!";
+            exit();
+        }
+
+        $this->view("stocks/stock", ["stock_management" => $stock_management]);
     }
-    
-    // View a specific stock item
-    public function details($stock_id)
+
+
+    public function view_stock($stock_id)
     {
         $stock = $this->stockModel->getStockById($stock_id);
+
         if ($stock) {
             $this->view('stocks/view_stock', ['stock' => $stock]);
         } else {
@@ -34,16 +36,11 @@ class StockController extends BaseController
         }
     }
 
-
-   
-
-    // Show create stock form
     public function create_stock()
     {
         $this->view("stocks/create_stock");
     }
 
-    // Show edit form for a stock item
     public function edit($stock_id)
     {
         $stock = $this->stockModel->getStockById($stock_id);
@@ -54,7 +51,6 @@ class StockController extends BaseController
         }
     }
 
-    // Save a new stock item
     public function store()
     {
         if (!isset($_POST['stock_name']) || empty(trim($_POST['stock_name']))) {
@@ -77,7 +73,6 @@ class StockController extends BaseController
         }
     }
 
-    // Update an existing stock item
     public function update($stock_id)
     {
         if (!isset($_POST['stock_name']) || empty(trim($_POST['stock_name']))) {
@@ -92,14 +87,10 @@ class StockController extends BaseController
         exit();
     }
 
-    // Delete a stock item
     public function destroy($stock_id)
     {
         $this->stockModel->deleteStock($stock_id);
         header("Location: /stock");
         exit();
     }
-
-    
 }
-?>

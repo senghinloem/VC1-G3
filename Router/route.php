@@ -37,7 +37,7 @@ $route->delete("/products/destroy/{product_id}", [ProductController::class, 'del
 // stock routes
 $route->get("/stock", [StockController::class, 'stock']);
 $route->get("/stock/create", [StockController::class, 'create_stock']);
-$route->get("/stock/view/{stock_id}", [StockController::class, 'details']);
+$route->get("/stock/view/{stock_id}", [StockController::class, 'view_stock']);
 $route->post("/stock/store", [StockController::class, 'store']);
 $route->get("/stock/edit/{stock_id}", [StockController::class, 'edit']);
 $route->put("/stock/update/{stock_id}", [StockController::class, 'update']);
@@ -62,6 +62,7 @@ $route->get("/supplier/edit/{supplier_id}", [SupplierController::class, 'edit'])
 $route->get("/supplier/detail/{supplier_id}", [SupplierController::class, 'detail']);
 $route->post("/supplier/update/{supplier_id}", [SupplierController::class, 'update']); // Changed PUT to POST
 $route->delete("/supplier/destroy/{supplier_id}", [SupplierController::class, 'destroy']);
+
 
 // login and register
 $route->get("/login", [LoginRegisterController::class, 'login']);

@@ -67,7 +67,7 @@
                                     <td><?= htmlspecialchars($item['stock_name']) ?></td>
                                     <td>
                                         <a href="/stock/view_stock/<?= htmlspecialchars($item['stock_id']) ?>" class="btn-sm">View</a>
-                                        <a href="/stock/create" <?= htmlspecialchars($item['stock_id']) ?> class="btn btn-success btn-sm ms-3">Add</a>
+                                        <a href="/stock/create" class="btn btn-success btn-sm ms-3">Add</a>
                                         <a href="/stock/edit/<?= htmlspecialchars($item['stock_id']) ?>" class="btn btn-warning btn-sm ms-3">Edit</a>
                                         <a href="/stock/destroy/<?= htmlspecialchars($item['stock_id']) ?>" class="btn btn-danger btn-sm ms-3">Delete</a>
                                     </td>
