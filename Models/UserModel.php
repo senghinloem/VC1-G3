@@ -6,7 +6,7 @@ class UserModel
     public function __construct()
     {
         try {
-            $this->db = new Database("localhost", "vc1_db", "root", "");
+            $this->db = new Database("localhost", "vc1_db", "root", ""); // Adjust credentials
         } catch (Exception $e) {
             die("Database connection failed: " . $e->getMessage());
         }
@@ -34,30 +34,6 @@ class UserModel
         }
     }
 
-    public function addUser($first_name, $last_name, $email, $password, $role, $phone, $image = null)
-    {
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        try {
-            $this->db->query(
-                "INSERT INTO users (first_name, last_name, email, password, role, phone, image, last_activity) 
-                 VALUES (:first_name, :last_name, :email, :password, :role, :phone, :image, NOW())",
-                [
-                    ':first_name' => $first_name,
-                    ':last_name' => $last_name,
-                    ':email' => $email,
-                    ':password' => $hashedPassword,
-                    ':role' => $role,
-                    ':phone' => $phone,
-                    ':image' => $image
-                ]
-            );
-            return true;
-        } catch (PDOException $e) {
-            error_log("Error adding user: " . $e->getMessage());
-            return false;
-        }
-    }
-
     public function updateUser($user_id, $first_name, $last_name, $email, $password, $role, $phone, $image = null)
     {
         try {
@@ -65,8 +41,8 @@ class UserModel
                 ':user_id' => $user_id,
                 ':first_name' => $first_name,
                 ':last_name' => $last_name,
-                ':email' => $email,
-                ':password' => $password,
+                ':email' => strtolower($email),
+                ':password' => password_hash($password, PASSWORD_DEFAULT),
                 ':role' => $role,
                 ':phone' => $phone
             ];
@@ -114,17 +90,6 @@ class UserModel
         } catch (Exception $e) {
             error_log("Error in searchUsers: " . $e->getMessage());
             return [];
-        }
-    }
-
-    public function getUserByEmail($email)
-    {
-        try {
-            $result = $this->db->query("SELECT * FROM users WHERE email = :email", [':email' => $email]);
-            return $result->fetch(PDO::FETCH_ASSOC);
-        } catch (Exception $e) {
-            error_log("Error in getUserByEmail: " . $e->getMessage());
-            return false;
         }
     }
 
@@ -180,6 +145,49 @@ class UserModel
             return true;
         } catch (Exception $e) {
             error_log("Error in updateLastActivity: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function addUser($first_name, $last_name, $email, $password, $role, $phone, $image = null)
+    {
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        if ($hashedPassword === false) {
+            throw new Exception("Failed to hash password");
+        }
+        try {
+            $this->db->query(
+                "INSERT INTO users (first_name, last_name, email, password, role, phone, image, last_activity) 
+                 VALUES (:first_name, :last_name, :email, :password, :role, :phone, :image, NOW())",
+                [
+                    ':first_name' => $first_name,
+                    ':last_name' => $last_name,
+                    ':email' => strtolower($email),
+                    ':password' => $hashedPassword,
+                    ':role' => $role,
+                    ':phone' => $phone,
+                    ':image' => $image
+                ]
+            );
+            error_log("User added: $email with hashed password: $hashedPassword");
+            return true;
+        } catch (PDOException $e) {
+            if ($e->getCode() == '23000') {
+                error_log("Duplicate email error: $email - " . $e->getMessage());
+                throw new Exception("Email already exists in the database.");
+            }
+            error_log("Error adding user: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    public function getUserByEmail($email)
+    {
+        try {
+            $result = $this->db->query("SELECT * FROM users WHERE LOWER(email) = :email", [':email' => strtolower($email)]);
+            return $result->fetch(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            error_log("Error in getUserByEmail: " . $e->getMessage());
             return false;
         }
     }
