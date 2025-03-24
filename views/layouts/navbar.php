@@ -146,6 +146,8 @@ if (session_status() == PHP_SESSION_NONE) {
         <div class="sidebar-brand text-center py-3">
           <a href="#" class="brand-link text-white fw-bold fs-5">PNN SHOP</a>
         </div>
+
+
         <div class="sidebar-wrapper">
           <nav class="mt-3">
             <p class="text-secondary text-uppercase fw-semibold px-3 small" ,>Navigations</p>
