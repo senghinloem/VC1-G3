@@ -25,6 +25,7 @@ class StockController extends BaseController
     }
 
 
+
     public function view_stock($stock_id)
     {
         $stock = $this->stockModel->getStockById($stock_id);
@@ -38,7 +39,8 @@ class StockController extends BaseController
 
     public function create_stock()
     {
-        $this->view("stocks/create_stock");
+        $status = isset($_GET['status']) ? $_GET['status'] : 'in_stock';
+        $this->view("stocks/create_stock", ['status' => $status]);
     }
 
     public function edit($stock_id)
@@ -60,9 +62,12 @@ class StockController extends BaseController
         }
 
         $stock_name = trim($_POST['stock_name']);
+        $quantity = isset($_POST['quantity']) ? $_POST['quantity'] : 0;
+        $status = ($quantity > 0) ? 'in_stock' : 'out_of_stock';
 
         try {
-            $this->stockModel->addStock($stock_name);
+            // Pass both stock_name and status to the addStock method
+            $this->stockModel->addStock($stock_name, $status);
             header("Location: /stock");
             exit();
         } catch (PDOException $e) {
@@ -104,26 +109,25 @@ class StockController extends BaseController
             // If no search term, show all stock
             $stocks = $this->stockModel->getStock();
         }
-    
+
         // Render the view with the stock data
         $this->view('stocks/stock_list', ['stocks' => $stocks]);
     }
-    
+
 
     // Method for filtering stock by status (In Stock / Out of Stock)
     public function filterByStockStatus($status)
-{
-    // Validate the status parameter ('in_stock' or 'out_of_stock')
-    if ($status === 'in_stock' || $status === 'out_of_stock') {
-        // Call the model method to filter stocks by the status
-        $stocks = $this->stockModel->searchByStockStatus($status);
-    } else {
-        // If status is invalid, show all stock
-        $stocks = $this->stockModel->getStock();
+    {
+        // Validate the status parameter ('in_stock' or 'out_of_stock')
+        if ($status === 'in_stock' || $status === 'out_of_stock') {
+            // Call the model method to filter stocks by the status
+            $stocks = $this->stockModel->searchByStockStatus($status);
+        } else {
+            // If status is invalid, show all stock
+            $stocks = $this->stockModel->getStock();
+        }
+
+        // Render the view with filtered stock data
+        $this->view('stocks/stock_list', ['stocks' => $stocks]);
     }
-
-    // Render the view with filtered stock data
-    $this->view('stocks/stock_list', ['stocks' => $stocks]);
-}
-
 }

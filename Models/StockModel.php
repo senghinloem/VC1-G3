@@ -11,13 +11,15 @@ class StockModel
     public function getStock()
     {
         try {
-            $result = $this->db->query("SELECT * FROM stock_management");
+            // Fetch stock ordered by stock_id in descending order
+            $result = $this->db->query("SELECT * FROM stock_management ORDER BY stock_id DESC");
             return $result->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             error_log("Error fetching stock: " . $e->getMessage());
             return [];
         }
     }
+
 
     public function view_stock($stock_id)
     {
@@ -36,13 +38,15 @@ class StockModel
         }
     }
 
-    public function addStock($stock_name)
+    public function addStock($stock_name, $status)
     {
-        $sql = "INSERT INTO stock_management (stock_name) VALUES (:stock_name)";
+        $sql = "INSERT INTO stock_management (stock_name, status) VALUES (:stock_name, :status)";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':stock_name', $stock_name, PDO::PARAM_STR);
+        $stmt->bindParam(':status', $status, PDO::PARAM_STR);  // Binding the status value
         return $stmt->execute();
     }
+
 
     public function updateStock($stock_id, $stock_name)
     {

@@ -19,7 +19,8 @@
                         <tr>
                             <th>Id</th>
                             <th>Stock Name</th>
-                            <th>Action</th>
+                            <th>Quantity</th>
+                            <th>Action</th> <!-- Added Action column -->
                         </tr>
                     </thead>
                     <tbody>
@@ -28,10 +29,10 @@
                                 <tr>
                                     <td><?= htmlspecialchars($item['stock_id']) ?></td>
                                     <td><?= htmlspecialchars($item['stock_name']) ?></td>
+                                    <td><?= htmlspecialchars($item['quantity']) ?></td> <!-- Added quantity here -->
                                     <td>
-                                        <a href="/stock/view/<?= htmlspecialchars($item['stock_id']) ?>" class=" btn-sm">View</a>
-                                        <!-- <a href="/stock/create<?= htmlspecialchars($item['stock_id']) ?>" class="btn btn-success btn-sm ms-3">Add</a> -->
-                                        <a href="/stock/create" <?= htmlspecialchars($item['stock_id']) ?> class="btn btn-success btn-sm ms-3">Add</a>
+                                        <a href="/stock/view/<?= htmlspecialchars($item['stock_id']) ?>" class="btn-sm">View</a>
+                                        <a href="/stock/create?status=in_stock" class="btn btn-success btn-sm ms-3">Add</a>
                                         <a href="/stock/edit/<?= htmlspecialchars($item['stock_id']) ?>" class="btn btn-warning btn-sm ms-3">Edit</a>
                                         <a href="/stock/destroy/<?= htmlspecialchars($item['stock_id']) ?>" class="btn btn-danger btn-sm ms-3">Delete</a>
                                     </td>
@@ -39,7 +40,7 @@
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="3" class="text-center">No products available.</td>
+                                <td colspan="4" class="text-center">No products available.</td> <!-- Updated colspan to 4 -->
                             </tr>
                         <?php endif; ?>
                     </tbody>
@@ -56,7 +57,8 @@
                         <tr>
                             <th>Id</th>
                             <th>Stock Name</th>
-                            <th>Action</th>
+                            <th>Quantity</th>
+                            <th>Action</th> <!-- Added Action column -->
                         </tr>
                     </thead>
                     <tbody>
@@ -65,9 +67,10 @@
                                 <tr>
                                     <td><?= htmlspecialchars($item['stock_id']) ?></td>
                                     <td><?= htmlspecialchars($item['stock_name']) ?></td>
+                                    <td><?= htmlspecialchars($item['quantity']) ?></td> <!-- Added quantity here -->
                                     <td>
                                         <a href="/stock/view_stock/<?= htmlspecialchars($item['stock_id']) ?>" class="btn-sm">View</a>
-                                        <a href="/stock/create" class="btn btn-success btn-sm ms-3">Add</a>
+                                        <a href="/stock/create?status=out_of_stock" class="btn btn-success btn-sm ms-3">Add</a>
                                         <a href="/stock/edit/<?= htmlspecialchars($item['stock_id']) ?>" class="btn btn-warning btn-sm ms-3">Edit</a>
                                         <a href="/stock/destroy/<?= htmlspecialchars($item['stock_id']) ?>" class="btn btn-danger btn-sm ms-3">Delete</a>
                                     </td>
@@ -75,7 +78,7 @@
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="3" class="text-center">No products available.</td>
+                                <td colspan="4" class="text-center">No products available.</td> <!-- Updated colspan to 4 -->
                             </tr>
                         <?php endif; ?>
                     </tbody>
