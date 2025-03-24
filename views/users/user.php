@@ -55,7 +55,7 @@ if (!isset($_SESSION['user_id'])) {
     <div class="col-md-3 col-6 mb-3">
         <div class="stat-card total-delivered">
             <h3><?= number_format($activeUsers ?? 0) ?></h3>
-            <p>Online Users</p>
+            <p>Online Users</p>  
         </div>
     </div>
     <div class="col-md-3 col-6 mb-3">
