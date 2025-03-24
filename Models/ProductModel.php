@@ -18,7 +18,7 @@ class ProductModel
     public function getProductListById($product_id)
 
     {
-        $result = $this->db->query("SELECT * FROM $product_list WHERE product_id = :product_id", ['product_id'=>$product_id]);
+        $result = $this->db->query("SELECT * FROM products WHERE product_id = :product_id", ['product_id'=>$product_id]);
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 
