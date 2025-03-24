@@ -1,11 +1,15 @@
 <?php
 session_start();
+
 if (isset($_SESSION['user_id'])) {
     header("Location: /dashboard");
     exit();
 }
-?>
 
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,130 +22,154 @@ if (isset($_SESSION['user_id'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         body {
-            background: #f5f7fa;
+            background: linear-gradient(135deg, #5a7cff, #9b59b6);
             font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
             margin: 0;
             height: 100vh;
-        }
-
-        /* Main container */
-        .main-container {
-            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            overflow: hidden;
+            position: relative;
         }
 
-        /* Logo placeholder */
-        .logo-placeholder {
+        /* Background Animation */
+        body::before {
+            content: '';
             position: absolute;
-            top: 20px;
-            left: 20px;
-            width: 40px;
-            height: 40px;
-            background: #00d4ff;
-            border-radius: 5px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent);
+            animation: pulse 15s infinite;
+            z-index: 0;
         }
 
-        /* Register card styling */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 0.2; }
+            100% { transform: scale(1); opacity: 0.5; }
+        }
+
+        .main-container {
+            z-index: 1;
+            width: 100%;
+            padding: 15px; /* Reduced padding */
+        }
+
         .register-card {
             width: 100%;
-            max-width: 400px;
-            padding: 30px;
-            border-radius: 15px;
-            background: #ffffff;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-            animation: fadeIn 1s ease-in-out;
+            max-width: 500px; /* Reduced max-width */
+            padding: 25px; /* Reduced padding */
+            border-radius: 20px; /* Slightly smaller border-radius */
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* Reduced shadow */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
+        .register-card:hover {
+            transform: translateY(-3px); /* Reduced hover lift */
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
         }
 
-        .register-card h2 {
-            font-size: 24px;
+        h2 {
+            font-size: 1.6rem; /* Reduced font size */
             font-weight: 600;
-            color: #1a252f;
-            margin-bottom: 10px;
+            color: #2c3e50;
+            margin-bottom: 5px; /* Reduced margin */
+            text-align: center;
         }
 
-        .register-card .subtitle {
-            font-size: 14px;
-            color: #6c757d;
-            margin-bottom: 20px;
+        .subtitle {
+            font-size: 0.9rem; /* Reduced font size */
+            color: #7f8c8d;
+            text-align: center;
+            margin-bottom: 15px; /* Reduced margin */
         }
 
-        /* Form field styling */
         .form-label {
-            font-size: 14px;
             font-weight: 500;
-            color: #1a252f;
+            color: #34495e;
+            font-size: 0.9rem; /* Reduced font size */
+            margin-bottom: 3px; /* Reduced margin */
         }
 
         .form-control {
-            border-radius: 5px;
-            padding: 10px;
-            font-size: 14px;
-            border: 1px solid #e0e0e0;
-            background: #f8f9fa;
+            border-radius: 8px; /* Slightly smaller border-radius */
+            border: 1px solid #dcdcdc;
+            padding: 8px; /* Reduced padding */
+            font-size: 0.9rem; /* Reduced font size */
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            height: 38px; /* Reduced height */
         }
 
         .form-control:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 6px rgba(0, 123, 255, 0.2);
+            border-color: #6e8efb;
+            box-shadow: 0 0 6px rgba(110, 142, 251, 0.3); /* Reduced shadow */
+            outline: none;
         }
 
-        .form-text {
-            font-size: 12px;
-            color: #6c757d;
-        }
-
-        .form-check-label {
-            font-size: 14px;
-            color: #6c757d;
-        }
-
-        /* Register button */
         .btn-register {
-            background: #2c3e50;
+            background: linear-gradient(90deg, #6e8efb, #a777e3);
             border: none;
-            border-radius: 5px;
-            padding: 10px;
-            font-size: 16px;
+            border-radius: 10px; /* Slightly smaller border-radius */
+            padding: 10px; /* Reduced padding */
+            font-size: 1rem; /* Reduced font size */
             font-weight: 500;
+            color: #fff;
             width: 100%;
-            color: #ffffff;
-            transition: background 0.3s ease, transform 0.2s ease;
+            transition: transform 0.3s ease, background 0.3s ease;
         }
 
         .btn-register:hover {
-            background: #1a252f;
             transform: scale(1.02);
+            background: linear-gradient(90deg, #5a7cff, #9b59b6);
         }
 
-        /* Login link */
+        .alert {
+            border-radius: 8px; /* Slightly smaller border-radius */
+            margin-bottom: 10px; /* Reduced margin */
+            font-size: 0.8rem; /* Reduced font size */
+        }
+
+        .password-toggle {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px; /* Adjusted for smaller input */
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #7f8c8d;
+            font-size: 0.9rem; /* Reduced icon size */
+            transition: color 0.3s ease;
+        }
+
+        .toggle-password:hover {
+            color: #34495e;
+        }
+
+        .form-check-label, .login-link {
+            font-size: 0.85rem; /* Reduced font size */
+            color: #7f8c8d;
+        }
+
         .login-link {
-            font-size: 14px;
-            color: #007bff;
             text-decoration: none;
             transition: color 0.3s ease;
         }
 
         .login-link:hover {
-            color: #0056b3;
-            text-decoration: underline;
+            color: #6e8efb;
         }
 
-        /* Illustration styling */
         .illustration-col {
-            position: relative;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
         }
 
         .illustration-img {
@@ -152,104 +180,122 @@ if (isset($_SESSION['user_id'])) {
 
         @keyframes float {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
+            50% { transform: translateY(-10px); } /* Reduced float distance */
         }
 
-        /* Success message styling */
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border-color: #c3e6cb;
-        }
-
-        /* Responsive adjustments */
         @media (max-width: 768px) {
+            .register-card {
+                max-width: 100%;
+                padding: 20px; /* Further reduced padding for mobile */
+            }
             .illustration-col {
                 display: none;
             }
-
-            .register-card {
-                max-width: 90%;
+            h2 {
+                font-size: 1.4rem; /* Further reduced font size for mobile */
+            }
+            .btn-register {
+                font-size: 0.9rem; /* Reduced font size for mobile */
+                padding: 8px; /* Reduced padding for mobile */
+            }
+            .row .col-md-6 {
+                width: 100%; /* Stack fields vertically on small screens */
             }
         }
     </style>
 </head>
 <body>
-    <!-- Logo placeholder -->
-    <div class="logo-placeholder"></div>
-
     <div class="main-container">
         <div class="container">
             <div class="row align-items-center">
-                <!-- Left column: Illustration -->
                 <div class="col-md-6 illustration-col">
-                    <img src="views/assets/images/login.png" alt="Growth Illustration" class="illustration-img" style="max-width: 600px;">
+                    <img src="views/assets/images/login.png" alt="Growth Illustration" class="illustration-img">
                 </div>
 
-                <!-- Right column: Register form -->
                 <div class="col-md-6">
                     <div class="register-card">
-                        <h2>Register</h2>
+                        <h2>Create Account</h2>
                         <p class="subtitle">Manage all your inventory efficiently</p>
 
-                        <!-- Success Alert -->
                         <?php if (isset($_SESSION['success'])): ?>
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                <?= $_SESSION['success']; ?>
+                                <?= htmlspecialchars($_SESSION['success']); ?>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                             <?php unset($_SESSION['success']); ?>
-                        <?php endif; ?>
-
-                        <!-- Error Alert -->
-                        <?php if (isset($_SESSION['error_message'])): ?>
+                        <?php elseif (isset($_SESSION['error_message'])): ?>
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <?= $_SESSION['error_message']; ?>
+                                <?= htmlspecialchars($_SESSION['error_message']); ?>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                             <?php unset($_SESSION['error_message']); ?>
                         <?php endif; ?>
 
-                        <!-- Register form -->
-                        <form action="/users/store" method="POST">
+                        <form id="registerForm" action="/users/store" method="POST" novalidate>
+                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']); ?>">
                             <div class="row">
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-6 mb-2"> <!-- Reduced margin (mb-3 to mb-2) -->
                                     <label class="form-label">First Name <span class="text-danger">*</span></label>
-                                    <input type="text" name="first_name" class="form-control" placeholder="Enter your name" required>
+                                    <input type="text" name="first_name" class="form-control" placeholder="Enter your first name" required>
                                 </div>
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-6 mb-2"> <!-- Reduced margin -->
                                     <label class="form-label">Last Name <span class="text-danger">*</span></label>
-                                    <input type="text" name="last_name" class="form-control" placeholder="Enter your name" required>
+                                    <input type="text" name="last_name" class="form-control" placeholder="Enter your last name" required>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-6 mb-2"> <!-- Reduced margin -->
                                     <label class="form-label">Email <span class="text-danger">*</span></label>
                                     <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
                                 </div>
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-6 mb-2"> <!-- Reduced margin -->
                                     <label class="form-label">Phone No. <span class="text-danger">*</span></label>
-                                    <input type="text" name="phone" class="form-control" placeholder="minimum 8 characters" required>
+                                    <input type="tel" name="phone" class="form-control" placeholder="e.g., 1234567890" required>
                                 </div>
                             </div>
-                            <div class="mb-3">
+                            <div class="mb-2 password-toggle"> <!-- Reduced margin -->
                                 <label class="form-label">Password <span class="text-danger">*</span></label>
-                                <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
+                                <input type="password" name="password" id="password" class="form-control" placeholder="Enter your password" required>
+                                <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+                                <div class="form-text">Enter your password</div>
                             </div>
-                            <!-- Hidden role field (default to 'user') -->
                             <input type="hidden" name="role" value="user">
-                            <div class="mb-3 form-check">
+                            <div class="mb-2 form-check"> <!-- Reduced margin (mb-4 to mb-2) -->
                                 <input type="checkbox" class="form-check-input" id="termsCheck" required>
                                 <label class="form-check-label" for="termsCheck">I agree to all terms, privacy policies, and fees</label>
                             </div>
                             <button type="submit" class="btn btn-register">Sign Up</button>
                         </form>
 
-                
+                        <p class="mt-2 text-center"> <!-- Reduced margin (mt-3 to mt-2) -->
+                            Already have an account? <a href="/login" class="login-link">Sign in</a>
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        const form = document.getElementById('registerForm');
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        });
+
+        const togglePassword = document.querySelector('#togglePassword');
+        const passwordInput = document.querySelector('#password');
+        if (togglePassword && passwordInput) {
+            togglePassword.addEventListener('click', function () {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+        }
+    </script>
 </body>
 </html>
