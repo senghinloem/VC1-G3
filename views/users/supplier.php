@@ -4,12 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Supplier Management</title>
+
+    <!-- Bootstrap Icons (if not already included) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    
+    <!-- Bootstrap CSS (needed for styling) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        /* Make the dropdown menu appear when hovering over the button */
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+    </style>
 </head>
 <body>
+
     <div class="container mt-4" id="supplierListView">
         <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="position-relative w-50">
+                <input type="text" id="searchInput" class="form-control pe-5" placeholder="Search for supplier...">
+                <i class="bi bi-search position-absolute top-50 end-0 translate-middle-y me-3 text-muted"></i>
+            </div>
 
-            <input type="text" id="searchInput" class="form-control w-50" placeholder="Search for supplier...">
             <a href="/supplier/create" class="btn btn-info">+ Create New Supplier</a>
 
         </div>
@@ -18,7 +35,6 @@
         <div class="table-responsive">
             <table class="table table-bordered table-striped">
                 <thead class="table-secondary">
-
                     <tr>
                         <th>Supplier ID</th>
                         <th>Supplier Name</th>
@@ -28,13 +44,10 @@
                         <th>Created At</th>
                         <th>Actions</th>
                     </tr>
-
                 </thead>
                 <tbody>
-
                     <?php if (!empty($suppliers) && is_array($suppliers)): ?>
                         <?php foreach ($suppliers as $supplier): ?>
-
                             <tr>
                                 <td><?= htmlspecialchars($supplier['supplier_id']) ?></td>
                                 <td><?= htmlspecialchars($supplier['supplier_name']) ?></td>
@@ -48,7 +61,7 @@
                                         <button class="btn btn-light border-0 three-dot-btn">
                                             <i class="bi bi-three-dots"></i>
                                         </button>
-                                
+
                                         <!-- Dropdown menu -->
                                         <ul class="dropdown-menu">
                                             <li><a class="dropdown-item" href="/supplier/detail/<?= $supplier['supplier_id']?>">Detail</a></li>
@@ -57,15 +70,7 @@
                                         </ul>
                                     </div>
                                 </td>
-                                <style>
-                                /* Make the dropdown menu appear when hovering over the button */
-                                .dropdown:hover .dropdown-menu {
-                                    display: block;
-                                }
-                                </style>
-                                </td>
                             </tr>
-                            
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </tbody>
@@ -79,14 +84,18 @@
             let rows = document.querySelectorAll("tbody tr");
         
             rows.forEach(row => {
-                let supplierID = row.cells[0].textContent.toLowerCase(); // Get Supplier ID (first column)
-                let fullText = row.textContent.toLowerCase(); // Get all text in the row
-        
-                // Show row if the filter matches Supplier ID or any column
-                row.style.display = supplierID.includes(filter) || fullText.includes(filter) ? "" : "none";
+                let supplierID = row.cells[0].textContent.toLowerCase(); // Supplier ID
+                let supplierName = row.cells[1].textContent.toLowerCase(); // Supplier Name
+                let email = row.cells[2].textContent.toLowerCase(); // Email
+                let phone = row.cells[3].textContent.toLowerCase(); // Phone
+                let address = row.cells[4].textContent.toLowerCase(); // Address
+                let createdAt = row.cells[5].textContent.toLowerCase(); // Created At
+
+                // Show row if any of the columns match the filter
+                row.style.display = supplierID.includes(filter) || supplierName.includes(filter) || email.includes(filter) || phone.includes(filter) || address.includes(filter) || createdAt.includes(filter) ? "" : "none";
             });
         });
     </script>
-        
+
 </body>
 </html>

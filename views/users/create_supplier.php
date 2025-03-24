@@ -64,13 +64,15 @@
                             </div>
 
                             <!-- Button Group (close together) -->
-                            <div class="d-flex gap-2 mt-4">
+                            <div class="d-flex gap-2 mt-4 justify-content-end">
                                 <!-- Cancel Button -->
-                                <a href="/suppliers" class="btn btn-secondary w-40">Cancel</a>
-
+                                <a href="/supplier" class="btn btn-secondary w-40">Cancel</a>
+                                <!-- <a href="/supplier" class="btn btn-primary">Back to Suppliers</a> -->
+                            
                                 <!-- Submit Button -->
                                 <button type="submit" class="btn btn-primary w-40">Create Supplier</button>
                             </div>
+
 
                         </form>
                     </div>
@@ -81,8 +83,6 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 

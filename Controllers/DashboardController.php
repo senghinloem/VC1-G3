@@ -31,17 +31,7 @@ class DashboardController extends BaseController
             'totalPrice' => $totalPrice,
             'totalLowStock' => $totalLowStock,
         ]);
-    }
-
-
-
-    
-    
-    
-    
-
-   
-
+    }   
     
 }
 

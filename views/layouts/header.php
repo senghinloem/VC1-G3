@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css" integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4=" crossorigin="anonymous" />
     
     <!-- Required Plugins -->
-    <link rel="stylesheet" href="/views/assets/css/adminlte.css" />
+    <link rel="stylesheet" href="/views/assets/css/adminlte.css" /> <!-- sidebar css -->
     <link rel="stylesheet" href="views/assets/css/animate.css">
     <link rel="stylesheet" href="views/assets/plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="views/assets/css/dataTables.bootstrap4.min.css">
