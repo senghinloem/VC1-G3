@@ -366,12 +366,12 @@ if (!isset($_SESSION['user_id'])) {
                             <table class="user-table table-borderless">
                                 <thead>
                                     <tr>
-                                        <th>User</th>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
-                                        <th>Email</th>
-                                        <th>Status</th>
-                                        <th class="text-end">Actions</th>
+                                        <th class="text-center">User</th>
+                                        <th class="text-center">First Name</th>
+                                        <th class="text-center">Last Name</th>
+                                        <th class="text-center">Email</th>
+                                        <th class="text-center">Status</th>
+                                        <th class="text-center">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -388,7 +388,7 @@ if (!isset($_SESSION['user_id'])) {
                                     <?php else: ?>
                                         <?php foreach ($users as $user): ?>
                                             <tr>
-                                                <td>
+                                                <td class="text-center">
                                                     <div class="user-avatar">
                                                         <?php if (!empty($user['image'])): ?>
                                                             <img src="/uploads/<?= htmlspecialchars($user['image']) ?>" alt="<?= htmlspecialchars($user['first_name']) ?>">
@@ -397,14 +397,14 @@ if (!isset($_SESSION['user_id'])) {
                                                         <?php endif; ?>
                                                     </div>
                                                 </td>
-                                                <td class="user-name">
+                                                <td class="text-center">
                                                     <div class="fw-semibold"><?= htmlspecialchars($user['first_name']) ?></div>
                                                 </td>
-                                                <td><?= htmlspecialchars($user['last_name']) ?></td>
-                                                <td class="user-email">
-                                                    <div class="text-muted"><?= htmlspecialchars($user['email']) ?></div>
+                                                <td class="text-center"><?= htmlspecialchars($user['last_name']) ?></td>
+                                                <td class="user-email text-center">
+                                                    <div><?= htmlspecialchars($user['email']) ?></div>
                                                 </td>
-                                                <td>
+                                                <td class="text-center">
                                                     <?php
                                                     $isOnline = $user['last_activity'] && 
                                                                (strtotime($user['last_activity']) >= strtotime('-15 minutes'));
@@ -413,7 +413,7 @@ if (!isset($_SESSION['user_id'])) {
                                                         <?= htmlspecialchars($isOnline ? 'Online' : 'Offline') ?>
                                                     </span>
                                                 </td>
-                                                <td class="text-end">
+                                                <td class="text-center">
                                                     <button class="action-btn" type="button" 
                                                             data-bs-toggle="dropdown" 
                                                             aria-expanded="false"
