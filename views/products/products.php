@@ -92,9 +92,8 @@ document.getElementById('searchInput').addEventListener('input', function() {
     });
 });
 
-
 document.getElementById('importProductsButton').addEventListener('click', function() {
-    document.getElementById('excelFileInput').click(); 
+    document.getElementById('excelFileInput').click();
 });
 
 document.getElementById('excelFileInput').addEventListener('change', function(event) {
@@ -106,36 +105,39 @@ document.getElementById('excelFileInput').addEventListener('change', function(ev
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: 'array' });
 
-        
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
 
-        
         const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-        
-        const tableBody = document.getElementById('productTableBody');
-        jsonData.slice(1).forEach(row => { 
-            const newRow = document.createElement('tr');
+        // Convert JSON data to an array of objects
+        const formattedData = jsonData.slice(1).map(row => ({
+            image: row[0] || "", 
+            name: row[1] || "",
+            description: row[2] || "",
+            price: parseFloat(row[3]) || 0,
+            unit: row[4] || "",
+            quantity: parseInt(row[5]) || 0
+        }));
 
-            
-            const columns = [
-                `<td><img src="${row[0]}" alt="${row[1]}" style="width: 100px; height: 100px;"></td>`, 
-                `<td>${row[1]}</td>`, 
-                `<td>${row[2]}</td>`, 
-                `<td>${row[3]}</td>`, 
-                `<td>${row[4]}</td>`, 
-                `<td>${row[5]}</td>`, 
-                `<td><a href="" class="btn btn-primary">ADD</a></td>`, 
-                `<td><a href="/products/destroy/${row[6]}" class="btn btn-danger">Delete</a></td>` 
-            ];
-
-            columns.forEach(column => {
-                newRow.innerHTML += column;
-            });
-
-            tableBody.appendChild(newRow);
-        });
+        // Send data to the backend
+        fetch('/products/import', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ products: formattedData })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Products imported successfully!");
+                location.reload();
+            } else {
+                alert("Failed to import products.");
+            }
+        })
+        .catch(error => console.error('Error:', error));
     };
 
     reader.readAsArrayBuffer(file);
