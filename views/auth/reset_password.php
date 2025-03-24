@@ -1,5 +1,4 @@
 <?php
-
 if (!isset($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
@@ -7,7 +6,7 @@ if (!isset($_SESSION['csrf_token'])) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Login</title>
+    <title>Reset Password</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
@@ -141,44 +140,21 @@ if (!isset($_SESSION['csrf_token'])) {
             color: #34495e;
         }
 
-        .form-check-label, .forgot-password, .register-link {
+        .register-link {
             font-size: 0.9rem;
             color: #7f8c8d;
-        }
-
-        .forgot-password, .register-link {
             text-decoration: none;
             transition: color 0.3s ease;
         }
 
-        .forgot-password:hover, .register-link:hover {
+        .register-link:hover {
             color: #6e8efb;
-        }
-
-        .illustration-col {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .illustration-img {
-            max-width: 100%;
-            height: auto;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
         }
 
         @media (max-width: 768px) {
             .login-card {
                 max-width: 100%;
                 padding: 30px;
-            }
-            .illustration-col {
-                display: none;
             }
             h2 {
                 font-size: 1.8rem;
@@ -193,66 +169,40 @@ if (!isset($_SESSION['csrf_token'])) {
 <body>
     <div class="main-container">
         <div class="container">
-            <div class="row align-items-center">
+            <div class="row justify-content-center">
                 <div class="col-md-6">
                     <div class="login-card">
-                        <h2>Welcome Back</h2>
-                        <div class="subtitle">Sign in to continue</div>
+                        <h2>Reset Password</h2>
+                        <div class="subtitle">Enter your new password</div>
 
-                        <?php if (isset($_SESSION['user_id'])): ?>
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                You are already logged in! Redirecting to dashboard...
+                        <?php if (isset($_SESSION['error_message'])): ?>
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <?= htmlspecialchars($_SESSION['error_message']); ?>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
-                            <script>
-                                setTimeout(() => { window.location.href = '/dashboard'; }, 2000);
-                            </script>
-                        <?php else: ?>
-                            <?php if (isset($_SESSION['error_message'])): ?>
-                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    <?= htmlspecialchars($_SESSION['error_message']); ?>
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                                <?php unset($_SESSION['error_message']); ?>
-                            <?php endif; ?>
-
-                            <?php if (isset($_SESSION['success'])): ?>
-                                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                    <?= htmlspecialchars($_SESSION['success']); ?>
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                                <?php unset($_SESSION['success']); ?>
-                            <?php endif; ?>
-
-                            <form action="/login" method="POST">
-                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']); ?>">
-                                <div class="mb-3">
-                                    <label class="form-label">Email <span class="text-danger">*</span></label>
-                                    <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($_SESSION['email_value'] ?? ''); ?>" placeholder="Enter your email" required>
-                                    <?php unset($_SESSION['email_value']); ?>
-                                </div>
-                                <div class="mb-3 password-toggle">
-                                    <label class="form-label">Password <span class="text-danger">*</span></label>
-                                    <input type="password" name="password" id="password" class="form-control" placeholder="Enter your password" required>
-                                    <i class="fas fa-eye toggle-password" id="togglePassword"></i>
-                                    <div class="form-text">Enter your password</div>
-                                </div>
-                                <div class="d-flex justify-content-between mb-4">
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" id="rememberMe">
-                                        <label class="form-check-label" for="rememberMe">Remember me</label>
-                                    </div>
-                                    <a href="/forgot-password" class="forgot-password">Forgot password?</a>
-                                </div>
-                                <button type="submit" class="btn btn-login">Login</button>
-                            </form>
-
-
+                            <?php unset($_SESSION['error_message']); ?>
                         <?php endif; ?>
+
+                        <form action="/reset-password" method="POST">
+                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']); ?>">
+                            <input type="hidden" name="token" value="<?= htmlspecialchars($token); ?>">
+                            <div class="mb-3 password-toggle">
+                                <label class="form-label">New Password <span class="text-danger">*</span></label>
+                                <input type="password" name="password" id="password" class="form-control" placeholder="Enter new password" required>
+                                <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+                            </div>
+                            <div class="mb-3 password-toggle">
+                                <label class="form-label">Confirm Password <span class="text-danger">*</span></label>
+                                <input type="password" name="confirm_password" id="confirmPassword" class="form-control" placeholder="Confirm new password" required>
+                                <i class="fas fa-eye toggle-password" id="toggleConfirmPassword"></i>
+                            </div>
+                            <button type="submit" class="btn btn-login">Reset Password</button>
+                        </form>
+
+                        <p class="mt-3 text-center">
+                            <a href="/login" class="register-link">Back to Login</a>
+                        </p>
                     </div>
-                </div>
-                <div class="col-md-6 illustration-col">
-                    <img src="/assets/images/login.png" alt="Growth Illustration" class="illustration-img">
                 </div>
             </div>
         </div>
@@ -261,10 +211,22 @@ if (!isset($_SESSION['csrf_token'])) {
     <script>
         const togglePassword = document.querySelector('#togglePassword');
         const passwordInput = document.querySelector('#password');
+        const toggleConfirmPassword = document.querySelector('#toggleConfirmPassword');
+        const confirmPasswordInput = document.querySelector('#confirmPassword');
+
         if (togglePassword && passwordInput) {
             togglePassword.addEventListener('click', function () {
                 const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
                 passwordInput.setAttribute('type', type);
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+        }
+
+        if (toggleConfirmPassword && confirmPasswordInput) {
+            toggleConfirmPassword.addEventListener('click', function () {
+                const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                confirmPasswordInput.setAttribute('type', type);
                 this.classList.toggle('fa-eye');
                 this.classList.toggle('fa-eye-slash');
             });

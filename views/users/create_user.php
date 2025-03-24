@@ -1,5 +1,7 @@
 <?php
-// session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 if (!isset($_SESSION['user_id'])) {
     header("Location: /login");
     exit();
@@ -33,7 +35,11 @@ if (!isset($_SESSION['user_id'])) {
     <div class="card">
         <div class="card-body">
             <h5 class="card-title text-center mb-4"><i class="fas fa-user-plus"></i> Create New User</h5>
+            <?php if (isset($error)): ?>
+                <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+            <?php endif; ?>
             <form action="/users/store" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
                 <div class="mb-3">
                     <label for="first_name" class="form-label">First Name</label>
                     <input type="text" class="form-control" id="first_name" name="first_name" required>

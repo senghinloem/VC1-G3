@@ -1,26 +1,59 @@
 <?php
-session_start();
 
+// Security headers
+header("Content-Security-Policy: default-src 'self'");
+header("X-Frame-Options: DENY");
+header("X-Content-Type-Options: nosniff");
+header("X-XSS-Protection: 1; mode=block");
+
+// Redirect if already logged in
 if (isset($_SESSION['user_id'])) {
     header("Location: /dashboard");
     exit();
 }
 
+// CSRF token generation
 if (!isset($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
+
+// Rate limiting for registration attempts (simple session-based example)
+define('MAX_REGISTER_ATTEMPTS', 5);
+define('LOCKOUT_DURATION', 15 * 60); // 15 minutes
+
+function checkRegisterAttempts() {
+    if (!isset($_SESSION['register_attempts'])) {
+        $_SESSION['register_attempts'] = 0;
+        $_SESSION['last_register_attempt'] = time();
+    }
+    
+    if ($_SESSION['register_attempts'] >= MAX_REGISTER_ATTEMPTS) {
+        if (time() - $_SESSION['last_register_attempt'] < LOCKOUT_DURATION) {
+            $_SESSION['error_message'] = 'Too many registration attempts. Please try again later.';
+            header('Location: /register');
+            exit();
+        } else {
+            // Reset attempts after lockout period
+            $_SESSION['register_attempts'] = 0;
+        }
+    }
+}
+checkRegisterAttempts();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <title>Register</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
+        /* Your existing styles remain unchanged */
         body {
             background: linear-gradient(135deg, #5a7cff, #9b59b6);
             font-family: 'Inter', sans-serif;
@@ -33,7 +66,6 @@ if (!isset($_SESSION['csrf_token'])) {
             position: relative;
         }
 
-        /* Background Animation */
         body::before {
             content: '';
             position: absolute;
@@ -55,67 +87,67 @@ if (!isset($_SESSION['csrf_token'])) {
         .main-container {
             z-index: 1;
             width: 100%;
-            padding: 15px; /* Reduced padding */
+            padding: 15px;
         }
 
         .register-card {
             width: 100%;
-            max-width: 500px; /* Reduced max-width */
-            padding: 25px; /* Reduced padding */
-            border-radius: 20px; /* Slightly smaller border-radius */
+            max-width: 500px;
+            padding: 25px;
+            border-radius: 20px;
             background: rgba(255, 255, 255, 0.98);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* Reduced shadow */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .register-card:hover {
-            transform: translateY(-3px); /* Reduced hover lift */
+            transform: translateY(-3px);
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
         }
 
         h2 {
-            font-size: 1.6rem; /* Reduced font size */
+            font-size: 1.6rem;
             font-weight: 600;
             color: #2c3e50;
-            margin-bottom: 5px; /* Reduced margin */
+            margin-bottom: 5px;
             text-align: center;
         }
 
         .subtitle {
-            font-size: 0.9rem; /* Reduced font size */
+            font-size: 0.9rem;
             color: #7f8c8d;
             text-align: center;
-            margin-bottom: 15px; /* Reduced margin */
+            margin-bottom: 15px;
         }
 
         .form-label {
             font-weight: 500;
             color: #34495e;
-            font-size: 0.9rem; /* Reduced font size */
-            margin-bottom: 3px; /* Reduced margin */
+            font-size: 0.9rem;
+            margin-bottom: 3px;
         }
 
         .form-control {
-            border-radius: 8px; /* Slightly smaller border-radius */
+            border-radius: 8px;
             border: 1px solid #dcdcdc;
-            padding: 8px; /* Reduced padding */
-            font-size: 0.9rem; /* Reduced font size */
+            padding: 8px;
+            font-size: 0.9rem;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            height: 38px; /* Reduced height */
+            height: 38px;
         }
 
         .form-control:focus {
             border-color: #6e8efb;
-            box-shadow: 0 0 6px rgba(110, 142, 251, 0.3); /* Reduced shadow */
+            box-shadow: 0 0 6px rgba(110, 142, 251, 0.3);
             outline: none;
         }
 
         .btn-register {
             background: linear-gradient(90deg, #6e8efb, #a777e3);
             border: none;
-            border-radius: 10px; /* Slightly smaller border-radius */
-            padding: 10px; /* Reduced padding */
-            font-size: 1rem; /* Reduced font size */
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 1rem;
             font-weight: 500;
             color: #fff;
             width: 100%;
@@ -128,9 +160,9 @@ if (!isset($_SESSION['csrf_token'])) {
         }
 
         .alert {
-            border-radius: 8px; /* Slightly smaller border-radius */
-            margin-bottom: 10px; /* Reduced margin */
-            font-size: 0.8rem; /* Reduced font size */
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 0.8rem;
         }
 
         .password-toggle {
@@ -139,12 +171,12 @@ if (!isset($_SESSION['csrf_token'])) {
 
         .toggle-password {
             position: absolute;
-            right: 10px; /* Adjusted for smaller input */
+            right: 10px;
             top: 50%;
             transform: translateY(-50%);
             cursor: pointer;
             color: #7f8c8d;
-            font-size: 0.9rem; /* Reduced icon size */
+            font-size: 0.9rem;
             transition: color 0.3s ease;
         }
 
@@ -153,7 +185,7 @@ if (!isset($_SESSION['csrf_token'])) {
         }
 
         .form-check-label, .login-link {
-            font-size: 0.85rem; /* Reduced font size */
+            font-size: 0.85rem;
             color: #7f8c8d;
         }
 
@@ -180,26 +212,26 @@ if (!isset($_SESSION['csrf_token'])) {
 
         @keyframes float {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); } /* Reduced float distance */
+            50% { transform: translateY(-10px); }
         }
 
         @media (max-width: 768px) {
             .register-card {
                 max-width: 100%;
-                padding: 20px; /* Further reduced padding for mobile */
+                padding: 20px;
             }
             .illustration-col {
                 display: none;
             }
             h2 {
-                font-size: 1.4rem; /* Further reduced font size for mobile */
+                font-size: 1.4rem;
             }
             .btn-register {
-                font-size: 0.9rem; /* Reduced font size for mobile */
-                padding: 8px; /* Reduced padding for mobile */
+                font-size: 0.9rem;
+                padding: 8px;
             }
             .row .col-md-6 {
-                width: 100%; /* Stack fields vertically on small screens */
+                width: 100%;
             }
         }
     </style>
@@ -231,43 +263,71 @@ if (!isset($_SESSION['csrf_token'])) {
                             <?php unset($_SESSION['error_message']); ?>
                         <?php endif; ?>
 
-                        <form id="registerForm" action="/users/store" method="POST" novalidate>
+                        <form id="registerForm" action="/users/store" method="POST" novalidate autocomplete="off">
                             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']); ?>">
                             <div class="row">
-                                <div class="col-md-6 mb-2"> <!-- Reduced margin (mb-3 to mb-2) -->
+                                <div class="col-md-6 mb-2">
                                     <label class="form-label">First Name <span class="text-danger">*</span></label>
-                                    <input type="text" name="first_name" class="form-control" placeholder="Enter your first name" required>
+                                    <input type="text" name="first_name" class="form-control" 
+                                           value="<?= htmlspecialchars($_SESSION['first_name'] ?? '') ?>" 
+                                           placeholder="Enter your first name" 
+                                           pattern="[A-Za-z\s]{2,50}" 
+                                           required 
+                                           autocomplete="off">
+                                    <?php unset($_SESSION['first_name']); ?>
                                 </div>
-                                <div class="col-md-6 mb-2"> <!-- Reduced margin -->
+                                <div class="col-md-6 mb-2">
                                     <label class="form-label">Last Name <span class="text-danger">*</span></label>
-                                    <input type="text" name="last_name" class="form-control" placeholder="Enter your last name" required>
+                                    <input type="text" name="last_name" class="form-control" 
+                                           value="<?= htmlspecialchars($_SESSION['last_name'] ?? '') ?>" 
+                                           placeholder="Enter your last name" 
+                                           pattern="[A-Za-z\s]{2,50}" 
+                                           required 
+                                           autocomplete="off">
+                                    <?php unset($_SESSION['last_name']); ?>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6 mb-2"> <!-- Reduced margin -->
+                                <div class="col-md-6 mb-2">
                                     <label class="form-label">Email <span class="text-danger">*</span></label>
-                                    <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+                                    <input type="email" name="email" class="form-control" 
+                                           value="<?= htmlspecialchars($_SESSION['email'] ?? '') ?>" 
+                                           placeholder="Enter your email" 
+                                           required 
+                                           autocomplete="off">
+                                    <?php unset($_SESSION['email']); ?>
                                 </div>
-                                <div class="col-md-6 mb-2"> <!-- Reduced margin -->
+                                <div class="col-md-6 mb-2">
                                     <label class="form-label">Phone No. <span class="text-danger">*</span></label>
-                                    <input type="tel" name="phone" class="form-control" placeholder="e.g., 1234567890" required>
+                                    <input type="tel" name="phone" class="form-control" 
+                                           value="<?= htmlspecialchars($_SESSION['phone'] ?? '') ?>" 
+                                           placeholder="e.g., 1234567890" 
+                                           pattern="[0-9]{10}" 
+                                           required 
+                                           autocomplete="off">
+                                    <?php unset($_SESSION['phone']); ?>
                                 </div>
                             </div>
-                            <div class="mb-2 password-toggle"> <!-- Reduced margin -->
+                            <div class="mb-2 password-toggle">
                                 <label class="form-label">Password <span class="text-danger">*</span></label>
-                                <input type="password" name="password" id="password" class="form-control" placeholder="Enter your password" required>
+                                <input type="password" name="password" id="password" class="form-control" 
+                                       placeholder="Enter your password" 
+                                       pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" 
+                                       title="Must contain at least one number, one uppercase and lowercase letter, and at least 8 characters" 
+                                       required 
+                                       autocomplete="new-password">
                                 <i class="fas fa-eye toggle-password" id="togglePassword"></i>
-                                <div class="form-text">Enter your password</div>
+                                <div class="form-text">Min 8 chars, including 1 number, 1 uppercase, 1 lowercase</div>
                             </div>
                             <input type="hidden" name="role" value="user">
-                            <div class="mb-2 form-check"> <!-- Reduced margin (mb-4 to mb-2) -->
+                            <div class="mb-2 form-check">
                                 <input type="checkbox" class="form-check-input" id="termsCheck" required>
                                 <label class="form-check-label" for="termsCheck">I agree to all terms, privacy policies, and fees</label>
                             </div>
                             <button type="submit" class="btn btn-register">Sign Up</button>
                         </form>
 
-                        <p class="mt-2 text-center"> <!-- Reduced margin (mt-3 to mt-2) -->
+                        <p class="mt-2 text-center">
                             Already have an account? <a href="/login" class="login-link">Sign in</a>
                         </p>
                     </div>

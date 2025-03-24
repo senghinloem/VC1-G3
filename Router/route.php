@@ -24,7 +24,7 @@ $route->get("/users/edit/{user_id}", [UserController::class, 'edit']);
 $route->put("/users/update/{user_id}", [UserController::class, 'update']);
 $route->delete("/users/destroy/{user_id}", [UserController::class, 'destroy']);
 $route->post("/users/authenticate", [UserController::class, 'authenticate']);
-$route->get ("/users/logout", [UserController::class, 'logout']);
+$route->get("/users/logout", [UserController::class, 'logout']);
 $route->get("/users/search", [UserController::class, 'search']);
 
 // welcome
@@ -45,7 +45,6 @@ $route->get("/stock/edit/{stock_id}", [StockController::class, 'edit']);
 $route->post("/stock/update/{stock_id}", [StockController::class, 'update']);
 $route->post("/stock/destroy/{stock_id}", [StockController::class, 'destroy']);
 
-
 // product list
 $route->get("/product_list", [ProductListController::class, 'product_list']);
 $route->get("/product_list/create_list", [ProductListController::class, 'create_list']);
@@ -54,7 +53,6 @@ $route->get("/product_list/edit/{id}", [ProductListController::class, 'edit']);
 $route->put("/product_list/update", [ProductListController::class, 'update']);
 $route->delete("/product_list/destroy/{id}", [ProductListController::class, 'destroy']);
 $route->get('/product_list/search', [ProductListController::class, 'search']);
-
 
 // suppliers
 $route->get("/supplier", [SupplierController::class, 'supplier']);
@@ -70,15 +68,21 @@ $route->get("/login", [LoginRegisterController::class, 'login']);
 $route->get("/register", [LoginRegisterController::class, 'register']);
 $route->get("/error", [LoginRegisterController::class, 'error']);
 
+// Forgot Password routes
+$route->get("/forgot-password", [LoginRegisterController::class, 'forgotPassword']);
+$route->post("/forgot-password", [LoginRegisterController::class, 'forgotPassword']);
+
+// Reset Password routes
+$route->get("/reset-password", [LoginRegisterController::class, 'resetPassword']);
+$route->post("/reset-password", [LoginRegisterController::class, 'resetPassword']);
+
 // help
 $route->get("/help", [HelpController::class, 'help']);
 
 // setting the route
-
 $route->get("/setting", [SettingController::class, 'setting']);
 
 // report
-
 $route->get("/report", [ReportController::class, "report"]);
 
 $route->route();

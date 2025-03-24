@@ -1,5 +1,7 @@
 <?php
-// session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 if (!isset($_SESSION['user_id'])) {
     header("Location: /login");
     exit();
@@ -33,7 +35,11 @@ if (!isset($_SESSION['user_id'])) {
     <div class="card">
         <div class="card-body">
             <h5 class="card-title text-center mb-4"><i class="fas fa-user-edit"></i> Edit User</h5>
+            <?php if (isset($error)): ?>
+                <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+            <?php endif; ?>
             <form action="/users/update/<?= $user['user_id'] ?>" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
                 <div class="mb-3">
                     <label for="first_name" class="form-label">First Name</label>
                     <input type="text" class="form-control" id="first_name" name="first_name" value="<?= htmlspecialchars($user['first_name']) ?>" required>
@@ -47,8 +53,8 @@ if (!isset($_SESSION['user_id'])) {
                     <input type="email" class="form-control" id="email" name="email" value="<?= htmlspecialchars($user['email']) ?>" required>
                 </div>
                 <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" value="<?= htmlspecialchars($user['password']) ?>" required>
+                    <label for="password" class="form-label">Password (leave blank to keep current)</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter new password">
                 </div>
                 <div class="mb-3">
                     <label for="role" class="form-label">Role</label>

@@ -1,0 +1,17 @@
+{
+    "name": "dell/vc1-g3",
+    "autoload": {
+        "psr-4": {
+            "Dell\\Vc1G3\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Leader-19",
+            "email": "dinleader200@gmail.com"
+        }
+    ],
+    "require": {
+        "phpmailer/phpmailer": "^6.9"
+    }
+}
