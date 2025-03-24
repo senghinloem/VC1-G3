@@ -22,14 +22,7 @@ if (session_status() == PHP_SESSION_NONE) {
           </ul>
           <!--end::Start Navbar Links-->
           <!-- Search Bar (Centered) -->
-          <form class="d-flex mx-auto" action="/search" method="GET" style="max-width: 400px; width: 100%;">
-            <div class="input-group">
-                <input type="text" name="query" class="form-control" placeholder="Search..." aria-label="Search">
-                <button class="btn btn-outline-secondary" type="#">
-                    <i class="bi bi-search"></i>
-                </button>
-            </div>
-        </form>
+          
           <!--begin::End Navbar Links-->
           <ul class="navbar-nav ms-auto">
             <!--begin::Notifications Dropdown-->
@@ -144,7 +137,7 @@ if (session_status() == PHP_SESSION_NONE) {
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link text-white">
+                <a href="/report" class="nav-link text-white">
                   <i class="bi bi-pencil-square"></i>
                   <span class="ms-2">Reports</span>
                 </a>
@@ -160,13 +153,13 @@ if (session_status() == PHP_SESSION_NONE) {
             <div class="mt-4 border-top pt-3">
               <ul class="nav sidebar-menu flex-column">
                 <li class="nav-item">
-                  <a href="#" class="nav-link text-white">
+                  <a href="/setting" class="nav-link text-white">
                     <i class="bi bi-gear-fill"></i>
                     <span class="ms-2">Settings</span>
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="#" class="nav-link text-white">
+                  <a href="/help" class="nav-link text-white">
                     <i class="bi bi-question-circle-fill"></i>
                     <span class="ms-2">Help</span>
                   </a>

@@ -100,34 +100,5 @@ class StockController extends BaseController
         header("Location: /stock");
         exit();
     }
-    public function searchStockByName()
-    {
-        if (isset($_GET['stock_name']) && !empty(trim($_GET['stock_name']))) {
-            $stock_name = $_GET['stock_name'];
-            $stocks = $this->stockModel->searchStockByName($stock_name);
-        } else {
-            // If no search term, show all stock
-            $stocks = $this->stockModel->getStock();
-        }
 
-        // Render the view with the stock data
-        $this->view('stocks/stock_list', ['stocks' => $stocks]);
-    }
-
-
-    // Method for filtering stock by status (In Stock / Out of Stock)
-    public function filterByStockStatus($status)
-    {
-        // Validate the status parameter ('in_stock' or 'out_of_stock')
-        if ($status === 'in_stock' || $status === 'out_of_stock') {
-            // Call the model method to filter stocks by the status
-            $stocks = $this->stockModel->searchByStockStatus($status);
-        } else {
-            // If status is invalid, show all stock
-            $stocks = $this->stockModel->getStock();
-        }
-
-        // Render the view with filtered stock data
-        $this->view('stocks/stock_list', ['stocks' => $stocks]);
-    }
 }

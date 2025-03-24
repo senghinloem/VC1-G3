@@ -12,6 +12,7 @@ class BaseController
     {
         extract($data);
         ob_start();
+
         require "views/{$view}.php";
         $content = ob_get_clean();
         require "views/layout.php";

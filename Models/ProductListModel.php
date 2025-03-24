@@ -7,66 +7,73 @@ class ProductListModel
         $this->db = new Database("localhost", "vc1_db", "root", "");
     }
 
-    public function getProductList() {
-        $result = $this->db->query("SELECT * FROM product_list");
-        return $result->fetchAll(PDO::FETCH_ASSOC);
+    public function getProductStockList() {
+        $query = "
+            SELECT 
+                p.product_id,
+                p.name AS product_name,
+                p.description,
+                p.price,
+                p.unit,
+                IFNULL(SUM(sm.quantity), 0) AS quantity
+            FROM vc1_db.products p
+            LEFT JOIN vc1_db.stock_management sm ON p.product_id = sm.product_id
+            GROUP BY p.product_id, p.name, p.description, p.price, p.unit
+        ";
+        return $this->db->query($query)->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getProductListById($product_list_id) {
-        $result = $this->db->query("SELECT * FROM product_list WHERE product_list_id = :product_list_id", ['product_list_id' => $product_list_id]);
-        return $result->fetch(PDO::FETCH_ASSOC);
+    public function getProductById($id) {
+        $query = "SELECT * FROM vc1_db.products WHERE product_id = :id";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([':id' => $id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function addProductList($image, $name, $available_quantity, $price) {
-        try {
-            $this->db->query("INSERT INTO product_list (image, name, available_quantity, price) VALUES (:image, :name, :available_quantity, :price)", [
-                ':image' => $image,
-                ':name' => $name,
-                ':available_quantity' => $available_quantity,
-                ':price' => $price
-            ]);
-        } catch (PDOException $e) {
-            echo "Error adding product: " . $e->getMessage();
+    public function updateProduct($id, $name, $description, $price, $unit) {
+        $query = "
+            UPDATE vc1_db.products 
+            SET name = :name, description = :description, price = :price, unit = :unit 
+            WHERE product_id = :id
+        ";
+        $stmt = $this->db->prepare($query);
+        $result = $stmt->execute([
+            ':id' => $id,
+            ':name' => $name,
+            ':description' => $description,
+            ':price' => $price,
+            ':unit' => $unit
+        ]);
+        if (!$result) {
+            print_r($stmt->errorInfo()); // Debug SQL errors
+            return false;
         }
+        return $result;
     }
 
-    public function updateProductList($product_list_id, $image, $name, $available_quantity, $price) {
-        try {
-            $query = "UPDATE product_list SET name = :name, available_quantity = :available_quantity, price = :price";
-            $params = [
-                ':product_list_id' => $product_list_id,
-                ':name' => $name,
-                ':available_quantity' => $available_quantity,
-                ':price' => $price
-            ];
-            if ($image) {
-                $query .= ", image = :image";
-                $params[':image'] = $image;
-            }
-            $query .= " WHERE product_list_id = :product_list_id";
-            $this->db->query($query, $params);
-        } catch (PDOException $e) {
-            echo "Error updating product: " . $e->getMessage();
-        }
-    }
-
-    public function deleteProductList($product_list_id) {
-        try {
-            $this->db->query("DELETE FROM product_list WHERE product_list_id = :product_list_id", ['product_list_id' => $product_list_id]);
-        } catch (PDOException $e) {
-            echo "Error deleting product: " . $e->getMessage();
-        }
+    // Placeholder for deleteProduct (since it’s referenced but not shown)
+    public function deleteProduct($id) {
+        $query = "DELETE FROM vc1_db.products WHERE product_id = :id";
+        $stmt = $this->db->prepare($query);
+        return $stmt->execute([':id' => $id]);
     }
 
     public function searchProductByName($name) {
-        $query = "SELECT * FROM product_list WHERE name LIKE :name";
-        $products = $this->db->query($query, [':name' => "%$name%"])->fetchAll(PDO::FETCH_ASSOC);
-        
-        // Ensure the image path is correct
-        foreach ($products as &$product) {
-            $product['image'] = "/uploads/" . basename($product['image']); // Update image path
-        }
-
-        return $products;
+        $query = "
+            SELECT 
+                p.product_id,
+                p.name AS product_name,
+                p.description,
+                p.price,
+                p.unit,
+                IFNULL(SUM(sm.quantity), 0) AS quantity
+            FROM vc1_db.products p
+            LEFT JOIN vc1_db.stock_management sm ON p.product_id = sm.product_id
+            WHERE LOWER(p.name) LIKE LOWER(:search)
+            GROUP BY p.product_id, p.name, p.description, p.price, p.unit
+        ";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([':search' => "%{$name}%"]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

@@ -6,7 +6,7 @@
                 <i class="bi bi-search success"></i>
             </button>
         </div>
-        <a href="/stock/create" class="btn btn-primary">Add Product</a>
+        <a href="/stock/create" class="btn btn-primary">Crate Stock</a>
     </div>
 
     <div class="row g-3 mt-5">
@@ -87,3 +87,4 @@
         </div>
     </div>
 </div>
+

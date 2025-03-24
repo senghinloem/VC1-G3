@@ -22,8 +22,8 @@
         .image-upload:hover {
             border-color: #007bff;
         }
-        .image-upload img {
-            width: 50px;
+        .image-upload {
+            width: 100%;
             margin-bottom: 10px;
         }
 
@@ -32,6 +32,12 @@
             max-height: 150px;
             object-fit: contain;
         }
+
+        .error-text {
+            color: red;
+            font-size: 14px;
+        }
+
 
     </style>
 </head>
@@ -46,51 +52,53 @@
                 <form  action="/products/store" method="POST" enctype="multipart/form-data">
                     <div class="row g-3">
                         
-                        <div class="col-md-3">
+                    <div class="col-md-3">
                             <label class="form-label">Product Name</label>
-                            <input type="text" class="form-control" id="name" name="name">
+                            <input type="text" class="form-control" id="name" name="name" value="<?= htmlspecialchars($old['name'] ?? '') ?>">
+                            <small class="error-text"><?= $errors['name'] ?? '' ?></small>
                         </div>
 
                         <div class="col-md-3">
                             <label class="form-label">Product Quantity</label>
-                            <input type="text" class="form-control" id="quantity" name="quantity">
+                            <input type="number" class="form-control" id="quantity" name="quantity" min="0" value="<?= htmlspecialchars($old['quantity'] ?? '') ?>">
+                            <small class="error-text"><?= $errors['quantity'] ?? '' ?></small>
                         </div>
 
                         <div class="col-md-3">
                             <label class="form-label">Description</label>
-                            <input type="text" class="form-control" id="description" name="description">
+                            <input type="text" class="form-control" id="description" name="description" value="<?= htmlspecialchars($old['description'] ?? '') ?>">
                         </div>
 
                         <div class="col-md-3">
                             <label class="form-label">Product Price</label>
-                            <input type="text" class="form-control" id="price" name="price">
+                            <input type="number" class="form-control" id="price" name="price" min="0.01" step="0.01" value="<?= htmlspecialchars($old['price'] ?? '') ?>">
+                            <small class="error-text"><?= $errors['price'] ?? '' ?></small>
                         </div>
 
                         <div class="col-md-3">
                             <label class="form-label">Unit</label>
                             <select class="form-select" id="unit" name="unit">
-                                <option value="pcs">Pieces (pcs)</option>
-                                <option value="kg">Kilograms (kg)</option>
-                                <option value="L">Liters (L)</option>
-                                <option value="m">Meters (m)</option>
-                                <option value="box">Boxes</option>
-                                <option value="pack">Packs</option>
-                                <option value="carton">Cartons</option>
+                                <option value="pcs" <?= isset($old['unit']) && $old['unit'] == 'pcs' ? 'selected' : '' ?>>Pieces (pcs)</option>
+                                <option value="kg" <?= isset($old['unit']) && $old['unit'] == 'kg' ? 'selected' : '' ?>>Kilograms (kg)</option>
+                                <option value="L" <?= isset($old['unit']) && $old['unit'] == 'L' ? 'selected' : '' ?>>Liters (L)</option>
+                                <option value="m" <?= isset($old['unit']) && $old['unit'] == 'm' ? 'selected' : '' ?>>Meters (m)</option>
+                                <option value="box" <?= isset($old['unit']) && $old['unit'] == 'box' ? 'selected' : '' ?>>Boxes</option>
+                                <option value="pack" <?= isset($old['unit']) && $old['unit'] == 'pack' ? 'selected' : '' ?>>Packs</option>
+                                <option value="carton" <?= isset($old['unit']) && $old['unit'] == 'carton' ? 'selected' : '' ?>>Cartons</option>
                             </select>
                         </div>
-
-                    
 
                         <div class="col-md-12">
                             <label class="form-label">Product Image</label>
                             <div class="image-upload">
-                                <img src="views/assets/images/upload.svg" alt="Upload Icon" >
-                                <p>Drag and drop a file to upload</p>
-                                <input type="file" class="form-control d-none" id="image" name="image">
+                                <img src="views/assets/images/upload.svg" alt="Upload Icon">
+                                <p>Drag and drop a file to upload or click</p>
+                                <input type="file" class="form-control d-none" id="image" name="image" accept="image/*">
                                 <div id="image-preview"></div>
                             </div>
-                            <input type="text" class="form-control mt-2" id="imageUrl" placeholder="Enter Image URL">
+                            <input type="text" class="form-control mt-2" id="imageUrl" name="image_url" placeholder="Enter Image URL" value="<?= htmlspecialchars($old['image_url'] ?? '') ?>">
                         </div>
+
 
                         <div class="col-md-12 d-flex justify-content-end gap-2">
                             <button type="submit" class="btn btn-primary">Submit</button>
@@ -176,4 +184,3 @@
         //     this.querySelector('input[type=file]').click();
         // });
     </script>
-    

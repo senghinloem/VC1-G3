@@ -1,169 +1,302 @@
-
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+session_start();
 if (!isset($_SESSION['user_id'])) {
-    header("Location: /");
-    exit;
+    header("Location: /login");
+    exit();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product List</title>
+    <title>Product Management</title>
+
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome for icons -->
+    
+    <!-- Font Awesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    <!-- Custom Styles -->
     <style>
-        /* Custom Styles */
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+            --light: #ecf0f1;
+        }
+
         body {
-            background-color: #f8f9fa;
-            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
         }
-        .container {
-            margin-top: 30px;
+
+        .card-container {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin: 2rem auto;
+            max-width: 1200px;
         }
-        .card {
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+        .header-section {
+            background: var(--primary);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px 15px 0 0;
+            margin: -2rem -2rem 2rem;
         }
-        .card-header {
-            background-color: #007bff;
-            color: #fff;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
+
+        .search-container {
+            position: relative;
+            max-width: 500px;
         }
-        .search-bar input {
+
+        .search-container input {
             border-radius: 25px;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.12);
+            padding: 0.75rem 1.5rem;
+            border: none;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
         }
-        .search-bar button {
+
+        .search-container input:focus {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            outline: none;
+        }
+
+        .table-responsive {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .table {
+            margin-bottom: 0;
+            background: white;
+        }
+
+        thead th {
+            background: var(--secondary);
+            color: white;
+            padding: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: var(--light);
+            transform: translateY(-2px);
+        }
+
+        /* New Action Menu Styles */
+        .action-menu {
+            position: relative;
+            display: inline-block;
+        }
+
+        .action-toggle {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
-            background-color: #007bff;
-            color: #fff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
-        .table th, .table td {
-            vertical-align: middle;
-            text-align: center;
+
+        .action-toggle:hover {
+            background: var(--primary);
+            transform: rotate(90deg);
         }
-        .table th {
-            background-color: #f1f1f1;
-            color: #007bff;
+
+        .action-options {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            min-width: 120px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            z-index: 10;
         }
-        .product-img {
-            width: 50px;
-            height: 50px;
-            object-fit: cover;
-            border-radius: 5px;
+
+        .action-menu:hover .action-options {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(5px);
         }
-        .action-buttons a {
-            font-size: 16px;
-            margin: 0 5px;
-            transition: transform 0.3s ease;
+
+        .action-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            color: var(--primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
         }
-        .action-buttons a:hover {
-            transform: scale(1.1);
+
+        .action-item:hover {
+            background: var(--light);
+            color: var(--secondary);
         }
-        .action-buttons .text-danger {
-            color: #dc3545 !important;
+
+        .action-item.danger {
+            color: var(--danger);
         }
-        .action-buttons .text-primary {
-            color: #007bff !important;
+
+        .action-item i {
+            margin-right: 0.5rem;
         }
-        .action-buttons .text-secondary {
-            color: #6c757d !important;
+
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
         }
-        .add-product-btn {
-            border-radius: 30px;
-            font-size: 16px;
+
+        .modal-header {
+            background: var(--danger);
+            color: white;
+            border-radius: 15px 15px 0 0;
         }
-        .add-product-btn i {
-            margin-right: 5px;
+
+        .btn-custom {
+            border-radius: 25px;
+            padding: 0.5rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
 <body>
+<div class="container card-container">
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="d-flex justify-content-between align-items-center">
+            <h3 class="mb-0"><i class="fas fa-cubes me-2"></i> Product List</h3>
+            <form action="/product_list/search" method="GET" class="search-container">
+                <input type="text" name="q" class="form-control" 
+                       placeholder="Search products..." 
+                       value="<?= htmlspecialchars($searchQuery ?? '') ?>">
+            </form>
+        </div>
+    </div>
 
-<div class="container">
-    
-    <div class="card p-4">
-    <h2>Product Lists</h2>
-        <!-- Row for Search Bar and Product List -->
-        <div class="row justify-content-between align-items-center mt-4 mb-4">
-            <!-- Search Bar -->
-            <div class="col-md-6">
-                <form action="/product_list/search" method="GET" class="search-bar d-flex">
-                    <input type="text" name="q" value="<?= isset($searchQuery) ? htmlspecialchars($searchQuery) : ''; ?>" 
-                        placeholder="Search products..." class="form-control shadow-sm">
-                    <button type="submit" class="btn btn-primary px-4 ms-2"><i class="fas fa-search"></i></button>
+    <!-- Product Table -->
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Unit</th>
+                    <th>Stock ID</th>
+                    <th>Stock Name</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (!empty($products) && is_array($products)): ?>
+                    <?php foreach ($products as $product): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($product['product_id']) ?></td>
+                            <td><?= htmlspecialchars($product['product_name']) ?></td>
+                            <td>$<?= number_format((float)$product['price'], 2) ?></td>
+                            <td><?= htmlspecialchars($product['unit']) ?></td>
+                            <td><?= htmlspecialchars($product['stock_id'] ?? '') ?></td>
+                            <td><?= htmlspecialchars($product['stock_name'] ?? 'N/A') ?></td>
+                            <td class="text-center">
+                                <div class="action-menu">
+                                    <button class="action-toggle">
+                                        <i class="fas fa-ellipsis-h"></i>
+                                    </button>
+                                    <div class="action-options">
+                                        <a href="/product_list/edit/<?= $product['product_id'] ?>" 
+                                           class="action-item">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        <button class="action-item danger" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#confirmDeleteModal"
+                                                data-productid="<?= $product['product_id'] ?>">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="7" class="text-center py-4">
+                            <i class="fas fa-box-open me-2"></i> No products found
+                        </td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i> Confirm Deletion
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this product? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-custom" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i> Cancel
+                </button>
+                <form id="deleteForm" method="POST">
+                    <button type="submit" class="btn btn-danger btn-custom">
+                        <i class="fas fa-trash me-1"></i> Delete
+                    </button>
                 </form>
             </div>
-
-            <!-- Add Product Button -->
-            <div class="col-md-3 text-end">
-                <a href="/product_list/create_list" class="btn btn-success add-product-btn"><i class="fas fa-plus"></i> Add Product</a>
-            </div>
-        </div>
-
-
-        <!-- Product Table -->
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th>Image</th>
-                        <th>Name</th>
-                        <th>Available</th>
-                        <th>Price</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (!empty($product_list) && is_array($product_list)): ?>
-                        <?php foreach ($product_list as $list): ?>
-                            <tr>
-                                <td><img src="<?= htmlspecialchars($list['image']) ?>" alt="Product Image" class="product-img"></td>
-                                <td><?= htmlspecialchars($list['name']) ?></td>
-                                <td><?= (int)$list['available_quantity'] ?></td>
-                                <td>$<?= number_format((float)$list['price'], 2) ?></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <a href="/product_list/view/<?= $list['product_list_id'] ?>" class="text-primary" title="View">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="/product_list/edit/<?= $list['product_list_id'] ?>" class="text-secondary" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <form action="/product_list/destroy/<?= $list['product_list_id'] ?>" method="POST" style="display:inline;">
-                                            <input type="hidden" name="_method" value="DELETE">
-                                            <button type="submit" class="text-danger border-0 bg-transparent"
-                                                onclick="return confirm('Are you sure you want to delete this product?');" title="Delete">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="5" class="text-center text-muted">No products available</td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
         </div>
     </div>
 </div>
 
-<!-- Bootstrap 5 JS -->
+<!-- Bootstrap JS and Custom Script -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var confirmDeleteModal = document.getElementById('confirmDeleteModal');
+        confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var productId = button.getAttribute('data-productid');
+            var form = document.getElementById('deleteForm');
+            form.action = "/product_list/destroy/" + productId;
+        });
+    });
+</script>
 </body>
 </html>
