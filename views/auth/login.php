@@ -1,5 +1,9 @@
 <?php
 session_start();
+
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -9,163 +13,154 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         body {
-            background: #f5f7fa;
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
+            background: linear-gradient(135deg, #5a7cff, #9b59b6);
+            font-family: 'Poppins', sans-serif;
             margin: 0;
             height: 100vh;
-        }
-
-        /* Main container */
-        .main-container {
-            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Background Animation */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent);
+            animation: pulse 15s infinite;
+            z-index: 0;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 0.2; }
+            100% { transform: scale(1); opacity: 0.5; }
+        }
+
+        .main-container {
+            z-index: 1;
+            width: 100%;
             padding: 20px;
         }
 
-        /* Login card styling */
         .login-card {
             width: 100%;
-            max-width: 400px;
-            padding: 30px;
-            border-radius: 15px;
-            background: #ffffff;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-            animation: fadeIn 1s ease-in-out;
+            max-width: 480px;
+            padding: 40px;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
+        .login-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
         }
 
-        .login-card h2 {
-            font-size: 24px;
+        h2 {
+            font-size: 2rem;
             font-weight: 600;
-            color: #1a252f;
+            color: #2c3e50;
             margin-bottom: 10px;
+            text-align: center;
         }
 
-        .login-card .subtitle {
-            font-size: 14px;
-            color: #6c757d;
-            margin-bottom: 20px;
+        .subtitle {
+            font-size: 1rem;
+            color: #7f8c8d;
+            text-align: center;
+            margin-bottom: 30px;
         }
 
-        /* Google Sign-In button */
-        .google-signin-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #e0e0e0;
-            border-radius: 5px;
-            background: #ffffff;
-            font-size: 14px;
-            color: #333;
-            text-decoration: none;
-            margin-bottom: 20px;
-            transition: background 0.3s ease, transform 0.2s ease;
-        }
-
-        .google-signin-btn:hover {
-            background: #f8f9fa;
-            transform: scale(1.02);
-        }
-
-        .google-signin-btn img {
-            width: 20px;
-            margin-right: 10px;
-        }
-
-        /* Form field styling */
         .form-label {
-            font-size: 14px;
             font-weight: 500;
-            color: #1a252f;
+            color: #34495e;
         }
 
         .form-control {
-            border-radius: 5px;
-            padding: 10px;
-            font-size: 14px;
-            border: 1px solid #e0e0e0;
-            background: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #dcdcdc;
+            padding: 12px;
+            font-size: 1rem;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         .form-control:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 6px rgba(0, 123, 255, 0.2);
+            border-color: #6e8efb;
+            box-shadow: 0 0 8px rgba(110, 142, 251, 0.3);
+            outline: none;
         }
 
-        .form-text {
-            font-size: 12px;
-            color: #6c757d;
-        }
-
-        .form-check-label {
-            font-size: 14px;
-            color: #6c757d;
-        }
-
-        /* Forgot password link */
-        .forgot-password {
-            font-size: 14px;
-            color: #007bff;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .forgot-password:hover {
-            color: #0056b3;
-            text-decoration: underline;
-        }
-
-        /* Login button */
         .btn-login {
-            background: #2c3e50;
+            background: linear-gradient(90deg, #6e8efb, #a777e3);
             border: none;
-            border-radius: 5px;
-            padding: 10px;
-            font-size: 16px;
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 1.1rem;
             font-weight: 500;
+            color: #fff;
             width: 100%;
-            color: #ffffff;
-            transition: background 0.3s ease, transform 0.2s ease;
+            transition: transform 0.3s ease, background 0.3s ease;
         }
 
         .btn-login:hover {
-            background: #1a252f;
             transform: scale(1.02);
+            background: linear-gradient(90deg, #5a7cff, #9b59b6);
         }
 
-        /* Register link */
-        .register-link {
-            font-size: 14px;
-            color: #007bff;
+        .alert {
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .password-toggle {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #7f8c8d;
+            transition: color 0.3s ease;
+        }
+
+        .toggle-password:hover {
+            color: #34495e;
+        }
+
+        .form-check-label, .forgot-password, .register-link {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        .forgot-password, .register-link {
             text-decoration: none;
             transition: color 0.3s ease;
         }
 
-        .register-link:hover {
-            color: #0056b3;
-            text-decoration: underline;
+        .forgot-password:hover, .register-link:hover {
+            color: #6e8efb;
         }
 
-        /* Illustration styling */
         .illustration-col {
-            position: relative;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
         }
 
         .illustration-img {
@@ -179,45 +174,20 @@ session_start();
             50% { transform: translateY(-15px); }
         }
 
-        /* Password toggle styling */
-        .password-toggle {
-            position: relative;
-        }
-
-        .password-toggle .form-control {
-            padding-right: 40px;
-        }
-
-        .password-toggle .toggle-password {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #6c757d;
-            font-size: 14px;
-            transition: color 0.3s ease;
-        }
-
-        .password-toggle .toggle-password:hover {
-            color: #007bff;
-        }
-
-        /* Success message styling */
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border-color: #c3e6cb;
-        }
-
-        /* Responsive adjustments */
         @media (max-width: 768px) {
+            .login-card {
+                max-width: 100%;
+                padding: 30px;
+            }
             .illustration-col {
                 display: none;
             }
-
-            .login-card {
-                max-width: 90%;
+            h2 {
+                font-size: 1.8rem;
+            }
+            .btn-login {
+                font-size: 1rem;
+                padding: 12px;
             }
         }
     </style>
@@ -226,46 +196,50 @@ session_start();
     <div class="main-container">
         <div class="container">
             <div class="row align-items-center">
-                <!-- Left column: Login form -->
                 <div class="col-md-6">
                     <div class="login-card">
-                        <h2>Login</h2>
+                        <h2>Welcome Back</h2>
+                        <div class="subtitle">Sign in to continue</div>
 
-                        <!-- Display message if user is already logged in -->
                         <?php if (isset($_SESSION['user_id'])): ?>
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                 You are already logged in! Redirecting to dashboard...
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                             <script>
-                                setTimeout(() => {
-                                    window.location.href = '/dashboard';
-                                }, 2000);
+                                setTimeout(() => { window.location.href = '/dashboard'; }, 2000);
                             </script>
                         <?php else: ?>
-                            <!-- Display error message if login fails -->
                             <?php if (isset($_SESSION['error_message'])): ?>
                                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    <?= $_SESSION['error_message']; ?>
+                                    <?= htmlspecialchars($_SESSION['error_message']); ?>
                                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                 </div>
                                 <?php unset($_SESSION['error_message']); ?>
                             <?php endif; ?>
 
+                            <?php if (isset($_SESSION['success'])): ?>
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <?= htmlspecialchars($_SESSION['success']); ?>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                                <?php unset($_SESSION['success']); ?>
+                            <?php endif; ?>
 
-                            <!-- Login form -->
                             <form action="/users/authenticate" method="POST">
+                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']); ?>">
                                 <div class="mb-3">
                                     <label class="form-label">Email <span class="text-danger">*</span></label>
-                                    <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+                                    <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($_SESSION['email_value'] ?? ''); ?>" placeholder="Enter your email" required>
+                                    <?php unset($_SESSION['email_value']); ?>
                                 </div>
                                 <div class="mb-3 password-toggle">
                                     <label class="form-label">Password <span class="text-danger">*</span></label>
-                                    <input type="password" name="password" id="password" class="form-control" required>
+                                    <input type="password" name="password" id="password" class="form-control" placeholder="Enter your password" required>
                                     <i class="fas fa-eye toggle-password" id="togglePassword"></i>
-                                    <div class="form-text">minimum 8 characters</div>
+                                    <div class="form-text">Enter your password</div>
                                 </div>
-                                <div class="d-flex justify-content-between mb-3">
+                                <div class="d-flex justify-content-between mb-4">
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input" id="rememberMe">
                                         <label class="form-check-label" for="rememberMe">Remember me</label>
@@ -276,25 +250,21 @@ session_start();
                             </form>
 
                             <p class="mt-3 text-center">
-                                Not registered yet? <a href="/register" class="register-link">Create a new account</a>
+                                Not registered yet? <a href="/register" class="register-link">Create an account</a>
                             </p>
                         <?php endif; ?>
                     </div>
                 </div>
-
-                <!-- Right column: Illustration -->
                 <div class="col-md-6 illustration-col">
-                    <img src="views/assets/images/login.png" alt="Growth Illustration" class="illustration-img" style="max-width: 600px;">
+                    <img src="views/assets/images/login.png" alt="Growth Illustration" class="illustration-img">
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript for Show Password Toggle -->
     <script>
         const togglePassword = document.querySelector('#togglePassword');
         const passwordInput = document.querySelector('#password');
-
         if (togglePassword && passwordInput) {
             togglePassword.addEventListener('click', function () {
                 const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
