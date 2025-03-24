@@ -37,16 +37,17 @@
                         </div>
 
                         <!-- Button Group -->
-                        <div class="button-group">
+                        <div class="d-flex justify-content-end gap-2">
                             <!-- Cancel Button -->
-                            <a href="/products" class="btn btn-secondary">Cancel</a                        >
-
+                            <a href="/products" class="btn btn-secondary">Cancel</a>
+                        
                             <!-- Submit Button -->
                             <button type="submit" class="btn btn-primary" id="submitButton">
                                 <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true" id="loadingSpinner"></span>
                                 Save
                             </button>
                         </div>
+
                     </form>
                     <!-- Form End -->
                 </div>
