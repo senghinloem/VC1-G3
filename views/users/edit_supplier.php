@@ -39,7 +39,7 @@
                         <!-- Button Group -->
                         <div class="d-flex justify-content-end gap-2">
                             <!-- Cancel Button -->
-                            <a href="/products" class="btn btn-secondary">Cancel</a>
+                            <a href="/supplier" class="btn btn-secondary">Cancel</a>
                         
                             <!-- Submit Button -->
                             <button type="submit" class="btn btn-primary" id="submitButton">
