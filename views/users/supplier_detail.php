@@ -1,6 +1,6 @@
 <div class="container my-5">
   <!-- Large Card to display the supplier details -->
-  <div class="card" style="max-width: 600px; margin: 0 auto;">
+  <div class="card" style="max-width: 150vh; margin: 0 auto;">
     <h5 class="card-header text-center bg-primary text-white">Supplier Detail</h5>
     <div class="card-body">
       
@@ -40,9 +40,9 @@
         </div>
       <?php endif; ?>
 
-      <!-- Back Button -->
-      <div class="text-left">
-        <a href="/supplier" class="btn btn-primary">Back to Suppliers</a>
+     <!-- Back Button -->
+      <div class="text-end">
+          <a href="/supplier" class="btn btn-primary">Back to Suppliers</a>
       </div>
     </div>
   </div>
