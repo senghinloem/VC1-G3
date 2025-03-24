@@ -68,79 +68,54 @@ if (session_status() == PHP_SESSION_NONE) {
               </div>
             </li>
             <!--end::Notifications Dropdown-->
-            <style>
-              /* Enhance dropdown appearance */
-              .dropdown-menu {
-                border: none !important;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-                background-color: #fff;
-                border-radius: 12px !important;
-                
-              }
-
-              .notification-badge {
-                top: 30% !important;
-                right: -60% !important;
-                transform: translate(-50%, -50%) !important;
-                font-size: 0.75rem;
-                padding: 0.25em 0.5em;
-                border-radius: 50% !important;
-                border: 1px solid white;
-                box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
-              }
-
-              /* Hover effect for dropdown items */
-              .dropdown-item {
-                transition: background-color 0.2s ease;
-              }
-
-              .dropdown-item:hover {
-                background-color: #f8f9fa !important;
-              }
-
-              /* Footer link hover effect */
-              .dropdown-footer a {
-                text-decoration: none;
-                transition: all 0.2s ease;
-              }
-
-              .dropdown-footer a:hover {
-                background-color: #007bff !important;
-                color: #fff !important;
-              }
-
-              /* Badge styling */
-              .badge {
-                font-size: 0.75rem;
-                padding: 0.35em 0.65em;
-              }
-            </style>
 
 
             <!--begin::User Menu Dropdown-->
             <li class="nav-item dropdown user-menu">
               <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
-                <img
-                  src="<?= isset($_SESSION['user_image']) ? $_SESSION['user_image'] : '/views/images/user.png'; ?>"
-                  class="user-image rounded-circle shadow-sm me-2"
-                  alt="User Image"
-                  width="35"
-                  height="35" />
+                <?php
+                if (isset($users) && is_array($users)) {
+                  foreach ($users as $user) {
+                    if ($user['user_id'] == $_SESSION['user_id']) {
+                      // Set a default image path if the user's image is not set or empty
+                      $userImage = !empty($user['image']) ? '/uploads/' . htmlspecialchars($user['image'], ENT_QUOTES, 'UTF-8') : '/views/assets/img/user2-160x160.jpg';
+                ?>
+                      <img
+                        src="<?php echo $userImage; ?>"
+                        class="user-image rounded-circle shadow-sm me-2"
+                        alt="User Image"
+                        width="40"
+                        height="40" />
+                  <?php
+                    }
+                  }
+                } else {
+                  // Fallback if $users is not set or not an array
+                  ?>
+                  <img
+                    src="/views/assets/img/user2-160x160.jpg"
+                    class="user-image rounded-circle shadow-sm me-2"
+                    alt="User Image"
+                    width="35"
+                    height="35" />
+                <?php
+                }
+                ?>
                 <!-- admin -->
-                <?php if (isset($_SESSION['user_role'])): ?>
-                  <span class="d-none d-md-inline text-dark fw-semibold"><?= $_SESSION['user_role']; ?></span>
+                <?php if (isset($_SESSION['last_name'])): ?>
+                  <span class="d-none d-md-inline text-dark fw-semibold"><?= $_SESSION['last_name']; ?></span>
                 <?php endif; ?>
               </a>
               <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end shadow border-0 rounded-3">
                 <li class="user-header text-center p-3 bg-light border-bottom">
                   <img
-                    src="<?= isset($_SESSION['user_image']) ? $_SESSION['user_image'] : '/views/images/user.png'; ?>"
+                    src="<?= isset($_SESSION['user_image']) ? $_SESSION['user_image'] : $userImage ?>"
                     class="rounded-circle shadow-sm mb-2"
                     alt="User Image"
                     width="80"
                     height="80" />
                   <p class="mb-0 fw-bold">
-                    <?= isset($_SESSION['user_name']) ? $_SESSION['user_name'] : ''; ?>
+                    <?= isset($_SESSION['last_name']) ? $_SESSION['last_name'] : 'Unknown user'; ?>
                   </p>
                   <small class="opacity-75"><?= isset($_SESSION['user_role']) ? $_SESSION['user_role'] : 'Role Unknown'; ?></small>
                   <br>
@@ -171,11 +146,9 @@ if (session_status() == PHP_SESSION_NONE) {
         <div class="sidebar-brand text-center py-3">
           <a href="#" class="brand-link text-white fw-bold fs-5">PNN SHOP</a>
         </div>
-
-
         <div class="sidebar-wrapper">
           <nav class="mt-3">
-            <p class="text-secondary text-uppercase fw-semibold px-3 small", >Navigations</p>
+            <p class="text-secondary text-uppercase fw-semibold px-3 small" ,>Navigations</p>
             <ul class="nav sidebar-menu flex-column">
               <li class="nav-item">
                 <a href="/dashboard" class="nav-link text-white">
@@ -246,4 +219,18 @@ if (session_status() == PHP_SESSION_NONE) {
           </nav>
         </div>
       </aside>
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const currentPath = window.location.pathname;
+          const sidebarLinks = document.querySelectorAll('.sidebar-menu .nav-link');
+          sidebarLinks.forEach(link => {
+            const linkPath = link.getAttribute('href');
+            if (currentPath === linkPath) {
+              link.classList.add('active');
+            }
+          });
+        });
+      </script>
+
+
     <?php endif; ?>

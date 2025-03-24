@@ -344,6 +344,7 @@
         </div>
     </div>
 
+<!-- to display product on dashboard -->
     <script>
         const products = <?= json_encode($products); ?>;
         const labels = products.map(product => product.name);
