@@ -20,35 +20,7 @@
     
     <h4>Products</h4>
 
-                <!-- Stat Cards -->
-                <div class="col-12 mb-4">
-                <div class="row">
-                    <div class="col-md-3 col-sm-6 mb-3">
-                        <div class="stat-card total-users">
-                            <h3><?= number_format($totalUsers ?? 0) ?></h3>
-                            <p>Total Products</p>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6 mb-3">
-                        <div class="stat-card online-users">
-                            <h3><?= number_format($activeUsers ?? 0) ?></h3>
-                            <p>Online Users</p>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6 mb-3">
-                        <div class="stat-card offline-users">
-                            <h3><?= number_format($inactiveUsers ?? 0) ?></h3>
-                            <p>Offline Users</p>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6 mb-3">
-                        <div class="stat-card online-rate">
-                            <h3><?= number_format(($activeUsers / max(1, $totalUsers ?? 1)) * 100, 1) ?>%</h3>
-                            <p>Online Rate</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    
 
     <div class="table-responsive">
         <table class="table table-bordered table-hover">
