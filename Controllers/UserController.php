@@ -33,6 +33,27 @@ class UserController extends BaseController
         ]);
     }
 
+    public function userDetail($user_id = null)
+    {
+        if (!$user_id) {
+            header("Location: /users?error=User ID is required");
+            exit();
+        }
+
+        $user = $this->user->getUserById($user_id);
+        if (!$user) {
+            header("Location: /users?error=User not found");
+            exit();
+        }
+
+        $this->view('users/view_user_detail', [
+            'user' => $user,
+            'totalUsers' => $this->user->getTotalUsers(),
+            'activeUsers' => $this->user->getActiveUsers(),
+            'inactiveUsers' => $this->user->getInactiveUsers()
+        ]);
+    }
+
     public function create()
     {
         $this->view('users/create_user');
@@ -224,7 +245,7 @@ class UserController extends BaseController
 
             } catch (Exception $e) {
                 error_log("Login error: " . $e->getMessage());
-                $_SESSION['error_message'] = 'system_error';
+                $_SESSION['error_message로'] = 'system_error';
                 header('Location: /login');
                 exit();
             }
@@ -244,4 +265,3 @@ class UserController extends BaseController
         $this->redirect("/");
     }
 }
-?>

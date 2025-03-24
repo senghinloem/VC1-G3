@@ -26,6 +26,7 @@ $route->delete("/users/destroy/{user_id}", [UserController::class, 'destroy']);
 $route->post("/users/authenticate", [UserController::class, 'authenticate']);
 $route->get ("/users/logout", [UserController::class, 'logout']);
 $route->get("/users/search", [UserController::class, 'search']);
+$route->get("/users/detail/{user_id}", [UserController::class, 'userDetail']);
 
 // welcome
 $route->get("/", [WelcomeController::class, 'welcome']);
