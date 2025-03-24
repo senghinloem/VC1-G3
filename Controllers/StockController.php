@@ -1,5 +1,4 @@
 <?php
-
 require_once "Models/StockModel.php";
 
 class StockController extends BaseController
@@ -11,38 +10,30 @@ class StockController extends BaseController
         $this->stockModel = new StockModel();
     }
 
-    public function stock()
-    {
-        $stock_management = $this->stockModel->getStock();
-
-        // Debugging to confirm data is fetched
-        if (empty($stock_management)) {
-            echo "No data found!";
-            exit();
-        }
-
-        $this->view("stocks/stock", ["stock_management" => $stock_management]);
-    }
-
-
-
     public function view_stock($stock_id)
     {
+        // Fetch the stock details from the model using the stock_id
         $stock = $this->stockModel->getStockById($stock_id);
 
         if ($stock) {
+            // Pass the stock data to the view
             $this->view('stocks/view_stock', ['stock' => $stock]);
         } else {
             echo "Stock not found.";
         }
     }
 
+
+   
+
+    // Show create stock form
     public function create_stock()
     {
         $status = isset($_GET['status']) ? $_GET['status'] : 'in_stock';
         $this->view("stocks/create_stock", ['status' => $status]);
     }
 
+    // Show edit form for a stock item
     public function edit($stock_id)
     {
         $stock = $this->stockModel->getStockById($stock_id);
@@ -53,6 +44,7 @@ class StockController extends BaseController
         }
     }
 
+    // Save a new stock item
     public function store()
     {
         if (!isset($_POST['stock_name']) || empty(trim($_POST['stock_name']))) {
@@ -79,7 +71,7 @@ class StockController extends BaseController
         }
     }
 
-
+    // Update an existing stock item
     public function update($stock_id)
     {
         if (!isset($_POST['stock_name']) || empty(trim($_POST['stock_name']))) {
@@ -94,6 +86,7 @@ class StockController extends BaseController
         exit();
     }
 
+    // Delete a stock item
     public function destroy($stock_id)
     {
         $this->stockModel->deleteStock($stock_id);
@@ -101,4 +94,7 @@ class StockController extends BaseController
         exit();
     }
 
+
+    
 }
+?>
