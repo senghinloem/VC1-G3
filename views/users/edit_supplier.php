@@ -3,7 +3,7 @@
         <div class="col-md-6 col-lg-4">
             <!-- Card Container -->
             <div class="card shadow-lg border-0 rounded-lg">
-                <div class="card-header text-center bg-warning text-dark">
+                <div class="card-header text-center bg-primary text-white">
                     <h4>Edit Supplier</h4>
                 </div>
                 <div class="card-body">
@@ -37,7 +37,7 @@
                         </div>
 
                         <!-- Submit Button -->
-                        <button type="submit" class="btn btn-warning w-100">
+                        <button type="submit" class="btn btn-primary w-100">
                             <i class="bi bi-check-circle"></i> Update Supplier
                         </button>
                     </form>

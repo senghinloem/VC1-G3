@@ -7,13 +7,30 @@ class UserController extends BaseController
 
     public function __construct()
     {
-        $this->user = new UserModel();
+        try {
+            $this->user = new UserModel();
+            session_start();
+            if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
+                $this->user->updateLastActivity($_SESSION['user_id']);
+            }
+        } catch (Exception $e) {
+            die("Controller initialization failed: " . $e->getMessage());
+        }
     }
 
     public function user()
     {
         $users = $this->user->getUsers();
-        $this->view('users/user', ['users' => $users]);
+        $totalUsers = $this->user->getTotalUsers();
+        $activeUsers = $this->user->getActiveUsers();
+        $inactiveUsers = $this->user->getInactiveUsers();
+        
+        $this->view('users/user', [
+            'users' => $users,
+            'totalUsers' => $totalUsers,
+            'activeUsers' => $activeUsers,
+            'inactiveUsers' => $inactiveUsers
+        ]);
     }
 
     public function create()
@@ -33,16 +50,19 @@ class UserController extends BaseController
                 }
             }
             
-            $this->user->addUser(
-                $_POST['first_name'],
-                $_POST['last_name'],
-                $_POST['email'],
-                $_POST['password'],
-                $_POST['role'],
-                $_POST['phone'],
+            if ($this->user->addUser(
+                $_POST['first_name'] ?? '',
+                $_POST['last_name'] ?? '',
+                $_POST['email'] ?? '',
+                $_POST['password'] ?? '',
+                $_POST['role'] ?? '',
+                $_POST['phone'] ?? '',
                 $image
-            );
-            header("Location: /users");
+            )) {
+                header("Location: /users");
+            } else {
+                header("Location: /users/create?error=Failed to add user");
+            }
             exit();
         }
     }
@@ -51,7 +71,6 @@ class UserController extends BaseController
     {
         $user = $this->user->getUserById($user_id);
         if (!$user) {
-            // Handle case where user is not found
             header("Location: /users?error=User not found");
             exit();
         }
@@ -70,17 +89,20 @@ class UserController extends BaseController
                 }
             }
             
-            $this->user->updateUser(
+            if ($this->user->updateUser(
                 $user_id,
-                $_POST['first_name'],
-                $_POST['last_name'],
-                $_POST['email'],
-                $_POST['password'],
-                $_POST['role'],
-                $_POST['phone'],
+                $_POST['first_name'] ?? '',
+                $_POST['last_name'] ?? '',
+                $_POST['email'] ?? '',
+                $_POST['password'] ?? '',
+                $_POST['role'] ?? '',
+                $_POST['phone'] ?? '',
                 $image
-            );
-            header("Location: /users");
+            )) {
+                header("Location: /users");
+            } else {
+                header("Location: /users/edit/$user_id?error=Failed to update user");
+            }
             exit();
         }
     }
@@ -94,8 +116,11 @@ class UserController extends BaseController
                 unlink($imagePath);
             }
         }
-        $this->user->deleteUser($user_id);
-        header("Location: /users");
+        if ($this->user->deleteUser($user_id)) {
+            header("Location: /users");
+        } else {
+            header("Location: /users?error=Failed to delete user");
+        }
         exit();
     }
 
@@ -103,7 +128,13 @@ class UserController extends BaseController
     {
         $query = isset($_GET['search']) ? $_GET['search'] : '';
         $users = $this->user->searchUsers($query);
-        $this->view('users/user', ['users' => $users, 'searchQuery' => $query]);
+        $this->view('users/user', [
+            'users' => $users,
+            'searchQuery' => $query,
+            'totalUsers' => $this->user->getTotalUsers(),
+            'activeUsers' => $this->user->getActiveUsers(),
+            'inactiveUsers' => $this->user->getInactiveUsers()
+        ]);
     }
 
     private function handleImageUpload($file)
@@ -134,23 +165,83 @@ class UserController extends BaseController
     }
 
     public function authenticate()
-{
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $email = $_POST['email'];
-        $password = $_POST['password'];
+    {
+        session_start();
 
-        $user = $this->user->getUserByEmail($email);
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+                $password = trim($_POST['password'] ?? '');
 
-        if ($user && password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['user_id'];
-            $_SESSION['role'] = $user['role'];
-            header("Location: /dashboard");
-            exit();
+                if (!$email) {
+                    $_SESSION['email_error'] = 'Please enter a valid email address';
+                    $_SESSION['error_message'] = 'missing_fields';
+                    header('Location: /login');
+                    exit();
+                }
+
+                if (empty($password)) {
+                    $_SESSION['password_error'] = 'Password is required';
+                    $_SESSION['error_message'] = 'missing_fields';
+                    $_SESSION['email_value'] = $email;
+                    header('Location: /login');
+                    exit();
+                }
+
+                $user = $this->user->getUserByEmail($email);
+                if (!$user) {
+                    $_SESSION['error_message'] = 'You cannot login please check your email.';
+                    $_SESSION['email_value'] = $email;
+                    header('Location: /login');
+                    exit();
+                }
+
+                if (!password_verify($password, $user['password'])) {
+                    $_SESSION['error_message'] = 'You cannot login please check your password.';
+                    $_SESSION['email_value'] = $email;
+                    header('Location: /login');
+                    exit();
+                }
+
+                if (isset($user['locked']) && $user['locked']) {
+                    $_SESSION['error_message'] = 'account_locked';
+                    header('Location: /login');
+                    exit();
+                }
+
+                $_SESSION['user_id'] = $user['user_id'];
+                $_SESSION['first_name'] = $user['first_name'];
+                $_SESSION['last_name'] = $user['last_name'];
+                $_SESSION['user_role'] = $user['role'];
+                $_SESSION['email'] = $user['email'];
+                $_SESSION['phone'] = $user['phone'];
+                $_SESSION['success'] = 'Login successful! Welcome, ' . $user['first_name'] . '!';
+                
+                $this->user->updateLastActivity($user['user_id']);
+
+                header("Location: /dashboard");
+                exit();
+
+            } catch (Exception $e) {
+                error_log("Login error: " . $e->getMessage());
+                $_SESSION['error_message'] = 'system_error';
+                header('Location: /login');
+                exit();
+            }
         } else {
-            header("Location: /login?error=Invalid credentials");
+            $_SESSION['error_message'] = 'invalid_access';
+            header('Location: /login');
             exit();
         }
     }
-}
 
+    public function logout()
+    {
+        session_start();
+        session_unset();
+        session_destroy();
+        $_SESSION['success'] = 'Logged out successfully';
+        $this->redirect("/");
+    }
 }
+?>

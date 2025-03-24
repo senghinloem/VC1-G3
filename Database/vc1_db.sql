@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 10, 2025 at 04:38 AM
+-- Generation Time: Mar 21, 2025 at 03:41 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.1.25
 
@@ -29,21 +29,32 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `products` (
   `product_id` int(11) NOT NULL,
+  `image` varchar(255) NOT NULL,
   `name` varchar(100) DEFAULT NULL,
   `description` text DEFAULT NULL,
   `price` decimal(10,2) DEFAULT NULL,
   `unit` varchar(50) DEFAULT NULL,
   `supplier_id` int(11) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `quantity` int(11) NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`product_id`, `name`, `description`, `price`, `unit`, `supplier_id`, `created_at`) VALUES
-(1, 'Laptop', 'High-end gaming laptop', 1200.00, 'pcs', 1, '2025-03-10 03:33:45'),
-(2, 'Keyboard', 'Mechanical gaming keyboard', 100.00, 'pcs', 2, '2025-03-10 03:33:45');
+INSERT INTO `products` (`product_id`, `image`, `name`, `description`, `price`, `unit`, `supplier_id`, `quantity`) VALUES
+(22, 'uploads/default.png', 'Asher Cooley', 'Ipsum ad cupidatat e', 10.00, 'carton', NULL, 1),
+(30, 'uploads/default.png', 'Quinlan Donaldson', 'Consequatur a tempo', 9.00, 'pcs', NULL, 20),
+(31, 'uploads/default.png', 'Edward Davis', 'Rem deserunt quo mol', 11.00, 'pack', NULL, 29),
+(32, 'uploads/default.png', 'Orli Jordan', 'Rerum molestiae cons', 7.00, 'kg', NULL, 50),
+(33, 'uploads/default.png', 'Quincy Bender', 'In est molestias por', 30.00, 'carton', NULL, 71),
+(34, 'uploads/default.png', 'Trevor Jackson', 'Et esse est repreh', 9.00, 'L', NULL, 45),
+(35, 'uploads/default.png', 'Dominique Pace', 'Atque ea facere dele', 11.00, 'pcs', NULL, 30),
+(36, 'uploads/default.png', 'Deacon Justice', 'Dolorem optio incid', 40.00, 'm', NULL, 38),
+(37, 'uploads/default.png', 'Ursula Alston', 'Quos qui enim magni', 90.00, 'carton', NULL, 4),
+(38, 'uploads/default.png', 'Rana Campbell', 'Autem consequatur e', 10.00, 'carton', NULL, 8),
+(39, 'uploads/default.png', 'August Mcgee', 'Quos velit deleniti', 10.00, 'pack', NULL, 20),
+(40, 'uploads/default.png', 'Alfreda Waters', 'Tempore illo sint', 10.00, 'm', NULL, 46);
 
 -- --------------------------------------------------------
 
@@ -55,9 +66,19 @@ CREATE TABLE `product_list` (
   `product_list_id` int(11) NOT NULL,
   `product_id` int(11) DEFAULT NULL,
   `image` varchar(255) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
   `available_quantity` int(11) DEFAULT NULL,
   `price` decimal(10,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `product_list`
+--
+
+INSERT INTO `product_list` (`product_list_id`, `product_id`, `image`, `name`, `available_quantity`, `price`) VALUES
+(2, NULL, 'uploads/13a6e7c7214158c4f676084788520266.jpg', 'car', 1, 12.00),
+(4, NULL, 'uploads/coffee.jpg', 'coffee ', 1, 748.00),
+(5, NULL, 'uploads/photo_2025-01-02_22-40-05.jpg', 'moto ', 471, 66.00);
 
 -- --------------------------------------------------------
 
@@ -73,14 +94,6 @@ CREATE TABLE `stock_management` (
   `stock_type` enum('IN','OUT') NOT NULL,
   `last_updated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `stock_management`
---
-
-INSERT INTO `stock_management` (`stock_id`, `product_id`, `user_id`, `quantity`, `stock_type`, `last_updated`) VALUES
-(1, 1, 1, 50, 'IN', '2025-03-10 03:33:45'),
-(2, 2, 2, 30, 'IN', '2025-03-10 03:33:45');
 
 -- --------------------------------------------------------
 
@@ -117,14 +130,6 @@ CREATE TABLE `supplier_provide_product` (
   `supplier_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `supplier_provide_product`
---
-
-INSERT INTO `supplier_provide_product` (`supplier_product_id`, `product_id`, `supplier_id`) VALUES
-(1, 1, 1),
-(2, 2, 2);
-
 -- --------------------------------------------------------
 
 --
@@ -139,16 +144,19 @@ CREATE TABLE `users` (
   `password` varchar(255) DEFAULT NULL,
   `role` varchar(60) NOT NULL,
   `phone` varchar(20) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `image` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `email`, `password`, `role`, `phone`, `created_at`) VALUES
-(1, 'John', 'Doe', 'john@example.com', 'password123', 'admin', '123456789', '2025-03-10 03:33:45'),
-(2, 'Alice', 'Smith', 'alice@example.com', 'password456', 'manager', '987654321', '2025-03-10 03:33:45');
+INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `email`, `password`, `role`, `phone`, `created_at`, `image`) VALUES
+(2, 'Alice', 'Smith', 'alice@example.com', 'password456', 'manager', '987654321', '2025-03-10 03:33:45', NULL),
+(7, 'chor ', 'bunny', 'bunny.chor@gmail.com', '$2y$10$NKso6fndNaMvq8ItZRK9Ge9LWqJiQv/HChGZ5nneiGIqsZYG2q58q', 'user', '83974689', '2025-03-16 08:23:08', NULL),
+(8, 'er', 'er', 'er@gmail.com', '$2y$10$JEEid3hV8w1UvxJ/wMFzd.Y/emBIu.lMb3YNgTUxWScBOzCBE6blS', 'admin', '23456', '2025-03-20 05:23:06', NULL),
+(9, 'rr', 'rr', 'rr@gmail.com', '$2y$10$QXd0.ow8O2pc7gX5226AWejM4HwmYlNtKY7DCL70ocz3plrf/pU2W', 'admin', '3432545', '2025-03-21 01:58:13', NULL);
 
 --
 -- Indexes for dumped tables
@@ -205,13 +213,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `product_list`
 --
 ALTER TABLE `product_list`
-  MODIFY `product_list_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `product_list_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `stock_management`
@@ -235,7 +243,7 @@ ALTER TABLE `supplier_provide_product`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Constraints for dumped tables

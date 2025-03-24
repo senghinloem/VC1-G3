@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Supplier Management</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container mt-4" id="supplierListView">
@@ -44,9 +43,26 @@
                                 <td><?= htmlspecialchars($supplier['address']) ?></td>
                                 <td><?= htmlspecialchars($supplier['created_at']) ?></td>
                                 <td>
-                                    <a href="/supplier/detail/<?= $supplier['supplier_id']?>" class="btn btn-success">Detail</a>
-                                    <a href="/supplier/edit/<?= $supplier['supplier_id']?>" class="btn btn-warning">Edit</a>
-                                    <a href="/supplier/destroy/<?= $supplier['supplier_id']?>" class="btn btn-danger">Delete</a>
+                                    <div class="dropdown">
+                                        <!-- Three-dot button -->
+                                        <button class="btn btn-light border-0 three-dot-btn">
+                                            <i class="bi bi-three-dots"></i>
+                                        </button>
+                                
+                                        <!-- Dropdown menu -->
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="/supplier/detail/<?= $supplier['supplier_id']?>">Detail</a></li>
+                                            <li><a class="dropdown-item" href="/supplier/edit/<?= $supplier['supplier_id']?>">Edit</a></li>
+                                            <li><a class="dropdown-item text-danger" href="/supplier/destroy/<?= $supplier['supplier_id']?>">Delete</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                                <style>
+                                /* Make the dropdown menu appear when hovering over the button */
+                                .dropdown:hover .dropdown-menu {
+                                    display: block;
+                                }
+                                </style>
                                 </td>
                             </tr>
                             
@@ -57,5 +73,20 @@
         </div>
     </div>
 
+    <script>
+        document.getElementById("searchInput").addEventListener("keyup", function() {
+            let filter = this.value.toLowerCase();
+            let rows = document.querySelectorAll("tbody tr");
+        
+            rows.forEach(row => {
+                let supplierID = row.cells[0].textContent.toLowerCase(); // Get Supplier ID (first column)
+                let fullText = row.textContent.toLowerCase(); // Get all text in the row
+        
+                // Show row if the filter matches Supplier ID or any column
+                row.style.display = supplierID.includes(filter) || fullText.includes(filter) ? "" : "none";
+            });
+        });
+    </script>
+        
 </body>
 </html>

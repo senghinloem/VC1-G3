@@ -10,7 +10,9 @@ require_once "Controllers/ProductListController.php";
 require_once "Controllers/SupplierController.php";
 require_once "Controllers/LoginRegisterController.php";
 require_once "Controllers/UserController.php";
-
+require_once "Controllers/HelpController.php";
+require_once "Controllers/SettingController.php";
+require_once "Controllers/ReportController.php";
 
 $route = new Router();
 
@@ -67,5 +69,16 @@ $route->get("/supplier/detail/{supplier_id}", [SupplierController::class, 'detai
 $route->get("/login", [LoginRegisterController::class, 'login']);
 $route->get("/register", [LoginRegisterController::class, 'register']);
 $route->get("/error", [LoginRegisterController::class, 'error']);
+
+// help
+$route->get("/help", [HelpController::class, 'help']);
+
+// setting the route
+
+$route->get("/setting", [SettingController::class, 'setting']);
+
+// report
+
+$route->get("/report", [ReportController::class, "report"]);
 
 $route->route();
