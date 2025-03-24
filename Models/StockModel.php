@@ -60,4 +60,31 @@ class StockModel
         $stmt->bindParam(':stock_id', $stock_id, PDO::PARAM_INT);
         return $stmt->execute();
     }
+
+    public function searchStockByName($stock_name)
+    {
+        try {
+            $stmt = $this->db->prepare("SELECT * FROM stock_management WHERE stock_name LIKE :stock_name");
+            $searchTerm = "%" . $stock_name . "%";
+            $stmt->bindParam(':stock_name', $searchTerm, PDO::PARAM_STR);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error searching stock by name: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    // New: Filter products by stock status (In Stock / Out of Stock)
+    public function searchByStockStatus($status)
+    {
+        try {
+            $query = $status === 'in_stock' ? "SELECT * FROM stock_management WHERE quantity > 0" : "SELECT * FROM stock_management WHERE quantity = 0";
+            $result = $this->db->query($query);
+            return $result->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error filtering stock by status: " . $e->getMessage());
+            return [];
+        }
+    }
 }

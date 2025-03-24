@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,11 +11,14 @@
     .table thead th {
       background-color: #f8f9fa;
     }
-    .btn-success, .btn-danger {
+
+    .btn-success,
+    .btn-danger {
       border-radius: 4px;
     }
   </style>
 </head>
+
 <body>
   <div class="container mt-5">
     <div class="card">
@@ -30,6 +34,36 @@
               </tr>
             </thead>
             <tbody>
+              <?php if (!empty($stock_management)): ?>
+                <?php foreach ($stock_management as $item): ?>
+                  <tr>
+                    <td class="text-center"><?= htmlspecialchars($item['product_id']) ?></td>
+                    <td class="text-center"><?= htmlspecialchars($item['items']) ?></td>
+                    <td class="text-center"><?= htmlspecialchars($item['quantity']) ?></td>
+                    <td class="text-center">
+                      <!-- <div class="d-flex justify-content-center gap-2">
+                        <a href="/stock/view/<?= htmlspecialchars($item['product_id']) ?>" class="btn btn-primary">View</a>
+                        <a href="/stock/edit/<?= htmlspecialchars($item['product_id']) ?>" class="btn btn-warning">Edit</a>
+                        <a href="/stock/destroy/<?= htmlspecialchars($item['product_id']) ?>" class="btn btn-danger">Delete</a>
+                      </div> -->
+                      <div class="d-flex justify-content-center gap-2">
+                        <button class="btn btn-success" style="width: 40px; height: 40px; padding: 0;">
+                          <span style="font-size: 20px; line-height: 1;">+</span>
+                        </button>
+                        <button class="btn btn-danger" style="width: 40px; height: 40px; padding: 0;">
+                          <span style="font-size: 20px; line-height: 1;">-</span>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              <?php else: ?>
+                <tr>
+                  <td colspan="4" class="text-center">No products available.</td>
+                </tr>
+              <?php endif; ?>
+            </tbody>
+            <!-- <tbody>
               <tr>
                 <td class="text-center">1</td>
                 <td class="text-center">Plastic plate</td>
@@ -120,7 +154,7 @@
                   </div>
                 </td>
               </tr>
-            </tbody>
+            </tbody> -->
           </table>
         </div>
       </div>
@@ -130,5 +164,5 @@
   <!-- Bootstrap JS Bundle with Popper -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>
 
+</html>

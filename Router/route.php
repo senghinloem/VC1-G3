@@ -45,6 +45,7 @@ $route->delete("/stock/destroy/{stock_id}", [StockController::class, 'destroy'])
 $route->get("/stock/search", [StockController::class, 'search']);
 
 
+
 // product list
 $route->get("/product_list", [ProductListController::class, 'product_list']);
 $route->get("/product_list/create_list", [ProductListController::class, 'create_list']);
