@@ -1,7 +1,5 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+session_start();
 if (!isset($_SESSION['user_id'])) {
     header("Location: /login");
     exit();
@@ -12,11 +10,13 @@ if (!isset($_SESSION['user_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Management Dashboard</title>
+    <title>Product List Dashboard</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* Reuse styles from User Management with adjustments for products */
+        /* Table container styling */
         .table-container {
             transition: opacity 0.3s ease;
             max-height: 500px;
@@ -32,6 +32,7 @@ if (!isset($_SESSION['user_id'])) {
             pointer-events: none;
         }
 
+        /* Table styling */
         .product-table {
             margin-bottom: 0;
             width: 100%;
@@ -58,15 +59,17 @@ if (!isset($_SESSION['user_id'])) {
             top: 0;
             z-index: 1;
             background-color: #f8f9fa;
+            text-align: center;
         }
 
         .product-table td {
             vertical-align: middle;
-            padding: 5px 5px;
+            padding: 15px 24px;
             color: #495057;
             border-bottom: 1px solid #eceff1;
             white-space: nowrap;
             transition: background-color 0.2s ease;
+            text-align: center;
         }
 
         table.product-table tbody tr:nth-child(odd) {
@@ -86,6 +89,7 @@ if (!isset($_SESSION['user_id'])) {
             background-color: transparent;
         }
 
+        /* Action buttons */
         .action-btn {
             background: transparent;
             border: none;
@@ -104,75 +108,7 @@ if (!isset($_SESSION['user_id'])) {
             border-bottom: none;
         }
 
-        @media (max-width: 768px) {
-            .product-table th,
-            .product-table td {
-                padding: 14px 12px;
-            }
-
-            .action-btn {
-                padding: 0.3rem 0.7rem;
-                font-size: 1rem;
-            }
-        }
-
-        .search-container .spinner {
-            display: none;
-            margin-left: 10px;
-            color: #0d6efd;
-        }
-
-        .search-container.loading .spinner {
-            display: inline-block;
-        }
-
-        .stat-card {
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            height: 100%;
-        }
-
-        .stat-card h3 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .stat-card p {
-            margin-bottom: 0;
-            color: #6c757d;
-            font-weight: 500;
-        }
-
-        .stat-card.total-products {
-            background-color: #e3f2fd;
-        }
-
-        .stat-card.in-stock {
-            background-color: #e8f5e9;
-        }
-
-        .stat-card.out-of-stock {
-            background-color: #ffebee;
-        }
-
-        .stat-card.avg-price {
-            background-color: #fff8e1;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px 0;
-        }
-
-        .empty-state i {
-            font-size: 3rem;
-            color: #6c757d;
-            margin-bottom: 1rem;
-        }
-
+        /* Card styling */
         .card {
             border-radius: 8px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.08);
@@ -185,17 +121,27 @@ if (!isset($_SESSION['user_id'])) {
             padding: 1rem 1.5rem;
         }
 
-        .modal-content {
-            border: none;
-            border-radius: 12px;
+        /* Search loading state */
+        .search-container .spinner {
+            display: none;
+            margin-left: 10px;
+            color: #0d6efd;
         }
 
-        .modal-header {
-            border-bottom: 1px solid rgba(0,0,0,0.08);
+        .search-container.loading .spinner {
+            display: inline-block;
         }
 
-        .modal-footer {
-            border-top: 1px solid rgba(0,0,0,0.08);
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
         }
     </style>
 </head>
@@ -208,62 +154,28 @@ if (!isset($_SESSION['user_id'])) {
                     <div class="card-header">
                         <div class="d-flex flex-wrap justify-content-between align-items-center">
                             <h4 class="mb-0 d-flex align-items-center">
-                                <i class="fas fa-cubes me-2 text-primary"></i> Product Management
+                                <i class="fas fa-cogs me-2 text-primary"></i> Product List
                             </h4>
                             <div class="d-flex flex-wrap gap-3">
                                 <div class="search-container">
-                                    <form action="/product_list/search" method="GET" class="d-flex align-items-center" id="searchForm">
-                                        <div class="input-group">
-                                            <span class="input-group-text bg-white border-end-0">
-                                                <i class="fas fa-search text-muted"></i>
-                                            </span>
-                                            <input type="text" name="q" class="form-control border-start-0" 
-                                                   placeholder="Search products..." 
-                                                   value="<?= htmlspecialchars($searchQuery ?? '') ?>" 
-                                                   id="searchInput">
-                                        </div>
-                                        <i class="fas fa-spinner fa-spin spinner ms-2"></i>
-                                    </form>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white border-end-0">
+                                            <i class="fas fa-search text-muted"></i>
+                                        </span>
+                                        <input type="text" 
+                                               class="form-control border-start-0" 
+                                               placeholder="Search products..." 
+                                               value="<?= htmlspecialchars($searchQuery ?? '') ?>" 
+                                               id="searchInput">
+                                    </div>
+                                    <i class="fas fa-spinner fa-spin spinner ms-2"></i>
                                 </div>
-                                <a href="/product_list/create" class="btn btn-primary">
-                                    <i class="fas fa-plus me-2"></i>Add Product
-                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <!-- Stat Cards -->
-            <div class="col-12 mb-4">
-                <div class="row">
-                    <div class="col-md-3 col-sm-6 mb-3">
-                        <div class="stat-card total-products">
-                            <h3><?= number_format($totalProducts ?? 0) ?></h3>
-                            <p>Total Products</p>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6 mb-3">
-                        <div class="stat-card in-stock">
-                            <h3><?= number_format($inStock ?? 0) ?></h3>
-                            <p>In Stock</p>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6 mb-3">
-                        <div class="stat-card out-of-stock">
-                            <h3><?= number_format($outOfStock ?? 0) ?></h3>
-                            <p>Out of Stock</p>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6 mb-3">
-                        <div class="stat-card avg-price">
-                            <h3>$<?= number_format($avgPrice ?? 0, 2) ?></h3>
-                            <p>Avg. Price</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
+
             <!-- Product Table -->
             <div class="col-12">
                 <div class="card">
@@ -272,36 +184,26 @@ if (!isset($_SESSION['user_id'])) {
                             <table class="product-table table-borderless">
                                 <thead>
                                     <tr>
-                                        <th class="text-center">ID</th>
-                                        <th class="text-center">Name</th>
-                                        <th class="text-center">Price</th>
-                                        <th class="text-center">Unit</th>
-                                        <th class="text-center">Stock ID</th>
-                                        <th class="text-center">Stock Name</th>
-                                        <th class="text-center">Actions</th>
+                                        <th>Product ID</th>
+                                        <th>Product Name</th>
+                                        <th>Price</th>
+                                        <th>Unit</th>
+                                        <th>Stock ID</th>
+                                        <th>Stock Name</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php if (empty($products)): ?>
-                                        <tr>
-                                            <td colspan="7">
-                                                <div class="empty-state">
-                                                    <i class="fas fa-box-open"></i>
-                                                    <h5>No products found</h5>
-                                                    <p>No products match your criteria or none have been added yet.</p>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    <?php else: ?>
+                                    <?php if (!empty($products) && is_array($products)): ?>
                                         <?php foreach ($products as $product): ?>
                                             <tr>
-                                                <td class="text-center"><?= htmlspecialchars($product['product_id']) ?></td>
-                                                <td class="text-center"><?= htmlspecialchars($product['product_name']) ?></td>
-                                                <td class="text-center">$<?= number_format((float)$product['price'], 2) ?></td>
-                                                <td class="text-center"><?= htmlspecialchars($product['unit']) ?></td>
-                                                <td class="text-center"><?= htmlspecialchars($product['stock_id'] ?? 'N/A') ?></td>
-                                                <td class="text-center"><?= htmlspecialchars($product['stock_name'] ?? 'N/A') ?></td>
-                                                <td class="text-center">
+                                                <td><?= htmlspecialchars($product['product_id']) ?></td>
+                                                <td><?= htmlspecialchars($product['product_name']) ?></td>
+                                                <td>$<?= number_format((float)$product['price'], 2) ?></td>
+                                                <td><?= htmlspecialchars($product['unit']) ?></td>
+                                                <td><?= htmlspecialchars($product['stock_id'] ?? '') ?></td>
+                                                <td><?= htmlspecialchars($product['stock_name'] ?? 'N/A') ?></td>
+                                                <td>
                                                     <button class="action-btn" type="button" 
                                                             data-bs-toggle="dropdown" 
                                                             aria-expanded="false"
@@ -309,7 +211,7 @@ if (!isset($_SESSION['user_id'])) {
                                                             title="Actions">
                                                         <i class="fa-solid fa-ellipsis-vertical"></i>
                                                     </button>
-                                                    <ul class="dropdown-menu dropdown-menu-end">
+                                                    <ul class="dropdown-menu Raton-menu-end">
                                                         <li>
                                                             <a class="dropdown-item" href="/product_list/edit/<?= $product['product_id'] ?>">
                                                                 <i class="fas fa-edit text-success me-2"></i> Edit
@@ -329,6 +231,16 @@ if (!isset($_SESSION['user_id'])) {
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="7">
+                                                <div class="empty-state">
+                                                    <i class="fas fa-box-open"></i>
+                                                    <h5>No products found</h5>
+                                                    <p>No products match your criteria or none have been added yet.</p>
+                                                </div>
+                                            </td>
+                                        </tr>
                                     <?php endif; ?>
                                 </tbody>
                             </table>
@@ -366,64 +278,180 @@ if (!isset($_SESSION['user_id'])) {
         </div>
     </div>
 
-
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Initialize tooltips
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl, { trigger: 'hover' });
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl, { trigger: 'hover' });
+        });
+
+        // Handle delete modal
+        const confirmDeleteModal = document.getElementById('confirmDeleteModal');
+        if (confirmDeleteModal) {
+            confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const productId = button.getAttribute('data-productid');
+                const productName = button.getAttribute('data-productname');
+                
+                document.getElementById('deleteProductName').textContent = productName;
+                document.getElementById('deleteForm').action = "/product_list/destroy/" + productId;
             });
 
-            // Handle delete modal
-            var confirmDeleteModal = document.getElementById('confirmDeleteModal');
-            if (confirmDeleteModal) {
-                confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
-                    var button = event.relatedTarget;
-                    var productId = button.getAttribute('data-productid');
-                    var productName = button.getAttribute('data-productname');
-                    
-                    var productNameElement = document.getElementById('deleteProductName');
-                    if (productNameElement) productNameElement.textContent = productName;
-                    
-                    var form = document.getElementById('deleteForm');
-                    if (form) form.action = "/product_list/destroy/" + productId;
+            confirmDeleteModal.addEventListener('show.bs.modal', function () {
+                tooltipList.forEach(tooltip => tooltip.hide());
+            });
+        }
+
+        // Enhanced Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const tableContainer = document.querySelector('.table-container');
+        const tbody = document.querySelector('.product-table tbody');
+        const searchContainer = document.querySelector('.search-container');
+        let debounceTimeout;
+        let lastQuery = '';
+        const debounceDelay = 300;
+
+        async function performSearch(query) {
+            try {
+                searchContainer.classList.add('loading');
+                tableContainer.classList.add('loading');
+
+                const response = await fetch(`/product_list/search?q=${encodeURIComponent(query)}`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
                 });
 
-                confirmDeleteModal.addEventListener('show.bs.modal', function () {
-                    tooltipList.forEach(function(tooltip) { tooltip.hide(); });
-                });
-            }
+                if (!response.ok) throw new Error('Network response was not ok');
 
-            // Search functionality with loading states
-            const searchInput = document.getElementById('searchInput');
-            const searchForm = document.getElementById('searchForm');
-            const searchContainer = document.querySelector('.search-container');
-            const tableContainer = document.querySelector('.table-container');
-            let debounceTimeout;
-
-            function resetLoadingStates() {
+                const data = await response.json();
+                updateTable(data.products);
+            } catch (error) {
+                console.error('Search error:', error);
+                showErrorState();
+            } finally {
                 searchContainer.classList.remove('loading');
                 tableContainer.classList.remove('loading');
             }
+        }
 
-            searchInput.addEventListener('input', function () {
-                clearTimeout(debounceTimeout);
-                const query = this.value.trim();
+        function updateTable(products) {
+            tbody.innerHTML = '';
 
-                debounceTimeout = setTimeout(() => {
-                    if (query.length === 0 || query.length >= 1) {
-                        searchContainer.classList.add('loading');
-                        tableContainer.classList.add('loading');
-                        searchForm.submit();
-                    }
-                }, 500);
+            if (!products || products.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <i class="fas fa-box-open"></i>
+                                <h5>No products found</h5>
+                                <p>No products match your search criteria.</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            products.forEach(product => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${escapeHtml(product.product_id)}</td>
+                    <td>${escapeHtml(product.product_name)}</td>
+                    <td>$${Number(product.price).toFixed(2)}</td>
+                    <td>${escapeHtml(product.unit)}</td>
+                    <td>${escapeHtml(product.stock_id || '')}</td>
+                    <td>${escapeHtml(product.stock_name || 'N/A')}</td>
+                    <td>
+                        <button class="action-btn" type="button" 
+                                data-bs-toggle="dropdown" 
+                                aria-expanded="false"
+                                data-bs-toggle="tooltip" 
+                                title="Actions">
+                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="/product_list/edit/${product.product_id}">
+                                    <i class="fas fa-edit text-success me-2"></i> Edit
+                                </a>
+                            </li>
+                            <li>
+                                <button type="button" 
+                                        class="dropdown-item text-danger" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#confirmDeleteModal" 
+                                        data-productid="${product.product_id}" 
+                                        data-productname="${escapeHtml(product.product_name)}">
+                                    <i class="fas fa-trash-alt me-2"></i> Delete
+                                </button>
+                            </li>
+                        </ul>
+                    </td>
+                `;
+                tbody.appendChild(row);
             });
 
-            window.addEventListener('load', resetLoadingStates);
-            window.addEventListener('pageshow', resetLoadingStates);
-            resetLoadingStates();
+            const newTooltips = [].slice.call(tbody.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            newTooltips.forEach(el => new bootstrap.Tooltip(el, { trigger: 'hover' }));
+        }
+
+        function showErrorState() {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7">
+                        <div class="empty-state">
+                            <i class="fas fa-exclamation-triangle text-danger"></i>
+                            <h5>Search Error</h5>
+                            <p>Something went wrong. Please try again.</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+
+        function escapeHtml(unsafe) {
+            return (unsafe || '')
+                .toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        searchInput.addEventListener('input', function () {
+            const query = this.value.trim();
+            if (query === lastQuery) return;
+
+            clearTimeout(debounceTimeout);
+            
+            if (query.length === 0 || query.length >= 1) {
+                debounceTimeout = setTimeout(() => {
+                    lastQuery = query;
+                    performSearch(query);
+                }, debounceDelay);
+            }
         });
+
+        searchInput.addEventListener('change', function () {
+            if (this.value.trim() === '' && lastQuery !== '') {
+                lastQuery = '';
+                performSearch('');
+            }
+        });
+
+        function resetLoadingStates() {
+            searchContainer.classList.remove('loading');
+            tableContainer.classList.remove('loading');
+        }
+
+        window.addEventListener('load', resetLoadingStates);
+        window.addEventListener('pageshow', resetLoadingStates);
+        resetLoadingStates();
+    });
     </script>
 </body>
 </html>
