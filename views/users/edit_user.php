@@ -3,176 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit User Profile - PNN Shop</title>
-    <!-- Bootstrap CSS for layout and styling -->
+    <title>Edit User Profile</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
-            background-color: #f5f5f5;
+            background-color: #f8f9fa;
             font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
         }
+  
+  
 
-        .dashboard-container {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            width: 250px;
-            background-color: #2c3e50;
-            color: white;
-            padding: 20px;
-            position: fixed;
-            height: 100%;
-        }
-
-        .sidebar .logo {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 30px;
-        }
-
-        .sidebar .nav-item {
-            margin-bottom: 15px;
-        }
-
-        .sidebar .nav-item a {
-            color: #b0b7c0;
-            text-decoration: none;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-        }
-
-        .sidebar .nav-item a i {
-            margin-right: 10px;
-        }
-
-        .sidebar .nav-item a:hover {
-            color: white;
-        }
-
-        .sidebar .nav-item.active a {
-            color: white;
-            font-weight: 600;
-        }
-
-        .sidebar .nav-item.logout a {
-            color: #e74c3c;
-        }
-
+        /* Main Content */
         .main-content {
-            margin-left: 250px;
-            padding: 20px;
-            width: 100%;
-        }
-
-        .topbar {
-            background-color: #fff;
-            padding: 10px 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-        }
-
-        .topbar .user-info {
-            display: flex;
-            align-items: center;
-        }
-
-        .topbar .user-info img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            margin-right: 10px;
+            margin-left: 150px;
+            padding: 70px 20px;
         }
 
         .profile-container {
             display: flex;
             max-width: 900px;
-            margin: 30px auto;
             background-color: #fff;
-            border-radius: 20px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
             overflow: hidden;
         }
 
         .profile-card {
-            width: 35%;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            width: 40%; /* Increased from 30% to 40% */
             padding: 30px;
             text-align: center;
             border-right: 1px solid #e0e0e0;
-            position: relative;
-        }
-
-        .profile-card .profile-image-container {
-            position: relative;
-            margin-bottom: 20px;
         }
 
         .profile-card img {
-            width: 120px;
-            height: 120px;
-            border-radius: 15px;
-            object-fit: cover;
-            border: 4px solid #fff;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-        }
-
-        .profile-card img:hover {
-            transform: scale(1.05);
-        }
-
-        .profile-card .upload-btn {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            background-color: #00c4cc;
-            color: white;
-            width: 40px;
-            height: 40px;
+            width: 180px;
+            height: 180px;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s ease;
-        }
-
-        .profile-card .upload-btn:hover {
-            background-color: #00a8b0;
-        }
-
-        .profile-card .upload-btn input {
-            display: none;
+            object-fit: cover;
+            margin-bottom: 15px;
+            margin-top: 110px;
         }
 
         .profile-card h3 {
-            color: #333;
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 600;
+            color: #00c4cc;
             margin-bottom: 5px;
         }
 
-        .profile-card .role {
-            color: #00c4cc;
+        .profile-card .username {
+            color: #888;
             font-size: 14px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .profile-card .form-group {
             margin-bottom: 15px;
         }
 
+        .profile-card .form-control {
+            font-size: 14px;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
         .form-container {
-            width: 65%;
+            width: 60%; /* Reduced from 70% to 60% */
             padding: 30px;
         }
 
@@ -180,148 +80,174 @@
             font-size: 24px;
             font-weight: 600;
             color: #333;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
             margin-bottom: 20px;
         }
 
-        .form-container .form-control {
-            border-radius: 8px;
+        .form-control {
             border: 1px solid #e0e0e0;
+            border-radius: 8px;
             padding: 10px;
             font-size: 14px;
-            transition: all 0.3s ease;
+            width: 100%;
         }
 
-        .form-container .form-control:focus {
+        .form-control:focus {
             border-color: #00c4cc;
-            box-shadow: 0 0 5px rgba(0, 196, 204, 0.3);
+            box-shadow: none;
             outline: none;
         }
 
-        .form-container label {
+        label {
             font-size: 14px;
             color: #333;
             margin-bottom: 5px;
-            font-weight: 500;
+            display: block;
         }
 
-        .form-container .form-group {
-            margin-bottom: 15px;
+        select.form-control {
+            appearance: none;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="gray" viewBox="0 0 16 16"><path d="M8 12l-4-4h8l-4 4z"/></svg>') no-repeat right 10px center;
+            background-size: 12px;
         }
 
-        .form-container .btn-primary {
-            background-color: #00c4cc;
+        .row .col-md-6 {
+            padding-right: 10px;
+            padding-left: 10px;
+        }
+
+        .btn-primary {
             border: none;
             border-radius: 25px;
             padding: 10px 20px;
             font-size: 14px;
             font-weight: 500;
             text-transform: uppercase;
-            transition: background-color 0.3s ease, transform 0.3s ease;
+            color: #fff;
         }
 
-        .form-container .btn-primary:hover {
+        .btn-primary:hover {
             background-color: #00a8b0;
-            transform: translateY(-2px);
         }
 
-        .form-container .btn-secondary {
-            background-color: #ccc;
+        .btn-secondary {
+            background-color: #e0e0e0;
             border: none;
             border-radius: 25px;
             padding: 10px 20px;
             font-size: 14px;
             font-weight: 500;
             text-transform: uppercase;
-            transition: background-color 0.3s ease, transform 0.3s ease;
+            color: #333;
         }
 
-        .form-container .btn-secondary:hover {
-            background-color: #b0b0b0;
-            transform: translateY(-2px);
+        .btn-secondary:hover {
+            background-color: #d0d0d0;
         }
+
+        .btn i {
+            margin-right: 5px;
+        }
+
+        .d-flex {
+            gap: 10px;
+        }
+
+        .btn {
+    cursor: pointer;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+.d-none {
+    display: none;
+}
     </style>
 </head>
 <body>
-
-<div class="dashboard-container">
-    <!-- Profile Container with Single Form -->
-    <div class="profile-container">
+    <!-- Main Content -->
+    <div class="main-content">
         <form action="/users/update/<?php echo isset($user['user_id']) ? htmlspecialchars($user['user_id'], ENT_QUOTES, 'UTF-8') : '0'; ?>" method="POST" enctype="multipart/form-data">
-            <!-- Profile Card (Left Side) -->
-            <div class="profile-card">
-                <div class="form-group">
-                    <label for="image" class="form-label">Profile Image</label>
-                    <div class="profile-image-container">
-                        <div class="profile-image-preview mb-2">
-                            <?php if (!empty($user['image'])): ?>
-                                <img src="/uploads/<?php echo htmlspecialchars($user['image'], ENT_QUOTES, 'UTF-8'); ?>" alt="Current Profile Image">
-                            <?php else: ?>
-                                <img src="/views/assets/img/user2-160x160.jpg" alt="Default Profile Image">
-                            <?php endif; ?>
-                        </div>
-                        <label class="upload-btn">
-                            <i class="fas fa-camera"></i>
-                            <input type="file" id="image" name="image" accept="image/*">
-                        </label>
-                    </div>
+            <div class="profile-container">
+                <div class="profile-card">
+                    <img id="profile-img" src="<?php echo !empty($user['image']) ? '/uploads/' . htmlspecialchars($user['image'], ENT_QUOTES, 'UTF-8') : '/views/assets/img/user2-160x160.jpg'; ?>" alt="Profile">
+                    <h3><?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name'], ENT_QUOTES, 'UTF-8'); ?></h3>
+                    <p class="username">@<?php echo htmlspecialchars($user['username'] ?? 'username', ENT_QUOTES, 'UTF-8'); ?></p>
+                    <div class="form-group">
+    <label for="image" class="btn btn-primary">
+        Change Profile Image
+        <input type="file" 
+               id="image" 
+               name="image" 
+               accept="image/*" 
+               class="d-none" 
+               onchange="this.previousElementSibling.textContent='Image Selected'">
+    </label>
+</div>
                 </div>
-                <h3><?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name'], ENT_QUOTES, 'UTF-8'); ?></h3>
-                <div class="role"><?php echo htmlspecialchars($user['role'], ENT_QUOTES, 'UTF-8'); ?></div>
-            </div>
 
-            <!-- Form (Right Side) -->
-            <div class="form-container">
-                <h2>Edit Profile</h2>
-                <div class="row">
-                    <div class="col-md-6 form-group">
-                        <label for="first_name" class="form-label">First Name</label>
-                        <input type="text" class="form-control" id="first_name" name="first_name" value="<?php echo htmlspecialchars($user['first_name'], ENT_QUOTES, 'UTF-8'); ?>" required>
+                <div class="form-container">
+                    <h2>Edit Profile</h2>
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label for="first_name">First Name</label>
+                            <input type="text" class="form-control" id="first_name" name="first_name" value="<?php echo htmlspecialchars($user['first_name'], ENT_QUOTES, 'UTF-8'); ?>" required>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label for="last_name">Last Name</label>
+                            <input type="text" class="form-control" id="last_name" name="last_name" value="<?php echo htmlspecialchars($user['last_name'], ENT_QUOTES, 'UTF-8'); ?>" required>
+                        </div>
                     </div>
-                    <div class="col-md-6 form-group">
-                        <label for="last_name" class="form-label">Last Name</label>
-                        <input type="text" class="form-control" id="last_name" name="last_name" value="<?php echo htmlspecialchars($user['last_name'], ENT_QUOTES, 'UTF-8'); ?>" required>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12 form-group">
-                        <label for="email" class="form-label">Email</label>
+                    <div class="form-group">
+                        <label for="email">Email</label>
                         <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8'); ?>" required>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" value="<?php echo htmlspecialchars($user['password'], ENT_QUOTES, 'UTF-8'); ?>">
-                </div>
-                <div class="form-group">
-                    <label for="role" class="form-label">Role</label>
-                    <select class="form-control" id="role" name="role" required>
-                        <option value="admin" <?php echo $user['role'] === 'admin' ? 'selected' : ''; ?>>Admin</option>
-                        <option value="user" <?php echo $user['role'] === 'user' ? 'selected' : ''; ?>>User</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="phone" class="form-label">Phone</label>
-                    <input type="tel" class="form-control" id="phone" name="phone" value="<?php echo htmlspecialchars($user['phone'], ENT_QUOTES, 'UTF-8'); ?>">
-                </div>
-
-                <div class="d-flex justify-content-end mt-4">
-                    <a href="/users" class="btn btn-secondary me-2"><i class="fas fa-arrow-left"></i> Cancel</a>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update Profile</button>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter new password to change">
+                    </div>
+                    <div class="form-group">
+                        <label for="role">Role</label>
+                        <select class="form-control" id="role" name="role" required>
+                            <option value="admin" <?php echo $user['role'] === 'admin' ? 'selected' : ''; ?>>Admin</option>
+                            <option value="user" <?php echo $user['role'] === 'user' ? 'selected' : ''; ?>>User</option>
+                            <option value="editor" <?php echo $user['role'] === 'editor' ? 'selected' : ''; ?>>Editor</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="tel" class="form-control" id="phone" name="phone" value="<?php echo htmlspecialchars($user['phone'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                    </div>
+                    <div class="d-flex justify-content-end mt-4">
+                        <a href="/users" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Cancel</a>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update Profile</button>
+                    </div>
                 </div>
             </div>
         </form>
     </div>
-</div>
 
-<script>
-    // Add image preview functionality
-    document.getElementById('image').addEventListener('change', function(e) {
-        const preview = document.querySelector('.profile-image-preview img');
-        const file = e.target.files[0];
-        if (file) {
-            preview.src = URL.createObjectURL(file);
-        }
-    });
-</script>
+    <script>
+        document.getElementById('image').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profile-img').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
 </body>
 </html>

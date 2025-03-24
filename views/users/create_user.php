@@ -238,10 +238,6 @@ if (!isset($_SESSION['user_id'])) {
                     <label for="phone" class="form-label">Phone</label>
                     <input type="tel" class="form-control" id="phone" name="phone">
                 </div>
-                <div class="form-group">
-                    <label for="image" class="form-label">Profile Image</label>
-                    <input type="file" class="form-control" id="image" name="image" accept="image/*">
-                </div>
                 <div class="d-flex justify-content-end mt-4">
                     <a href="/users" class="btn btn-secondary me-2"><i class="fas fa-arrow-left"></i> Cancel</a>
                     <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Create User</button>
