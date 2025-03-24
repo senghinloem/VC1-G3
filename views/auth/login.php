@@ -248,10 +248,10 @@ if (!isset($_SESSION['csrf_token'])) {
                                 </div>
                                 <button type="submit" class="btn btn-login">Login</button>
                             </form>
-
+<!-- 
                             <p class="mt-3 text-center">
                                 Not registered yet? <a href="/register" class="register-link">Create an account</a>
-                            </p>
+                            </p> -->
                         <?php endif; ?>
                     </div>
                 </div>

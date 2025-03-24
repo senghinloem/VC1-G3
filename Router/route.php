@@ -33,6 +33,8 @@ $route->get("/products", [ProductController::class, 'product']);
 $route->get("/create", [ProductController::class, 'create']);
 $route->post("/products/store", [ProductController::class, 'store']);
 $route->delete("/products/destroy/{product_id}", [ProductController::class, 'delete']);
+$route->post("/products/import", [ProductController::class, 'import']);
+
 
 // stock routes
 $route->get("/stock", [StockController::class, 'stock']);

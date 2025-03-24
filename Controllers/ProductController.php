@@ -77,6 +77,29 @@ class ProductController extends BaseController
 
     }
     
+    public function import() {
+        $inputData = json_decode(file_get_contents("php://input"), true);
+    
+        if (!isset($inputData['products']) || !is_array($inputData['products'])) {
+            echo json_encode(["success" => false, "message" => "Invalid data format"]);
+            return;
+        }
+    
+        foreach ($inputData['products'] as $product) {
+            $image = !empty($product['image']) ? $product['image'] : "uploads/default.png";
+            $name = $product['name'];
+            $description = $product['description'];
+            $price = floatval($product['price']);
+            $unit = $product['unit'];
+            $quantity = intval($product['quantity']);
+    
+            $this->product->addProduct($image, $name, $description, $price, $unit, $quantity);
+        }
+    
+        echo json_encode(["success" => true, "message" => "Products imported successfully"]);
+    }
+    
+    
 
     public function delete($product_id) {
         $this->product->deleteProduct($product_id);
