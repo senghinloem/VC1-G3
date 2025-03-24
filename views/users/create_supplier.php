@@ -64,13 +64,14 @@
                             </div>
 
                             <!-- Button Group (close together) -->
-                            <div class="d-flex gap-2 mt-4">
+                            <div class="d-flex gap-2 mt-4 justify-content-end">
                                 <!-- Cancel Button -->
                                 <a href="/suppliers" class="btn btn-secondary w-40">Cancel</a>
-
+                            
                                 <!-- Submit Button -->
                                 <button type="submit" class="btn btn-primary w-40">Create Supplier</button>
                             </div>
+
 
                         </form>
                     </div>
