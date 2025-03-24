@@ -41,4 +41,8 @@ class DashboardModel
         $row = $result -> fetch(PDO::FETCH_ASSOC);
         return $row['low_stock_count'] ??0;
     }
+
+  
+    
+    
 }

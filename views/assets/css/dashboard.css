@@ -2877,32 +2877,7 @@ hr.horizontal.gray-light {
     margin: 0 0.5rem;
   }
 
-  .navbar-vertical.navbar-expand-xl .navbar-nav .nav-link .nav-link-text,
-  .navbar-vertical.navbar-expand-xl .navbar-nav .nav-link .sidenav-mini-icon,
-  .navbar-vertical.navbar-expand-xl .navbar-nav .nav-link .sidenav-normal,
-  .navbar-vertical.navbar-expand-xl .navbar-nav .nav-link i {
-    pointer-events: none;
-  }
-
-  .navbar-vertical.navbar-expand-xl .navbar-nav .nav-item {
-    width: 100%;
-  }
-
-  .navbar-vertical.navbar-expand-xl .navbar-nav>.nav-item {
-    margin-top: 0.125rem;
-  }
-
-  .navbar-vertical.navbar-expand-xl .navbar-nav>.nav-item .icon .ni {
-    top: 0;
-  }
-
-  .navbar-vertical.navbar-expand-xl .navbar-nav>.nav-item>.nav-link .icon svg .color-background {
-    fill: #212529;
-  }
-
-  .navbar-vertical.navbar-expand-xl .navbar-nav>.nav-item>.nav-link .icon svg .color-foreground {
-    fill: #212229;
-  }
+  
 
   .navbar-vertical.navbar-expand-xl .lavalamp-object {
     width: calc(100% - 1rem) !important;
@@ -6210,3 +6185,7 @@ span.flatpickr-weekday {
 .flatpickr-day.startRange.startRange+.endRange:not(:nth-child(7n+1)) {
   box-shadow: -10px 0 0 #5e72e4;
 } 
+
+
+
+

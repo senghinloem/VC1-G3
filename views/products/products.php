@@ -20,6 +20,8 @@
     
     <h4>Products</h4>
 
+    
+
     <div class="table-responsive">
         <table class="table table-bordered table-hover">
             <thead>
