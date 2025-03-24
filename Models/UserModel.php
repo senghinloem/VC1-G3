@@ -5,19 +5,33 @@ class UserModel
 
     public function __construct()
     {
-        $this->db = new Database("localhost", "vc1_db", "root", "");
+        try {
+            $this->db = new Database("localhost", "vc1_db", "root", "");
+        } catch (Exception $e) {
+            die("Database connection failed: " . $e->getMessage());
+        }
     }
 
     public function getUsers()
     {
-        $result = $this->db->query("SELECT * FROM users");
-        return $result->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $result = $this->db->query("SELECT * FROM users");
+            return $result->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            error_log("Error in getUsers: " . $e->getMessage());
+            return [];
+        }
     }
 
     public function getUserById($user_id)
     {
-        $result = $this->db->query("SELECT * FROM users WHERE user_id = :user_id", [':user_id' => $user_id]);
-        return $result->fetch(PDO::FETCH_ASSOC);
+        try {
+            $result = $this->db->query("SELECT * FROM users WHERE user_id = :user_id", [':user_id' => $user_id]);
+            return $result->fetch(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            error_log("Error in getUserById: " . $e->getMessage());
+            return false;
+        }
     }
 
     public function addUser($first_name, $last_name, $email, $password, $role, $phone, $image = null)
@@ -25,8 +39,8 @@ class UserModel
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         try {
             $this->db->query(
-                "INSERT INTO users (first_name, last_name, email, password, role, phone, image) 
-                 VALUES (:first_name, :last_name, :email, :password, :role, :phone, :image)",
+                "INSERT INTO users (first_name, last_name, email, password, role, phone, image, last_activity) 
+                 VALUES (:first_name, :last_name, :email, :password, :role, :phone, :image, NOW())",
                 [
                     ':first_name' => $first_name,
                     ':last_name' => $last_name,
@@ -37,9 +51,10 @@ class UserModel
                     ':image' => $image
                 ]
             );
+            return true;
         } catch (PDOException $e) {
-            echo "Error adding user: " . $e->getMessage();
-            exit();
+            error_log("Error adding user: " . $e->getMessage());
+            return false;
         }
     }
 
@@ -72,9 +87,10 @@ class UserModel
             $sql .= " WHERE user_id = :user_id";
             
             $this->db->query($sql, $params);
+            return true;
         } catch (PDOException $e) {
-            echo "Error updating user: " . $e->getMessage();
-            exit();
+            error_log("Error updating user: " . $e->getMessage());
+            return false;
         }
     }
 
@@ -82,23 +98,89 @@ class UserModel
     {
         try {
             $this->db->query("DELETE FROM users WHERE user_id = :user_id", [':user_id' => $user_id]);
+            return true;
         } catch (PDOException $e) {
-            echo "Error deleting user: " . $e->getMessage();
-            exit();
+            error_log("Error deleting user: " . $e->getMessage());
+            return false;
         }
     }
 
     public function searchUsers($query)
     {
-        $sql = "SELECT * FROM users WHERE first_name LIKE :query OR last_name LIKE :query OR email LIKE :query";
-        $stmt = $this->db->query($sql, ['query' => '%' . $query . '%']);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $sql = "SELECT * FROM users WHERE first_name LIKE :query OR last_name LIKE :query OR email LIKE :query";
+            $stmt = $this->db->query($sql, ['query' => '%' . $query . '%']);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            error_log("Error in searchUsers: " . $e->getMessage());
+            return [];
+        }
     }
 
     public function getUserByEmail($email)
-{
-    $result = $this->db->query("SELECT * FROM users WHERE email = :email", [':email' => $email]);
-    return $result->fetch(PDO::FETCH_ASSOC);
-}
+    {
+        try {
+            $result = $this->db->query("SELECT * FROM users WHERE email = :email", [':email' => $email]);
+            return $result->fetch(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            error_log("Error in getUserByEmail: " . $e->getMessage());
+            return false;
+        }
+    }
 
+    public function getTotalUsers()
+    {
+        try {
+            $result = $this->db->query("SELECT COUNT(*) as total FROM users");
+            $row = $result->fetch(PDO::FETCH_ASSOC);
+            return $row['total'] ?? 0;
+        } catch (Exception $e) {
+            error_log("Error in getTotalUsers: " . $e->getMessage());
+            return 0;
+        }
+    }
+
+    public function getActiveUsers()
+    {
+        try {
+            $result = $this->db->query(
+                "SELECT COUNT(*) as total FROM users WHERE last_activity >= :time_threshold",
+                [':time_threshold' => date('Y-m-d H:i:s', strtotime('-15 minutes'))]
+            );
+            $row = $result->fetch(PDO::FETCH_ASSOC);
+            return $row['total'] ?? 0;
+        } catch (Exception $e) {
+            error_log("Error in getActiveUsers: " . $e->getMessage());
+            return 0;
+        }
+    }
+
+    public function getInactiveUsers()
+    {
+        try {
+            $result = $this->db->query(
+                "SELECT COUNT(*) as total FROM users WHERE last_activity < :time_threshold OR last_activity IS NULL",
+                [':time_threshold' => date('Y-m-d H:i:s', strtotime('-15 minutes'))]
+            );
+            $row = $result->fetch(PDO::FETCH_ASSOC);
+            return $row['total'] ?? 0;
+        } catch (Exception $e) {
+            error_log("Error in getInactiveUsers: " . $e->getMessage());
+            return 0;
+        }
+    }
+
+    public function updateLastActivity($user_id)
+    {
+        try {
+            $this->db->query(
+                "UPDATE users SET last_activity = NOW() WHERE user_id = :user_id",
+                [':user_id' => $user_id]
+            );
+            return true;
+        } catch (Exception $e) {
+            error_log("Error in updateLastActivity: " . $e->getMessage());
+            return false;
+        }
+    }
 }
