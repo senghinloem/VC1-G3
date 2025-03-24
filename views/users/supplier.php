@@ -10,7 +10,7 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
 
             <input type="text" id="searchInput" class="form-control w-50" placeholder="Search for supplier...">
-            <a href="/supplier/create" class="btn btn-info">+ Add New Supplier</a>
+            <a href="/supplier/create" class="btn btn-info">+ Create New Supplier</a>
 
         </div>
 
