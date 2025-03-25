@@ -45,8 +45,23 @@ class ProductListController extends BaseController {
 
 
     public function edit($product_id) {
-        $list = $this->list->getProductListById($product_id);
+        // Fetch the product details
+        $products = $this->list->getProductListById($product_id);
+        
+        // Check if product exists
+        if (empty($products)) {
+            $_SESSION['error'] = "Product not found";
+            header("Location: /product_list");
+            exit;
+        }
 
+        // Since getProductListById returns an array, take the first element
+        $product = $products[0];
+
+        // Render the edit view with product data
+        $this->view('products/edit_list', [
+            'product' => $product
+        ]);
     }
     // Update product details
     public function update($product_id) {
