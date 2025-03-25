@@ -22,10 +22,13 @@
 
     <div class="container mt-4" id="supplierListView">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <div class="position-relative w-50">
-                <input type="text" id="searchInput" class="form-control pe-5" placeholder="Search for supplier...">
-                <i class="bi bi-search position-absolute top-50 end-0 translate-middle-y me-3 text-muted"></i>
-            </div>
+            <div class="input-group w-50">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search for product..." />
+                <button class="btn btn-light border" type="button">
+                    <i class="bi bi-search"></i>
+                </button>
+        </div>
+
 
             <a href="/supplier/create" class="btn btn-info">+ Create New Supplier</a>
 
