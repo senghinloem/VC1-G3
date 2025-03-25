@@ -127,6 +127,9 @@ if (session_status() == PHP_SESSION_NONE) {
                   <a href="#" class="dropdown-item d-flex align-items-center">
                     <i class="bi bi-gear me-2"></i> Settings
                   </a>
+                  <a href="#" class="dropdown-item d-flex align-items-center">
+                    <i class="bi bi-arrow-left-right me-2"></i> Switch User
+                  </a>
                   <div class="dropdown-divider"></div>
                   <a href="/users/logout" class="dropdown-item d-flex align-items-center text-danger">
                     <i class="bi bi-box-arrow-right me-2"></i> Log out
