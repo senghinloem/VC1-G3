@@ -423,7 +423,7 @@ if (!isset($_SESSION['user_id'])) {
                                                     </button>
                                                     <ul class="dropdown-menu dropdown-menu-end">
                                                         <li>
-                                                            <a class="dropdown-item" href="/users/view/<?= $user['user_id'] ?>">
+                                                            <a class="dropdown-item" href="/users/detail/<?= $user['user_id'] ?>">
                                                                 <i class="fas fa-eye text-primary me-2"></i> View
                                                             </a>
                                                         </li>

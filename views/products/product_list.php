@@ -10,293 +10,448 @@ if (!isset($_SESSION['user_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Management</title>
-
+    <title>Product List Dashboard</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Font Awesome Icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    
-    <!-- Custom Styles -->
     <style>
-        :root {
-            --primary: #2c3e50;
-            --secondary: #3498db;
-            --danger: #e74c3c;
-            --success: #2ecc71;
-            --light: #ecf0f1;
-        }
-
-        body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        .card-container {
-            background: #ffffff;
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            margin: 2rem auto;
-            max-width: 1200px;
-        }
-
-        .header-section {
-            background: var(--primary);
-            color: white;
-            padding: 1.5rem;
-            border-radius: 15px 15px 0 0;
-            margin: -2rem -2rem 2rem;
-        }
-
-        .search-container {
+        /* Table container styling */
+        .table-container {
+            transition: opacity 0.3s ease;
+            max-height: 500px;
+            overflow-y: auto;
+            overflow-x: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             position: relative;
-            max-width: 500px;
         }
 
-        .search-container input {
-            border-radius: 25px;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+        .table-container.loading {
+            opacity: 0.5;
+            pointer-events: none;
         }
 
-        .search-container input:focus {
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-            outline: none;
-        }
-
-        .table-responsive {
-            border-radius: 10px;
+        /* Table styling */
+        .product-table {
+            margin-bottom: 0;
+            width: 100%;
+            min-width: 800px;
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: #ffffff;
+            border-radius: 8px;
             overflow: hidden;
         }
 
-        .table {
-            margin-bottom: 0;
-            background: white;
-        }
-
-        thead th {
-            background: var(--secondary);
-            color: white;
-            padding: 1rem;
-            font-weight: 600;
+        .product-table th {
+            background: linear-gradient(180deg, #f8f9fa, #f1f3f5);
+            font-weight: 700;
+            color: #2c3e50;
+            padding: 18px 24px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #dee2e6;
+            vertical-align: middle;
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            background-color: #f8f9fa;
+            text-align: center;
         }
 
-        tbody tr {
-            transition: all 0.3s ease;
+        .product-table td {
+            vertical-align: middle;
+            padding: 15px 24px;
+            color: #495057;
+            border-bottom: 1px solid #eceff1;
+            white-space: nowrap;
+            transition: background-color 0.2s ease;
+            text-align: center;
         }
 
-        tbody tr:hover {
-            background: var(--light);
-            transform: translateY(-2px);
+        table.product-table tbody tr:nth-child(odd) {
+            background-color: #e9ecef;
         }
 
-        /* New Action Menu Styles */
-        .action-menu {
-            position: relative;
+        table.product-table tbody tr:nth-child(even) {
+            background-color: #fff;
+        }
+
+        table.product-table tbody tr:hover {
+            background-color: #f5f7fa !important;
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+        }
+
+        table.product-table tbody tr td[colspan="7"] {
+            background-color: transparent;
+        }
+
+        /* Action buttons */
+        .action-btn {
+            background: transparent;
+            border: none;
+            color: #6c757d;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            font-size: 1.1rem;
+            transition: color 0.2s ease;
+        }
+
+        .action-btn:hover {
+            color: #0d6efd;
+        }
+
+        .product-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Card styling */
+        .card {
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            border: none;
+        }
+
+        .card-header {
+            background-color: #fff;
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+            padding: 1rem 1.5rem;
+        }
+
+        /* Search loading state */
+        .search-container .spinner {
+            display: none;
+            margin-left: 10px;
+            color: #0d6efd;
+        }
+
+        .search-container.loading .spinner {
             display: inline-block;
         }
 
-        .action-toggle {
-            background: var(--secondary);
-            color: white;
-            border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 40px 0;
         }
 
-        .action-toggle:hover {
-            background: var(--primary);
-            transform: rotate(90deg);
-        }
-
-        .action-options {
-            position: absolute;
-            right: 0;
-            top: 100%;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            min-width: 120px;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(10px);
-            transition: all 0.3s ease;
-            z-index: 10;
-        }
-
-        .action-menu:hover .action-options {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(5px);
-        }
-
-        .action-item {
-            display: flex;
-            align-items: center;
-            padding: 0.5rem 1rem;
-            color: var(--primary);
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .action-item:hover {
-            background: var(--light);
-            color: var(--secondary);
-        }
-
-        .action-item.danger {
-            color: var(--danger);
-        }
-
-        .action-item i {
-            margin-right: 0.5rem;
-        }
-
-        .modal-content {
-            border-radius: 15px;
-            border: none;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .modal-header {
-            background: var(--danger);
-            color: white;
-            border-radius: 15px 15px 0 0;
-        }
-
-        .btn-custom {
-            border-radius: 25px;
-            padding: 0.5rem 1.5rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .btn-custom:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        .empty-state i {
+            font-size: 3rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
         }
     </style>
 </head>
-<body>
-<div class="container card-container">
-    <!-- Header Section -->
-    <div class="header-section">
-        <div class="d-flex justify-content-between align-items-center">
-            <h3 class="mb-0"><i class="fas fa-cubes me-2"></i> Product List</h3>
-            <form action="/product_list/search" method="GET" class="search-container">
-                <input type="text" name="q" class="form-control" 
-                       placeholder="Search products..." 
-                       value="<?= htmlspecialchars($searchQuery ?? '') ?>">
-            </form>
+<body class="bg-light">
+    <div class="container-fluid py-4">
+        <div class="row mb-4 mx-2">
+            <!-- Header Card -->
+            <div class="col-12 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center">
+                            <h4 class="mb-0 d-flex align-items-center">
+                                <i class="fas fa-cogs me-2 text-primary"></i> Product List
+                            </h4>
+                            <div class="d-flex flex-wrap gap-3">
+                                <div class="search-container">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white border-end-0">
+                                            <i class="fas fa-search text-muted"></i>
+                                        </span>
+                                        <input type="text" 
+                                               class="form-control border-start-0" 
+                                               placeholder="Search products..." 
+                                               value="<?= htmlspecialchars($searchQuery ?? '') ?>" 
+                                               id="searchInput">
+                                    </div>
+                                    <i class="fas fa-spinner fa-spin spinner ms-2"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Table -->
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body p-0">
+                        <div class="table-container">
+                            <table class="product-table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th>Product ID</th>
+                                        <th>Product Name</th>
+                                        <th>Price</th>
+                                        <th>Unit</th>
+                                        <th>Stock ID</th>
+                                        <th>Stock Name</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (!empty($products) && is_array($products)): ?>
+                                        <?php foreach ($products as $product): ?>
+                                            <tr>
+                                                <td><?= htmlspecialchars($product['product_id']) ?></td>
+                                                <td><?= htmlspecialchars($product['product_name']) ?></td>
+                                                <td>$<?= number_format((float)$product['price'], 2) ?></td>
+                                                <td><?= htmlspecialchars($product['unit']) ?></td>
+                                                <td><?= htmlspecialchars($product['stock_id'] ?? '') ?></td>
+                                                <td><?= htmlspecialchars($product['stock_name'] ?? 'N/A') ?></td>
+                                                <td>
+                                                    <button class="action-btn" type="button" 
+                                                            data-bs-toggle="dropdown" 
+                                                            aria-expanded="false"
+                                                            data-bs-toggle="tooltip" 
+                                                            title="Actions">
+                                                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu Raton-menu-end">
+                                                        <li>
+                                                            <a class="dropdown-item" href="/product_list/edit/<?= $product['product_id'] ?>">
+                                                                <i class="fas fa-edit text-success me-2"></i> Edit
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <button type="button" 
+                                                                    class="dropdown-item text-danger" 
+                                                                    data-bs-toggle="modal" 
+                                                                    data-bs-target="#confirmDeleteModal" 
+                                                                    data-productid="<?= $product['product_id'] ?>" 
+                                                                    data-productname="<?= htmlspecialchars($product['product_name']) ?>">
+                                                                <i class="fas fa-trash-alt me-2"></i> Delete
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="7">
+                                                <div class="empty-state">
+                                                    <i class="fas fa-box-open"></i>
+                                                    <h5>No products found</h5>
+                                                    <p>No products match your criteria or none have been added yet.</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Product Table -->
-    <div class="table-responsive">
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Price</th>
-                    <th>Unit</th>
-                    <th>Stock ID</th>
-                    <th>Stock Name</th>
-                    <th class="text-center">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (!empty($products) && is_array($products)): ?>
-                    <?php foreach ($products as $product): ?>
-                        <tr>
-                            <td><?= htmlspecialchars($product['product_id']) ?></td>
-                            <td><?= htmlspecialchars($product['product_name']) ?></td>
-                            <td>$<?= number_format((float)$product['price'], 2) ?></td>
-                            <td><?= htmlspecialchars($product['unit']) ?></td>
-                            <td><?= htmlspecialchars($product['stock_id'] ?? '') ?></td>
-                            <td><?= htmlspecialchars($product['stock_name'] ?? 'N/A') ?></td>
-                            <td class="text-center">
-                                <div class="action-menu">
-                                    <button class="action-toggle">
-                                        <i class="fas fa-ellipsis-h"></i>
-                                    </button>
-                                    <div class="action-options">
-                                        <a href="/product_list/edit/<?= $product['product_id'] ?>" 
-                                           class="action-item">
-                                            <i class="fas fa-edit"></i> Edit
-                                        </a>
-                                        <button class="action-item danger" 
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#confirmDeleteModal"
-                                                data-productid="<?= $product['product_id'] ?>">
-                                            <i class="fas fa-trash"></i> Delete
-                                        </button>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <div class="mb-3">
+                        <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
+                    </div>
+                    <h5 class="mb-2">Are you sure?</h5>
+                    <p class="text-muted mb-0">You are about to delete product <strong id="deleteProductName"></strong>. This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form id="deleteForm" method="POST">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash-alt me-2"></i>Delete Product
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl, { trigger: 'hover' });
+        });
+
+        // Handle delete modal
+        const confirmDeleteModal = document.getElementById('confirmDeleteModal');
+        if (confirmDeleteModal) {
+            confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const productId = button.getAttribute('data-productid');
+                const productName = button.getAttribute('data-productname');
+                
+                document.getElementById('deleteProductName').textContent = productName;
+                document.getElementById('deleteForm').action = "/product_list/destroy/" + productId;
+            });
+
+            confirmDeleteModal.addEventListener('show.bs.modal', function () {
+                tooltipList.forEach(tooltip => tooltip.hide());
+            });
+        }
+
+        // Enhanced Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const tableContainer = document.querySelector('.table-container');
+        const tbody = document.querySelector('.product-table tbody');
+        const searchContainer = document.querySelector('.search-container');
+        let debounceTimeout;
+        let lastQuery = '';
+        const debounceDelay = 300;
+
+        async function performSearch(query) {
+            try {
+                searchContainer.classList.add('loading');
+                tableContainer.classList.add('loading');
+
+                const response = await fetch(`/product_list/search?q=${encodeURIComponent(query)}`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) throw new Error('Network response was not ok');
+
+                const data = await response.json();
+                updateTable(data.products);
+            } catch (error) {
+                console.error('Search error:', error);
+                showErrorState();
+            } finally {
+                searchContainer.classList.remove('loading');
+                tableContainer.classList.remove('loading');
+            }
+        }
+
+        function updateTable(products) {
+            tbody.innerHTML = '';
+
+            if (!products || products.length === 0) {
+                tbody.innerHTML = `
                     <tr>
-                        <td colspan="7" class="text-center py-4">
-                            <i class="fas fa-box-open me-2"></i> No products found
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <i class="fas fa-box-open"></i>
+                                <h5>No products found</h5>
+                                <p>No products match your search criteria.</p>
+                            </div>
                         </td>
                     </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
-    </div>
-</div>
+                `;
+                return;
+            }
 
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmDeleteModalLabel">
-                    <i class="fas fa-exclamation-triangle me-2"></i> Confirm Deletion
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to delete this product? This action cannot be undone.
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-custom" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-1"></i> Cancel
-                </button>
-                <form id="deleteForm" method="POST">
-                    <button type="submit" class="btn btn-danger btn-custom">
-                        <i class="fas fa-trash me-1"></i> Delete
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+            products.forEach(product => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${escapeHtml(product.product_id)}</td>
+                    <td>${escapeHtml(product.product_name)}</td>
+                    <td>$${Number(product.price).toFixed(2)}</td>
+                    <td>${escapeHtml(product.unit)}</td>
+                    <td>${escapeHtml(product.stock_id || '')}</td>
+                    <td>${escapeHtml(product.stock_name || 'N/A')}</td>
+                    <td>
+                        <button class="action-btn" type="button" 
+                                data-bs-toggle="dropdown" 
+                                aria-expanded="false"
+                                data-bs-toggle="tooltip" 
+                                title="Actions">
+                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="/product_list/edit/${product.product_id}">
+                                    <i class="fas fa-edit text-success me-2"></i> Edit
+                                </a>
+                            </li>
+                            <li>
+                                <button type="button" 
+                                        class="dropdown-item text-danger" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#confirmDeleteModal" 
+                                        data-productid="${product.product_id}" 
+                                        data-productname="${escapeHtml(product.product_name)}">
+                                    <i class="fas fa-trash-alt me-2"></i> Delete
+                                </button>
+                            </li>
+                        </ul>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
 
-<!-- Bootstrap JS and Custom Script -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var confirmDeleteModal = document.getElementById('confirmDeleteModal');
-        confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget;
-            var productId = button.getAttribute('data-productid');
-            var form = document.getElementById('deleteForm');
-            form.action = "/product_list/destroy/" + productId;
+            const newTooltips = [].slice.call(tbody.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            newTooltips.forEach(el => new bootstrap.Tooltip(el, { trigger: 'hover' }));
+        }
+
+        function showErrorState() {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7">
+                        <div class="empty-state">
+                            <i class="fas fa-exclamation-triangle text-danger"></i>
+                            <h5>Search Error</h5>
+                            <p>Something went wrong. Please try again.</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+
+        function escapeHtml(unsafe) {
+            return (unsafe || '')
+                .toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        searchInput.addEventListener('input', function () {
+            const query = this.value.trim();
+            if (query === lastQuery) return;
+
+            clearTimeout(debounceTimeout);
+            
+            if (query.length === 0 || query.length >= 1) {
+                debounceTimeout = setTimeout(() => {
+                    lastQuery = query;
+                    performSearch(query);
+                }, debounceDelay);
+            }
         });
+
+        searchInput.addEventListener('change', function () {
+            if (this.value.trim() === '' && lastQuery !== '') {
+                lastQuery = '';
+                performSearch('');
+            }
+        });
+
+        function resetLoadingStates() {
+            searchContainer.classList.remove('loading');
+            tableContainer.classList.remove('loading');
+        }
+
+        window.addEventListener('load', resetLoadingStates);
+        window.addEventListener('pageshow', resetLoadingStates);
+        resetLoadingStates();
     });
-</script>
+    </script>
 </body>
 </html>
