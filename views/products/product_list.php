@@ -211,7 +211,7 @@ if (!isset($_SESSION['user_id'])) {
                                                             title="Actions">
                                                         <i class="fa-solid fa-ellipsis-vertical"></i>
                                                     </button>
-                                                    <ul class="dropdown-menu Raton-menu-end">
+                                                    <ul class="dropdown-menu dropdown-menu-end">
                                                         <li>
                                                             <a class="dropdown-item" href="/product_list/edit/<?= $product['product_id'] ?>">
                                                                 <i class="fas fa-edit text-success me-2"></i> Edit
@@ -268,7 +268,7 @@ if (!isset($_SESSION['user_id'])) {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <form id="deleteForm" method="POST">
+                    <form id="deleteForm" method="POST" action="">
                         <button type="submit" class="btn btn-danger">
                             <i class="fas fa-trash-alt me-2"></i>Delete Product
                         </button>
