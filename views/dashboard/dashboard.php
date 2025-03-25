@@ -47,7 +47,10 @@
 
     <div class="container mt-4">
         <h2>Dashboard</h2>
-        <?php $text = "$ " ?>
+        <?php 
+        $text = "$ ";
+        $symbol = "%"
+        ?>
 
 
         <div class="row">
@@ -57,13 +60,13 @@
                         <div class="row">
                             <div class="col-8">
                                 <div class="numbers">
-                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Products</p>
+                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Overall Products</p>
                                     <h5 class="font-weight-bolder">
                                         <?= $totalProducts; ?>
                                     </h5>
                                     <p class="mb-0">
-                                        <span class="text-success text-sm font-weight-bolder">+55%</span>
-                                        since yesterday
+                                        <span class="text-success text-sm font-weight-bolder"><?= $totalProductsPercentage . $symbol ?></span>
+                                        of 650 produts
                                     </p>
                                 </div>
                             </div>
@@ -82,7 +85,7 @@
                         <div class="row">
                             <div class="col-8">
                                 <div class="numbers">
-                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Items</p>
+                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Item Count</p>
                                     <h5 class="font-weight-bolder">
                                         <?= $totalQuantity; ?>
                                     </h5>
@@ -107,14 +110,14 @@
                         <div class="row">
                             <div class="col-8">
                                 <div class="numbers">
-                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Price</p>
+                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Overall Cost</p>
                                     <h5 class="font-weight-bolder">
                                         <?= $text . $totalPrice ?>
                                     </h5>
                                     <p class="mb-0">
-                                        <span class="text-danger text-sm font-weight-bolder">-2%</span>
-                                        since last quarter
+                                        <span class="text-success text-sm font-weight-bolder"></span> than last month
                                     </p>
+                                    
                                 </div>
                             </div>
                             <div class="col-4 text-end">
@@ -136,8 +139,10 @@
                                     <h5 class="font-weight-bolder">
                                         <?= $totalLowStock ?>
                                     </h5>
+                                    
                                     <p class="mb-0">
-                                        <span class="text-success text-sm font-weight-bolder">+5%</span> than last month
+                                        <span class="text-danger text-sm font-weight-bolder"><?= $lowStockPercentage . $symbol ?></span>
+                                        Running Low
                                     </p>
                                 </div>
                             </div>

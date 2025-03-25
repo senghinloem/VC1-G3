@@ -26,6 +26,7 @@ $route->delete("/users/destroy/{user_id}", [UserController::class, 'destroy']);
 $route->post("/users/authenticate", [UserController::class, 'authenticate']);
 $route->get ("/users/logout", [UserController::class, 'logout']);
 $route->get("/users/search", [UserController::class, 'search']);
+$route->get("/users/detail/{user_id}", [UserController::class, 'userDetail']);
 
 // welcome
 $route->get("/", [WelcomeController::class, 'welcome']);
@@ -47,13 +48,12 @@ $route->get("/stock/edit/{stock_id}", [StockController::class, 'edit']);
 $route->post("/stock/update/{stock_id}", [StockController::class, 'update']);
 $route->post("/stock/destroy/{stock_id}", [StockController::class, 'destroy']);
 
-
 // product list
 $route->get("/product_list", [ProductListController::class, 'product_list']);
 $route->get("/product_list/create_list", [ProductListController::class, 'create_list']);
 $route->post("/product_list/store", [ProductListController::class, 'store']);
 $route->get("/product_list/edit/{id}", [ProductListController::class, 'edit']);
-$route->put("/product_list/update", [ProductListController::class, 'update']);
+$route->post("/product_list/update/{id}", [ProductListController::class, 'update']); // Changed to POST and added {id}
 $route->delete("/product_list/destroy/{id}", [ProductListController::class, 'destroy']);
 $route->get('/product_list/search', [ProductListController::class, 'search']);
 
