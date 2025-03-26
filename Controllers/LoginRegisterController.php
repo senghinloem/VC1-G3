@@ -1,9 +1,7 @@
 <?php
 require_once "BaseController.php";
 require_once "Models/UserModel.php";
-require_once "vendor/autoload.php"; // For PHPMailer
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+require_once "vendor/autoload.php"; // For Resend SDK
 
 class LoginRegisterController extends BaseController {
     private $user;
@@ -157,36 +155,22 @@ class LoginRegisterController extends BaseController {
             if ($token) {
                 $resetLink = "http://localhost/reset-password?token=" . $token;
                 
-                $mail = new PHPMailer(true);
                 try {
-                    // Enable detailed debugging
-                    $mail->SMTPDebug = 3; // 0 = off, 1 = client messages, 2 = client and server messages, 3 = more verbose
-                    $mail->Debugoutput = function($str, $level) {
-                        error_log("PHPMailer Debug [$level]: $str");
-                        $_SESSION['debug_message'] .= "Debug [$level]: $str<br>";
-                    };
+                    // Initialize Resend client
+                    $resend = Resend::client('re_5NbMTSVc_JcxKUVXgRKBnUjMMiRdPL7q4');
 
-                    // SendGrid SMTP configuration
-                    $mail->isSMTP();
-                    $mail->Host = 'smtp.sendgrid.net';
-                    $mail->SMTPAuth = true;
-                    $mail->Username = 'apikey'; // SendGrid uses 'apikey' as the username
-                    $mail->Password = 'SG.your-sendgrid-api-key-here'; // Replace with your SendGrid API key
-                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                    $mail->Port = 587;
+                    // Send email using Resend SDK
+                    $resend->emails->send([
+                        'from' => 'onboarding@resend.dev', // Replace with your verified sender email
+                        'to' => $email,
+                        'subject' => 'Password Reset Request',
+                        'html' => "Click this link to reset your password: <a href='$resetLink'>$resetLink</a>",
+                    ]);
 
-                    // Ensure the sender email is verified in SendGrid
-                    $mail->setFrom('your-verified-sender-email@example.com', 'VC1-G3 App'); // Replace with your verified sender email
-                    $mail->addAddress($email);
-                    $mail->isHTML(true);
-                    $mail->Subject = 'Password Reset Request';
-                    $mail->Body = "Click this link to reset your password: <a href='$resetLink'>$resetLink</a>";
-                    
-                    $mail->send();
                     $_SESSION['success'] = 'Password reset link has been sent to your email';
                 } catch (Exception $e) {
-                    $_SESSION['error_message'] = 'Failed to send reset email. Error: ' . $mail->ErrorInfo;
-                    error_log("Mail error: " . $mail->ErrorInfo);
+                    $_SESSION['error_message'] = 'Failed to send reset email. Error: ' . $e->getMessage();
+                    error_log("Mail error: " . $e->getMessage());
                 }
             } else {
                 $_SESSION['error_message'] = 'Email not found or error occurred';
