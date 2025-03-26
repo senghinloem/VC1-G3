@@ -21,17 +21,39 @@
 <body>
 
     <div class="container mt-4" id="supplierListView">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <div class="position-relative w-50">
-                <input type="text" id="searchInput" class="form-control pe-5" placeholder="Search for supplier...">
-                <i class="bi bi-search position-absolute top-50 end-0 translate-middle-y me-3 text-muted"></i>
+                <!-- Header Card -->
+                <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center">
+                        <h4 class="mb-0 d-flex align-items-center">
+                            <i class="fas fa-truck me-2 text-primary"></i> Suppliers Management
+                        </h4>
+                        <div class="d-flex flex-wrap gap-3">
+                            <!-- Search Form -->
+                            <div class="search-container">
+                                <form action="/suppliers/search" method="GET" class="d-flex align-items-center" id="searchForm">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white border-end-0">
+                                            <i class="fas fa-search text-muted"></i>
+                                        </span>
+                                        <input type="text" name="search" class="form-control border-start-0" 
+                                               placeholder="Search for product..." 
+                                               id="searchInput">
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- Add Supplier Button -->
+                            <a href="/supplier/create" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Create Supplier
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <a href="/supplier/create" class="btn btn-info">+ Create New Supplier</a>
-
         </div>
 
-        <h4>Suppliers List</h4>
+
         <div class="table-responsive">
             <table class="table table-bordered table-striped">
                 <thead class="table-secondary">

@@ -43,15 +43,92 @@ class ProductListController extends BaseController {
         ]);
     }
 
-    // Placeholder for edit method (not implemented in your original)
+
     public function edit($product_id) {
-        // Implement edit logic here if needed
-        die("Edit method not implemented for product ID: " . htmlspecialchars($product_id));
+        // Fetch the product details
+        $products = $this->list->getProductListById($product_id);
+        
+        // Check if product exists
+        if (empty($products)) {
+            $_SESSION['error'] = "Product not found";
+            header("Location: /product_list");
+            exit;
+        }
+
+        // Since getProductListById returns an array, take the first element
+        $product = $products[0];
+
+        // Render the edit view with product data
+        $this->view('products/edit_list', [
+            'product' => $product
+        ]);
+    }
+    // Update product details
+    public function update($product_id) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Validate and sanitize input
+            $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
+            $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
+            $price = filter_input(INPUT_POST, 'price', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+            $unit = filter_input(INPUT_POST, 'unit', FILTER_SANITIZE_STRING);
+
+            // Basic validation
+            if (empty($name) || empty($price) || empty($unit)) {
+                $_SESSION['error'] = "Please fill in all required fields";
+                $this->view('products/product_edit', [
+                    'product' => $this->list->getProductListById($product_id)[0]
+                ]);
+                return;
+            }
+
+            try {
+                $result = $this->list->updateProduct($product_id, $name, $description, $price, $unit);
+                
+                if ($result) {
+                    $_SESSION['success'] = "Product updated successfully";
+                    header("Location: /product_list");
+                    exit;
+                } else {
+                    $_SESSION['error'] = "Failed to update product";
+                }
+            } catch (Exception $e) {
+                $_SESSION['error'] = "Error updating product: " . $e->getMessage();
+            }
+        }
+
+        // If not POST, show the edit form
+        $this->edit($product_id);
     }
 
-    // Placeholder for destroy method (not implemented in your original)
+    // Delete a product
     public function destroy($product_id) {
-        // Implement delete logic here if needed
-        die("Destroy method not implemented for product ID: " . htmlspecialchars($product_id));
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                $products = $this->list->getProductListById($product_id);
+                
+                if (empty($products)) {
+                    $_SESSION['error'] = "Product not found";
+                    header("Location: /product_list");
+                    exit;
+                }
+
+                $result = $this->list->deleteProduct($product_id);
+                
+                if ($result) {
+                    $_SESSION['success'] = "Product deleted successfully";
+                } else {
+                    $_SESSION['error'] = "Failed to delete product";
+                }
+            } catch (Exception $e) {
+                $_SESSION['error'] = "Error deleting product: " . $e->getMessage();
+            }
+            
+            header("Location: /product_list");
+            exit;
+        }
+
+        // If not POST, redirect to product list
+        header("Location: /product_list");
+        exit;
     }
 }
