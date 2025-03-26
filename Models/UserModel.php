@@ -58,41 +58,83 @@ class UserModel
         }
     }
 
+    // public function updateUser($user_id, $first_name, $last_name, $email, $password, $role, $phone, $image = null)
+    // {
+    //     try {
+    //         $params = [
+    //             ':user_id' => $user_id,
+    //             ':first_name' => $first_name,
+    //             ':last_name' => $last_name,
+    //             ':email' => $email,
+    //             ':password' => $password,
+    //             ':role' => $role,
+    //             ':phone' => $phone
+    //         ];
+            
+    //         $sql = "UPDATE users 
+    //                 SET first_name = :first_name, 
+    //                     last_name = :last_name, 
+    //                     email = :email, 
+    //                     password = :password, 
+    //                     role = :role, 
+    //                     phone = :phone";
+            
+    //         if ($image !== null) {
+    //             $sql .= ", image = :image";
+    //             $params[':image'] = $image;
+    //         }
+            
+    //         $sql .= " WHERE user_id = :user_id";
+            
+    //         $this->db->query($sql, $params);
+    //         return true;
+    //     } catch (PDOException $e) {
+    //         error_log("Error updating user: " . $e->getMessage());
+    //         return false;
+    //     }
+    // }
+
     public function updateUser($user_id, $first_name, $last_name, $email, $password, $role, $phone, $image = null)
-    {
-        try {
-            $params = [
-                ':user_id' => $user_id,
-                ':first_name' => $first_name,
-                ':last_name' => $last_name,
-                ':email' => $email,
-                ':password' => $password,
-                ':role' => $role,
-                ':phone' => $phone
-            ];
-            
-            $sql = "UPDATE users 
-                    SET first_name = :first_name, 
-                        last_name = :last_name, 
-                        email = :email, 
-                        password = :password, 
-                        role = :role, 
-                        phone = :phone";
-            
-            if ($image !== null) {
-                $sql .= ", image = :image";
-                $params[':image'] = $image;
-            }
-            
-            $sql .= " WHERE user_id = :user_id";
-            
-            $this->db->query($sql, $params);
-            return true;
-        } catch (PDOException $e) {
-            error_log("Error updating user: " . $e->getMessage());
-            return false;
+{
+    try {
+        $params = [
+            ':user_id' => $user_id,
+            ':first_name' => $first_name,
+            ':last_name' => $last_name,
+            ':email' => $email,
+            ':role' => $role,
+            ':phone' => $phone
+        ];
+        
+        $sql = "UPDATE users 
+                SET first_name = :first_name, 
+                    last_name = :last_name, 
+                    email = :email, 
+                    role = :role, 
+                    phone = :phone";
+        
+        if (!empty($password)) {
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+            $sql .= ", password = :password";
+            $params[':password'] = $hashedPassword;
+            error_log("Updating user $user_id with hashed password: $hashedPassword"); // Debug
         }
+        
+        if ($image !== null) {
+            $sql .= ", image = :image";
+            $params[':image'] = $image;
+        }
+        
+        $sql .= " WHERE user_id = :user_id";
+        
+        $this->db->query($sql, $params);
+        error_log("User $user_id updated successfully"); // Debug
+        return true;
+    } catch (PDOException $e) {
+        error_log("Error updating user $user_id: " . $e->getMessage());
+        return false;
     }
+}
 
     public function deleteUser($user_id)
     {
