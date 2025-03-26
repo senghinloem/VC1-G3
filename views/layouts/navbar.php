@@ -67,6 +67,7 @@ if (session_status() == PHP_SESSION_NONE) {
                 </div>
               </div>
             </li>
+            
             <!--end::Notifications Dropdown-->
 
 
@@ -126,9 +127,6 @@ if (session_status() == PHP_SESSION_NONE) {
                   </a>
                   <a href="#" class="dropdown-item d-flex align-items-center">
                     <i class="bi bi-gear me-2"></i> Settings
-                  </a>
-                  <a href="#" class="dropdown-item d-flex align-items-center">
-                    <i class="bi bi-arrow-left-right me-2"></i> Switch User
                   </a>
                   <div class="dropdown-divider"></div>
                   <a href="/users/logout" class="dropdown-item d-flex align-items-center text-danger">
