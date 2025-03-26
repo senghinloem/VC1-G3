@@ -9,13 +9,12 @@
     <style>
         body {
             background-color: #f8f9fa;
-            font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
         }
 
         .main-content {
-            margin-left: 150px;
+            margin-left: 10px;
             padding: 70px 20px;
         }
 
