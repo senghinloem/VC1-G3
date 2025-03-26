@@ -82,7 +82,7 @@ if (session_status() == PHP_SESSION_NONE) {
                                              alt="User Image"
                                              width="40"
                                              height="40"
-                                             onerror="this.src='/views/assets/img/user2-160x160.jpg'" />
+                            />
                             <?php
                                     }
                                 }
@@ -93,7 +93,7 @@ if (session_status() == PHP_SESSION_NONE) {
                                      alt="User Image"
                                      width="40"
                                      height="40"
-                                     onerror="this.src='/views/assets/img/user2-160x160.jpg'" />
+                               />
                             <?php
                             }
                             ?>
@@ -108,7 +108,7 @@ if (session_status() == PHP_SESSION_NONE) {
                                      alt="User Image"
                                      width="80"
                                      height="80"
-                                     onerror="this.src='/views/assets/img/user2-160x160.jpg'" />
+                                    />
                                 <p class="mb-0 fw-bold">
                                     <?php echo $_SESSION['last_name'] ?? 'Unknown'; ?>
                                 </p>
