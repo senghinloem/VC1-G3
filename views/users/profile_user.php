@@ -47,7 +47,7 @@ $isOnline = $lastActivity && (strtotime($lastActivity) >= strtotime('-15 minutes
         .main-content {
             margin-left: 250px;
             margin-top: 5px;
-            margin-left: 130px;
+            margin-left: 120px;
             padding: 40px;
             width: calc(100% - 250px);
             min-height: calc(100vh - 70px);

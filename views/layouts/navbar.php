@@ -67,86 +67,68 @@ if (session_status() == PHP_SESSION_NONE) {
               </div>
             </li>
             <!--end::Notifications Dropdown-->
-            <!--begin::User Menu Dropdown-->
-            <li class="nav-item dropdown user-menu">
-              <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
-                <?php
-                if (isset($users) && is_array($users)) {
-                    foreach ($users as $user) {
-                        if ($user['user_id'] == $_SESSION['user_id']) {
-                            $userImage = !empty($user['image']) ? '/uploads/' . htmlspecialchars($user['image'], ENT_QUOTES, 'UTF-8') : null;
-                            if ($userImage): ?>
-                              <img src="<?php echo $userImage; ?>"
-                                   class="user-image rounded-circle shadow-sm me-2"
-                                   alt="User Image"
-                                   width="40"
-                                   height="40"
-                              />
-                            <?php else: ?>
-                              <div class="profile-avatar rounded-circle shadow-sm me-2 d-flex align-items-center justify-content-center bg-light" style="width: 40px; height: 40px;">
-                                <i class="fas fa-user-astronaut fs-5 text-primary"></i>
-                              </div>
-                            <?php endif;
-                        }
-                    }
-                } else {
-                    $userImage = !empty($_SESSION['user_image']) ? $_SESSION['user_image'] : null;
-                    if ($userImage): ?>
-                      <img src="<?php echo $userImage; ?>"
-                           class="user-image rounded-circle shadow-sm me-2"
-                           alt="User Image"
-                           width="40"
-                           height="40"
-                      />
-                    <?php else: ?>
-                      <div class="profile-avatar rounded-circle shadow-sm me-2 d-flex align-items-center justify-content-center bg-light" style="width: 40px; height: 40px;">
-                        <i class="fas fa-user-astronaut fs-5 text-primary"></i>
-                      </div>
-                    <?php endif;
-                }
-                ?>
-                <span class="d-none d-md-inline text-dark fw-semibold">
-                  <?php echo $_SESSION['last_name'] ?? 'Unknown'; ?>
-                </span>
-              </a>
-              <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end shadow border-0 rounded-3">
-                <li class="user-header d-flex flex-column align-items-center p-3 bg-light border-bottom">
-                  <?php
-                  $dropdownImage = !empty($_SESSION['user_image']) ? $_SESSION['user_image'] : null;
-                  if ($dropdownImage): ?>
-                    <img src="<?php echo $dropdownImage; ?>"
-                         class="rounded-circle shadow-sm mb-2"
-                         alt="User Image"
-                         width="80"
-                         height="80"
-                    />
-                  <?php else: ?>
-                    <div class="profile-avatar rounded-circle shadow-sm mb-2 d-flex align-items-center justify-content-center bg-light" style="width: 80px; height: 80px;">
-                      <i class="fas fa-user-astronaut fs-2 text-primary"></i>
-                    </div>
-                  <?php endif; ?>
-                  <p class="mb-0 fw-bold">
-                    <?php echo $_SESSION['last_name'] ?? 'Unknown'; ?>
-                  </p>
-                  <small class="opacity-75">
-                    <?php echo $_SESSION['user_role'] ?? 'Role Unknown'; ?>
-                  </small>
-                </li>
-                <li class="p-2">
-                  <a href="/users/profile" class="dropdown-item d-flex align-items-center">
-                    <i class="bi bi-person-circle me-2"></i> Profile
-                  </a>
-                  <a href="#" class="dropdown-item d-flex align-items-center">
-                    <i class="bi bi-gear me-2"></i> Settings
-                  </a>
-                  <div class="dropdown-divider"></div>
-                  <a href="/users/logout" class="dropdown-item d-flex align-items-center text-danger">
-                    <i class="bi bi-box-arrow-right me-2"></i> Log out
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <!--end::User Menu Dropdown-->
+<!--begin::User Menu Dropdown-->
+<li class="nav-item dropdown user-menu">
+  <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
+    <?php
+    // Use session data for consistency across all pages
+    $userImage = !empty($_SESSION['user_image']) ? $_SESSION['user_image'] : null;
+    $userFirstName = $_SESSION['first_name'] ?? 'Unknown';
+    $userLastName = $_SESSION['last_name'] ?? '';
+    $fullName = trim("$userFirstName $userLastName");
+
+    if ($userImage): ?>
+      <img src="<?php echo htmlspecialchars($userImage, ENT_QUOTES, 'UTF-8'); ?>"
+           class="user-image rounded-circle shadow-sm me-2"
+           alt="User Image"
+           width="40"
+           height="40"
+      />
+    <?php else: ?>
+      <div class="profile-avatar rounded-circle shadow-sm me-2 d-flex align-items-center justify-content-center bg-light" style="width: 40px; height: 40px;">
+        <i class="fas fa-user-astronaut fs-5 text-primary"></i>
+      </div>
+    <?php endif; ?>
+    <span class="d-none d-md-inline text-dark fw-semibold">
+      <?php echo htmlspecialchars($fullName); ?>
+    </span>
+  </a>
+  <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end shadow border-0 rounded-3">
+    <li class="user-header d-flex flex-column align-items-center p-3 bg-light border-bottom">
+      <?php if ($userImage): ?>
+        <img src="<?php echo htmlspecialchars($userImage, ENT_QUOTES, 'UTF-8'); ?>"
+             class="rounded-circle shadow-sm mb-2"
+             alt="User Image"
+             width="80"
+             height="80"
+        />
+      <?php else: ?>
+        <div class="profile-avatar rounded-circle shadow-sm mb-2 d-flex align-items-center justify-content-center bg-light" style="width: 80px; height: 80px;">
+          <i class="fas fa-user-astronaut fs-2 text-primary"></i>
+        </div>
+      <?php endif; ?>
+      <p class="mb-0 fw-bold">
+        <?php echo htmlspecialchars($fullName); ?>
+      </p>
+      <small class="opacity-75">
+        <?php echo htmlspecialchars($_SESSION['user_role'] ?? 'Role Unknown'); ?>
+      </small>
+    </li>
+    <li class="p-2">
+      <a href="/users/profile" class="dropdown-item d-flex align-items-center">
+        <i class="bi bi-person-circle me-2"></i> Profile
+      </a>
+      <a href="#" class="dropdown-item d-flex align-items-center">
+        <i class="bi bi-gear me-2"></i> Settings
+      </a>
+      <div class="dropdown-divider"></div>
+      <a href="/users/logout" class="dropdown-item d-flex align-items-center text-danger">
+        <i class="bi bi-box-arrow-right me-2"></i> Log out
+      </a>
+    </li>
+  </ul>
+</li>
+<!--end::User Menu Dropdown-->
           </ul>
           <!--end::End Navbar Links-->
         </div>
