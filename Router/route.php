@@ -27,6 +27,7 @@ $route->post("/users/authenticate", [UserController::class, 'authenticate']);
 $route->get ("/users/logout", [UserController::class, 'logout']);
 $route->get("/users/search", [UserController::class, 'search']);
 $route->get("/users/detail/{user_id}", [UserController::class, 'userDetail']);
+$route->get("/users/profile", [UserController::class, 'profile']);
 
 // welcome
 $route->get("/", [WelcomeController::class, 'welcome']);

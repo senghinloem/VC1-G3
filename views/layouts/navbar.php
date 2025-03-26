@@ -82,18 +82,18 @@ if (session_status() == PHP_SESSION_NONE) {
                                              alt="User Image"
                                              width="40"
                                              height="40"
-                                             onerror="this.src='/views/assets/img/user2-160x160.jpg'" />
+                                        />
                             <?php
                                     }
                                 }
                             } else {
                             ?>
-                                <img src="<?php echo $_SESSION['user_image'] ?? '/views/assets/img/user2-160x160.jpg'; ?>"
+                                <img src="<?php echo $_SESSION['user_image'] ?? ''; ?>"
                                      class="user-image rounded-circle shadow-sm me-2"
                                      alt="User Image"
                                      width="40"
                                      height="40"
-                                     onerror="this.src='/views/assets/img/user2-160x160.jpg'" />
+                                 />
                             <?php
                             }
                             ?>
@@ -108,7 +108,7 @@ if (session_status() == PHP_SESSION_NONE) {
                                      alt="User Image"
                                      width="80"
                                      height="80"
-                                     onerror="this.src='/views/assets/img/user2-160x160.jpg'" />
+                                    />
                                 <p class="mb-0 fw-bold">
                                     <?php echo $_SESSION['last_name'] ?? 'Unknown'; ?>
                                 </p>
@@ -117,7 +117,7 @@ if (session_status() == PHP_SESSION_NONE) {
                                 </small>
                             </li>
                             <li class="p-2">
-                                <a href="#" class="dropdown-item d-flex align-items-center">
+                                <a href="/users/profile" class="dropdown-item d-flex align-items-center">
                                     <i class="bi bi-person-circle me-2"></i> Profile
                                 </a>
                                 <a href="#" class="dropdown-item d-flex align-items-center">

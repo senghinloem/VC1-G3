@@ -33,6 +33,12 @@ class UserController extends BaseController
         ]);
     }
 
+    public function profile ()
+
+    {
+        $this->view('users/profile_user');
+    }
+
     public function userDetail($user_id = null)
     {
         if (!$user_id) {
