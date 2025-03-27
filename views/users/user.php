@@ -319,9 +319,13 @@ if (!isset($_SESSION['user_id'])) {
                                         <?php endif; ?>
                                     </form>
                                 </div>
+                                <?php if ($_SESSION['user_role'] === 'admin'): ?>
                                 <a href="/users/create" class="btn btn-primary">
                                     <i class="fas fa-plus me-2"></i>Add User
+                                
                                 </a>
+
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -371,7 +375,9 @@ if (!isset($_SESSION['user_id'])) {
                                         <th class="text-center">Last Name</th>
                                         <th class="text-center">Email</th>
                                         <th class="text-center">Status</th>
+                                        <?php if ($_SESSION['user_role'] === 'admin'): ?>
                                         <th class="text-center">Actions</th>
+                                        <?php endif; ?>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -413,6 +419,7 @@ if (!isset($_SESSION['user_id'])) {
                                                         <?= htmlspecialchars($isOnline ? 'Online' : 'Offline') ?>
                                                     </span>
                                                 </td>
+                                                <?php if ($_SESSION['user_role'] === 'admin'): ?>
                                                 <td class="text-center">
                                                     <button class="action-btn" type="button" 
                                                             data-bs-toggle="dropdown" 
@@ -444,6 +451,7 @@ if (!isset($_SESSION['user_id'])) {
                                                         </li>
                                                     </ul>
                                                 </td>
+                                                <?php endif; ?>
                                             </tr>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
