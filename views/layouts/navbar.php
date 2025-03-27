@@ -215,17 +215,6 @@ if (session_status() == PHP_SESSION_NONE) {
         </div>
       </aside>
       
-      <script>
-        document.addEventListener('DOMContentLoaded', function() {
-          const currentPath = window.location.pathname;
-          const sidebarLinks = document.querySelectorAll('.sidebar-menu .nav-link');
-          sidebarLinks.forEach(link => {
-            const linkPath = link.getAttribute('href');
-            if (currentPath === linkPath) {
-              link.classList.add('active');
-            }
-          });
-        });
-      </script>
+    
 
     <?php endif; ?>
