@@ -66,6 +66,7 @@ if (session_status() == PHP_SESSION_NONE) {
                 </div>
               </div>
             </li>
+            
             <!--end::Notifications Dropdown-->
 <!--begin::User Menu Dropdown-->
 <li class="nav-item dropdown user-menu">
