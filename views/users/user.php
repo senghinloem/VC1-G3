@@ -375,6 +375,8 @@ if (!isset($_SESSION['user_id'])) {
                                         <th class="text-center">Last Name</th>
                                         <th class="text-center">Email</th>
                                         <th class="text-center">Status</th>
+
+                                
                                         <?php if ($_SESSION['user_role'] === 'admin'): ?>
                                         <th class="text-center">Actions</th>
                                         <?php endif; ?>
@@ -429,11 +431,13 @@ if (!isset($_SESSION['user_id'])) {
                                                         <i class="fa-solid fa-ellipsis-vertical"></i>
                                                     </button>
                                                     <ul class="dropdown-menu dropdown-menu-end">
+                                            
                                                         <li>
                                                             <a class="dropdown-item" href="/users/detail/<?= $user['user_id'] ?>">
                                                                 <i class="fas fa-eye text-primary me-2"></i> View
                                                             </a>
                                                         </li>
+                                                        
                                                         <li>
                                                             <a class="dropdown-item" href="/users/edit/<?= $user['user_id'] ?>">
                                                                 <i class="fas fa-edit text-success me-2"></i> Edit
@@ -448,6 +452,7 @@ if (!isset($_SESSION['user_id'])) {
                                                                     data-username="<?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?>">
                                                                 <i class="fas fa-trash-alt me-2"></i> Delete
                                                             </button>
+                                                            
                                                         </li>
                                                     </ul>
                                                 </td>
