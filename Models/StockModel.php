@@ -14,6 +14,7 @@ class StockModel
         }
     }
 
+    // Get all stock items
     public function getStock()
     {
         try {
@@ -45,6 +46,7 @@ class StockModel
         }
     }
 
+    // Add a new stock item
     public function addStock($stock_name)
     {
         try {
@@ -60,6 +62,7 @@ class StockModel
         }
     }
 
+    // Update an existing stock item
     public function updateStock($stock_id, $stock_name)
     {
         try {
@@ -74,6 +77,7 @@ class StockModel
         }
     }
 
+    // Delete a stock item
     public function deleteStock($stock_id)
     {
         try {
@@ -86,5 +90,6 @@ class StockModel
             return false;
         }
     }
+    
 }
 ?>

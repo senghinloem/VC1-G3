@@ -33,6 +33,12 @@ class UserController extends BaseController
         ]);
     }
 
+    public function profile ()
+
+    {
+        $this->view('users/profile_user');
+    }
+
     public function userDetail($user_id = null)
     {
         if (!$user_id) {
@@ -98,35 +104,73 @@ class UserController extends BaseController
         $this->view('users/edit_user', ['user' => $user]);
     }
 
-    public function update($user_id)
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $image = null;
-            if (isset($_FILES['image']) && $_FILES['image']['error'] !== UPLOAD_ERR_NO_FILE) {
-                $image = $this->handleImageUpload($_FILES['image']);
-                if ($image === false) {
-                    header("Location: /users/edit/$user_id?error=Invalid image");
-                    exit();
-                }
-            }
+    // public function update($user_id)
+    // {
+    //     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    //         $image = null;
+    //         if (isset($_FILES['image']) && $_FILES['image']['error'] !== UPLOAD_ERR_NO_FILE) {
+    //             $image = $this->handleImageUpload($_FILES['image']);
+    //             if ($image === false) {
+    //                 header("Location: /users/edit/$user_id?error=Invalid image");
+    //                 exit();
+    //             }
+    //         }
             
-            if ($this->user->updateUser(
-                $user_id,
-                $_POST['first_name'] ?? '',
-                $_POST['last_name'] ?? '',
-                $_POST['email'] ?? '',
-                $_POST['password'] ?? '',
-                $_POST['role'] ?? '',
-                $_POST['phone'] ?? '',
-                $image
-            )) {
-                header("Location: /users");
-            } else {
-                header("Location: /users/edit/$user_id?error=Failed to update user");
-            }
+    //         if ($this->user->updateUser(
+    //             $user_id,
+    //             $_POST['first_name'] ?? '',
+    //             $_POST['last_name'] ?? '',
+    //             $_POST['email'] ?? '',
+    //             $_POST['password'] ?? '',
+    //             $_POST['role'] ?? '',
+    //             $_POST['phone'] ?? '',
+    //             $image
+    //         )) {
+    //             header("Location: /users");
+    //         } else {
+    //             header("Location: /users/edit/$user_id?error=Failed to update user");
+    //         }
+    //         exit();
+    //     }
+    // }
+
+    public function update($user_id)
+{
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $password = trim($_POST['password'] ?? '');
+        if (!empty($password) && strlen($password) < 6) {
+            header("Location: /users/edit/$user_id?error=Password must be at least 6 characters");
             exit();
         }
+        
+        $image = null;
+        if (isset($_FILES['image']) && $_FILES['image']['error'] !== UPLOAD_ERR_NO_FILE) {
+            $image = $this->handleImageUpload($_FILES['image']);
+            if ($image === false) {
+                header("Location: /users/edit/$user_id?error=Invalid image");
+                exit();
+            }
+        }
+        
+        $result = $this->user->updateUser(
+            $user_id,
+            $_POST['first_name'] ?? '',
+            $_POST['last_name'] ?? '',
+            $_POST['email'] ?? '',
+            $password, // Pass trimmed password (empty string if not provided)
+            $_POST['role'] ?? '',
+            $_POST['phone'] ?? '',
+            $image
+        );
+        
+        if ($result) {
+            header("Location: /users?success=User updated successfully");
+        } else {
+            header("Location: /users/edit/$user_id?error=Failed to update user");
+        }
+        exit();
     }
+}
 
     public function destroy($user_id)
     {

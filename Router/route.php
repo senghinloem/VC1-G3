@@ -27,6 +27,7 @@ $route->post("/users/authenticate", [UserController::class, 'authenticate']);
 $route->get ("/users/logout", [UserController::class, 'logout']);
 $route->get("/users/search", [UserController::class, 'search']);
 $route->get("/users/detail/{user_id}", [UserController::class, 'userDetail']);
+$route->get("/users/profile", [UserController::class, 'profile']);
 
 // welcome
 $route->get("/", [WelcomeController::class, 'welcome']);
@@ -69,7 +70,7 @@ $route->get("/supplier/detail/{supplier_id}", [SupplierController::class, 'detai
 
 // login and register
 $route->get("/login", [LoginRegisterController::class, 'login']);
-$route->get("/register", [LoginRegisterController::class, 'register']);
+// $route->get("/register", [LoginRegisterController::class, 'register']);
 $route->get("/error", [LoginRegisterController::class, 'error']);
 
 // help

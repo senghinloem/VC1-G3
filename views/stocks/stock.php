@@ -1,3 +1,12 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+if (!isset($_SESSION['user_id'])) {
+    header("Location: /login");
+    exit();
+}
+?>
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div class="input-group w-50">
@@ -84,4 +93,3 @@
         </div>
     </div>
 </div>
-

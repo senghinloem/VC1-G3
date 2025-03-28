@@ -105,6 +105,8 @@ class ProductController extends BaseController
         $this->product->deleteProduct($product_id);
         header("Location: /products");
     }
+
+    
 }
 
 ?>
