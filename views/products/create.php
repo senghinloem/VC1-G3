@@ -90,6 +90,7 @@
 
                         <div class="col-md-12">
                             <label class="form-label">Product Image</label>
+                            <p class="text-warning">(should white background)</p> 
                             <div class="image-upload">
                                 <img src="views/assets/images/upload.svg" alt="Upload Icon">
                                 <p>Drag and drop a file to upload or click</p>

@@ -35,7 +35,7 @@ $route->get("/dashboard", [DashboardController::class, 'dashboard']);
 $route->get("/products", [ProductController::class, 'product']);
 $route->get("/create", [ProductController::class, 'create']);
 $route->post("/products/store", [ProductController::class, 'store']);
-$route->delete("/products/destroy/{product_id}", [ProductController::class, 'delete']);
+$route->post("/products/destroy/multiple", [ProductController::class, 'deleteMultiple']);
 $route->post("/products/import", [ProductController::class, 'import']);
 
 
