@@ -1,24 +1,3 @@
-<?php if (isset($_SESSION['success_message'])): ?>
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <?= $_SESSION['success_message']; ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            <?php unset($_SESSION['success_message']); ?>
-        <?php endif; ?>
-
-        <?php
-session_start();
-
-// Check if there's a success message
-if (isset($_SESSION['success'])) {
-    $successMessage = $_SESSION['success'];
-    // Clear the success message after displaying it (optional)
-    unset($_SESSION['success']);
-} else {
-    $successMessage = null;
-}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -36,6 +15,8 @@ if (isset($_SESSION['success'])) {
 
 
     <link rel="stylesheet" href="../../views/assets/css/dashboard.css">
+    <!-- <link rel="stylesheet" href="../images/user.css"> -->
+
 
     <style>
         .card {
@@ -59,76 +40,17 @@ if (isset($_SESSION['success'])) {
             min-width: 150px;
             margin-bottom: 15px;
         }
-
-        font-family: 'Inter', sans-serif;
-            background: #f5f7fa;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0;
-        }
-
-        .dashboard-container {
-            text-align: center;
-            background: #ffffff;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-            max-width: 500px;
-            width: 100%;
-        }
-
-        .dashboard-container h1 {
-            font-size: 28px;
-            font-weight: 600;
-            color: #1a252f;
-            margin-bottom: 20px;
-        }
-
-        .dashboard-container p {
-            font-size: 16px;
-            color: #6c757d;
-            margin-bottom: 20px;
-        }
-
-        .btn-logout {
-            background: #dc3545;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
-            font-size: 16px;
-            font-weight: 500;
-            color: #ffffff;
-            transition: background 0.3s ease;
-        }
-
-        .btn-logout:hover {
-            background: #c82333;
-        }
-
-        /* Success message styling */
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border-color: #c3e6cb;
-            margin-bottom: 20px;
-        }
     </style>
 </head>
 
 <body>
-    
+
     <div class="container mt-4">
-        <!-- Display Bootstrap alert if success message exists -->
-        <?php if ($successMessage): ?>
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <?php echo htmlspecialchars($successMessage); ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        <?php endif; ?>
         <h2>Dashboard</h2>
-        <?php $text = "$ " ?>
+        <?php 
+        $text = "$ ";
+        $symbol = "%"
+        ?>
 
 
         <div class="row">
@@ -138,13 +60,13 @@ if (isset($_SESSION['success'])) {
                         <div class="row">
                             <div class="col-8">
                                 <div class="numbers">
-                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Products</p>
+                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Overall Products</p>
                                     <h5 class="font-weight-bolder">
                                         <?= $totalProducts; ?>
                                     </h5>
                                     <p class="mb-0">
-                                        <span class="text-success text-sm font-weight-bolder">+55%</span>
-                                        since yesterday
+                                        <span class="text-success text-sm font-weight-bolder"><?= $totalProductsPercentage . $symbol ?></span>
+                                        of 650 produts
                                     </p>
                                 </div>
                             </div>
@@ -163,7 +85,7 @@ if (isset($_SESSION['success'])) {
                         <div class="row">
                             <div class="col-8">
                                 <div class="numbers">
-                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Items</p>
+                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Item Count</p>
                                     <h5 class="font-weight-bolder">
                                         <?= $totalQuantity; ?>
                                     </h5>
@@ -188,14 +110,14 @@ if (isset($_SESSION['success'])) {
                         <div class="row">
                             <div class="col-8">
                                 <div class="numbers">
-                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Price</p>
+                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Overall Cost</p>
                                     <h5 class="font-weight-bolder">
                                         <?= $text . $totalPrice ?>
                                     </h5>
                                     <p class="mb-0">
-                                        <span class="text-danger text-sm font-weight-bolder">-2%</span>
-                                        since last quarter
+                                        <span class="text-success text-sm font-weight-bolder"></span> than last month
                                     </p>
+                                    
                                 </div>
                             </div>
                             <div class="col-4 text-end">
@@ -217,8 +139,10 @@ if (isset($_SESSION['success'])) {
                                     <h5 class="font-weight-bolder">
                                         <?= $totalLowStock ?>
                                     </h5>
+                                    
                                     <p class="mb-0">
-                                        <span class="text-success text-sm font-weight-bolder">+5%</span> than last month
+                                        <span class="text-danger text-sm font-weight-bolder"><?= $lowStockPercentage . $symbol ?></span>
+                                        Running Low
                                     </p>
                                 </div>
                             </div>
@@ -240,7 +164,7 @@ if (isset($_SESSION['success'])) {
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card bg-primary text-white p-3 mb-2">
+                <!-- <div class="card bg-primary text-white p-3 mb-2">
                     <h5>Total Items</h5>
                     <hr>
                     <p class="stat-number">60 Items</p>
@@ -249,12 +173,45 @@ if (isset($_SESSION['success'])) {
                     <h5>Zero Stock Items</h5>
                     <hr>
                     <p class="stat-number">1 Items</p>
-                </div>
+                </div> -->
+
                 
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">All Users</h4>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled team-members">
+                                    <?php if (!empty($users)): ?>
+                                        <?php foreach ($users as $user): ?>
+                                            <li>
+                                                <div class="row">
+                                                    <div class="col-md-2 col-2">
+                                                        <div class="avatar">
+                                                            <img src="../../views/images/user.png" alt="Circle Image" class="img-circle img-no-padding img-responsive" style="border-radius: 50%; width: 40px; height: 40px; object-fit: cover">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-7 col-7">
+                                                        <?= htmlspecialchars($user['username']) ?>
+                                                        <br />
+                                                        <span class="text-muted"><small><?= htmlspecialchars($user['account_status']) ?></small></span>
+                                                    </div>
+                                                    <div class="col-md-3 col-3 text-right">
+                                                        <btn class="btn btn-sm btn-outline-success btn-round btn-icon"><i class="fa fa-envelope"></i></btn>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <li>No users found.</li>
+                                    <?php endif; ?>
+                                </ul>
+                            </div>
+                        </div>
+               
+
             </div>
         </div>
-
-        
 
         <script>
 
@@ -392,6 +349,7 @@ if (isset($_SESSION['success'])) {
         </div>
     </div>
 
+<!-- to display product on dashboard -->
     <script>
         const products = <?= json_encode($products); ?>;
         const labels = products.map(product => product.name);

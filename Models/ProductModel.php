@@ -60,6 +60,7 @@ class ProductModel
             echo "Error deleting products: " . $e->getMessage();
         }
     }
+   
 }
 
 ?>
