@@ -23,6 +23,8 @@ class DashboardController extends BaseController
         $totalQuantity = $this->product->getTotalQuantity(); 
         $totalPrice = $this->product->getTotalPrice(); 
         $totalLowStock = $this->product->getLowStockCount(); 
+        $totalProductsPercentage = $this->product->getTotalProductsPercentage();
+        $lowStockPercentage = $this->product->getLowStockPercentage();
         
         $this->view('dashboard/dashboard', [
             'products' => $products,
@@ -30,18 +32,10 @@ class DashboardController extends BaseController
             'totalQuantity' => $totalQuantity,
             'totalPrice' => $totalPrice,
             'totalLowStock' => $totalLowStock,
+            'totalProductsPercentage'=> $totalProductsPercentage,
+            'lowStockPercentage' => $lowStockPercentage,
         ]);
-    }
-
-
-
-    
-    
-    
-    
-
-   
-
+    }   
     
 }
 

@@ -15375,5 +15375,145 @@ html.maximized-card {
 .img-size-32 {
   width: 32px;
 }
+.app-sidebar {
+  width: 250px; /* Adjust width as needed */
+  min-height: 100vh;
+}
 
-/*# sourceMappingURL=adminlte.css.map */
+/* Style for the active sidebar link */
+.nav-item .nav-link.active {
+  background-color: #fff !important; /* White background for the active link */
+  color: #000 !important; /* Black text to contrast with the white background */
+  font-weight: 500; /* Slightly bolder text */
+}
+
+/* Ensure non-active links remain white */
+  .nav-item {
+    color: #fff; /* Default text color for non-active links */
+  }
+
+/* Hover effect for non-active links */
+.nav-item .nav-link:hover:not(.active) {
+  background-color: rgba(255, 255, 255, 0.1); /* Subtle white overlay on hover */
+  transition: background-color 0.2s ease; /* Smooth transition for hover effect */
+}
+
+/* Special case for the logout link (text-danger) when active */
+.nav-item .nav-link.text-danger.active {
+  background-color: #fff !important; /* White background */
+  color: #dc3545 !important; /* Retain the red color for logout text */
+}
+
+/* Enhance dropdown appearance */
+.dropdown-menu {
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  border-radius: 12px !important;
+  
+}
+
+.notification-badge {
+  top: 30% !important;
+  right: -60% !important;
+  transform: translate(-50%, -50%) !important;
+  font-size: 0.75rem;
+  padding: 0.25em 0.5em;
+  border-radius: 50% !important;
+  border: 1px solid white;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Hover effect for dropdown items */
+.dropdown-item {
+  transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa !important;
+}
+
+/* Footer link hover effect */
+.dropdown-footer a {
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.dropdown-footer a:hover {
+  background-color: #007bff !important;
+  color: #fff !important;
+}
+
+/* Badge styling */
+.badge {
+  font-size: 0.75rem;
+  padding: 0.35em 0.65em;
+}
+
+.dropdown-menu {
+  min-width: 300px; 
+  border: none !important; 
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+  border-radius: 12px !important;
+}
+
+/* User header styling */
+.user-header {
+  background: linear-gradient(135deg, #007bff, #0056b3);  
+  border-radius: 8px 8px 0 0 !important; 
+}
+
+/* User image styling */
+.user-header img {
+  border: 3px solid #fff;  
+  transition: transform 0.3s ease;  
+}
+
+.user-header img:hover {
+  transform: scale(1.05); 
+}
+
+/* User name and role */
+.user-header p {
+  color: #fff; 
+}
+
+.user-header small {
+  color: rgba(255, 255, 255, 0.8); 
+}
+
+/* Dropdown items */
+.dropdown-item {
+  transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa !important; 
+}
+
+/* Icon styling in dropdown items */
+.dropdown-item i {
+  color: #007bff; 
+}
+
+/* Logout item */
+.dropdown-item.text-danger i {
+  color: #dc3545; 
+}
+
+/* Ensure the dropdown toggle (user image and name) looks clean */
+.nav-link.dropdown-toggle {
+  padding: 0.5rem 1rem;
+  /* display: flex; */
+  /* flex-direction: column; */
+}
+
+/* User image in the navbar */
+.user-image {
+  
+  border: 2px solid blue; 
+}
+
+/* user profilse */
+
+

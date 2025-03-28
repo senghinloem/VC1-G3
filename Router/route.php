@@ -23,6 +23,8 @@ $route->delete("/users/destroy/{user_id}", [UserController::class, 'destroy']);
 $route->post("/users/authenticate", [UserController::class, 'authenticate']);
 $route->get("/users/logout", [UserController::class, 'logout']);
 $route->get("/users/search", [UserController::class, 'search']);
+$route->get("/users/detail/{user_id}", [UserController::class, 'userDetail']);
+$route->get("/users/profile", [UserController::class, 'profile']);
 
 // welcome
 $route->get("/", [WelcomeController::class, 'welcome']);
@@ -45,7 +47,6 @@ $route->get("/stock/edit/{stock_id}", [StockController::class, 'edit']);
 $route->put("/stock/update/{stock_id}", [StockController::class, 'update']);
 $route->delete("/stock/destroy/{stock_id}", [StockController::class, 'destroy']); 
 $route->get("/stock/search", [StockController::class, 'search']);
-
 
 // product list
 $route->get("/product_list", [ProductListController::class, 'product_list']);

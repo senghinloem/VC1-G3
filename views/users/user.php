@@ -319,9 +319,13 @@ if (!isset($_SESSION['user_id'])) {
                                         <?php endif; ?>
                                     </form>
                                 </div>
+                                <?php if ($_SESSION['user_role'] === 'admin'): ?>
                                 <a href="/users/create" class="btn btn-primary">
                                     <i class="fas fa-plus me-2"></i>Add User
+                                
                                 </a>
+
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -366,12 +370,16 @@ if (!isset($_SESSION['user_id'])) {
                             <table class="user-table table-borderless">
                                 <thead>
                                     <tr>
-                                        <th>User</th>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
-                                        <th>Email</th>
-                                        <th>Status</th>
-                                        <th class="text-end">Actions</th>
+                                        <th class="text-center">User</th>
+                                        <th class="text-center">First Name</th>
+                                        <th class="text-center">Last Name</th>
+                                        <th class="text-center">Email</th>
+                                        <th class="text-center">Status</th>
+
+                                
+                                        <?php if ($_SESSION['user_role'] === 'admin'): ?>
+                                        <th class="text-center">Actions</th>
+                                        <?php endif; ?>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -388,7 +396,7 @@ if (!isset($_SESSION['user_id'])) {
                                     <?php else: ?>
                                         <?php foreach ($users as $user): ?>
                                             <tr>
-                                                <td>
+                                                <td class="text-center">
                                                     <div class="user-avatar">
                                                         <?php if (!empty($user['image'])): ?>
                                                             <img src="/uploads/<?= htmlspecialchars($user['image']) ?>" alt="<?= htmlspecialchars($user['first_name']) ?>">
@@ -397,14 +405,14 @@ if (!isset($_SESSION['user_id'])) {
                                                         <?php endif; ?>
                                                     </div>
                                                 </td>
-                                                <td class="user-name">
+                                                <td class="text-center">
                                                     <div class="fw-semibold"><?= htmlspecialchars($user['first_name']) ?></div>
                                                 </td>
-                                                <td><?= htmlspecialchars($user['last_name']) ?></td>
-                                                <td class="user-email">
-                                                    <div class="text-muted"><?= htmlspecialchars($user['email']) ?></div>
+                                                <td class="text-center"><?= htmlspecialchars($user['last_name']) ?></td>
+                                                <td class="user-email text-center">
+                                                    <div><?= htmlspecialchars($user['email']) ?></div>
                                                 </td>
-                                                <td>
+                                                <td class="text-center">
                                                     <?php
                                                     $isOnline = $user['last_activity'] && 
                                                                (strtotime($user['last_activity']) >= strtotime('-15 minutes'));
@@ -413,7 +421,8 @@ if (!isset($_SESSION['user_id'])) {
                                                         <?= htmlspecialchars($isOnline ? 'Online' : 'Offline') ?>
                                                     </span>
                                                 </td>
-                                                <td class="text-end">
+                                                <?php if ($_SESSION['user_role'] === 'admin'): ?>
+                                                <td class="text-center">
                                                     <button class="action-btn" type="button" 
                                                             data-bs-toggle="dropdown" 
                                                             aria-expanded="false"
@@ -422,11 +431,13 @@ if (!isset($_SESSION['user_id'])) {
                                                         <i class="fa-solid fa-ellipsis-vertical"></i>
                                                     </button>
                                                     <ul class="dropdown-menu dropdown-menu-end">
+                                            
                                                         <li>
-                                                            <a class="dropdown-item" href="/users/view/<?= $user['user_id'] ?>">
+                                                            <a class="dropdown-item" href="/users/detail/<?= $user['user_id'] ?>">
                                                                 <i class="fas fa-eye text-primary me-2"></i> View
                                                             </a>
                                                         </li>
+                                                        
                                                         <li>
                                                             <a class="dropdown-item" href="/users/edit/<?= $user['user_id'] ?>">
                                                                 <i class="fas fa-edit text-success me-2"></i> Edit
@@ -441,9 +452,11 @@ if (!isset($_SESSION['user_id'])) {
                                                                     data-username="<?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?>">
                                                                 <i class="fas fa-trash-alt me-2"></i> Delete
                                                             </button>
+                                                            
                                                         </li>
                                                     </ul>
                                                 </td>
+                                                <?php endif; ?>
                                             </tr>
                                         <?php endforeach; ?>
                                     <?php endif; ?>

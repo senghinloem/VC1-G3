@@ -110,6 +110,9 @@ if (session_status() == PHP_SESSION_NONE) {
     crossorigin="anonymous"
 ></script>
 
+
+
+
 </body>
 </html>
 <?php endif; ?>

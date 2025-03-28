@@ -41,4 +41,28 @@ class DashboardModel
         $row = $result -> fetch(PDO::FETCH_ASSOC);
         return $row['low_stock_count'] ??0;
     }
+
+    // culculate percent product
+    public function getTotalProductsPercentage()
+    {
+        $totalProducts = $this -> getTotalProducts();
+        $maxProducts = 650;
+        if ($maxProducts == 0){
+            return 0;
+        }
+        $percentage = ($totalProducts / $maxProducts) * 100;
+        return round($percentage, 2);
+    }
+
+    // culculate low product
+    public function getLowStockPercentage() {
+        $lowStockCount = $this->getLowStockCount();  
+        $maxProducts = 600;  
+        if ($maxProducts == 0) {
+            return 0;  
+        }
+        $percentage = ($lowStockCount / $maxProducts) * 100; 
+        return round($percentage, 2);  
+    }
+    
 }

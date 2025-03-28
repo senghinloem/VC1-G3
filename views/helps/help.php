@@ -100,7 +100,10 @@
                     </h2>
                     <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
-                            Go to "Product Management" from the sidebar, click "Create Product," and fill in the required details such as name, price, and stock quantity. You can also add product images, descriptions, and set categories to organize your inventory effectively.
+                            Go to "Product Management" from the sidebar, click "Add Product if you have excel file you can import excel file also" 
+                            and fill in the required details such as name, price, and stock quantity. You can also add product images, descriptions, 
+                            and set categories to organize your inventory effectively. If you want to add product by excel file in your excel table 
+                            must like table in this system.
                         </div>
                     </div>
                 </div>
@@ -108,7 +111,7 @@
                 <div class="accordion-item border-0 mb-3 shadow-sm rounded">
                     <h2 class="accordion-header" id="headingTwo">
                         <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                            How can I update stock levels?
+                            How can I update stock?
                         </button>
                     </h2>
                     <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
@@ -180,7 +183,7 @@
                     </div>
                     <h4 class="card-title">Email Support</h4>
                     <p class="card-text text-muted mb-3">Get help via email</p>
-                    <a href="mailto:support@pnnshop.com" class="btn btn-primary">support@pnnshop.com</a>
+                    <a href="#" class="btn btn-primary">dinleader@gmail.com</a>
                 </div>
             </div>
         </div>
@@ -195,7 +198,7 @@
                     </div>
                     <h4 class="card-title">Phone Support</h4>
                     <p class="card-text text-muted mb-3">Talk to our team directly</p>
-                    <a href="tel:+15551234567" class="btn btn-primary">+1 (555) 123-4567</a>
+                    <a href="tel:+15551234567" class="btn btn-primary">+855 69505726</a>
                 </div>
             </div>
         </div>
