@@ -158,7 +158,7 @@ if (!isset($_SESSION['user_id'])) {
                             </h4>
                             <div class="d-flex flex-wrap gap-3">
                                 <div class="search-container">
-                                    <div class="input-group">
+                                    <!-- <div class="input-group">
                                         <span class="input-group-text bg-white border-end-0">
                                             <i class="fas fa-search text-muted"></i>
                                         </span>
@@ -168,7 +168,16 @@ if (!isset($_SESSION['user_id'])) {
                                                value="<?= htmlspecialchars($searchQuery ?? '') ?>" 
                                                id="searchInput">
                                     </div>
-                                    <i class="fas fa-spinner fa-spin spinner ms-2"></i>
+                                    <i class="fas fa-spinner fa-spin spinner ms-2"></i> -->
+
+                                    <div class="col-md-12">
+            <div class="input-group">
+                <input type="text" id="searchInput" class="form-control" value="<?= htmlspecialchars($searchQuery ?? '') ?>"  placeholder="Search product... " onkeyup="searchFAQs()">
+                <button class="btn btn-primary" type="button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
                                 </div>
                             </div>
                         </div>
