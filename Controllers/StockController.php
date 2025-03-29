@@ -25,7 +25,7 @@ class StockController extends BaseController
     {
         $stock = $this->stockModel->getStockById($stock_id);
         if ($stock) {
-            $this->view('stocks/detail', ['stock' => $stock]); // Changed from 'stocks/view_detail' to 'stocks/detail'
+            $this->view('stocks/view_stock', ['stock' => $stock]); // Changed from 'stocks/view_detail' to 'stocks/detail'
         } else {
             $this->redirect('/stock?error=Stock not found');
         }
