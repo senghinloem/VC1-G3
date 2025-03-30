@@ -159,7 +159,7 @@ if (!isset($_SESSION['user_id'])) {
             <table class="supplier-table table-borderless">
                 <thead class="table-secondary">
                     <tr>
-                        <th scope="col">Supplier ID</th>
+
                         <th scope="col">Supplier Name</th>
                         <th scope="col">Email</th>
                         <th scope="col">Phone</th>
@@ -172,7 +172,7 @@ if (!isset($_SESSION['user_id'])) {
                     <?php if (!empty($suppliers) && is_array($suppliers)): ?>
                         <?php foreach ($suppliers as $supplier): ?>
                             <tr>
-                                <td><?= htmlspecialchars($supplier['supplier_id']) ?></td>
+
                                 <td><?= htmlspecialchars($supplier['supplier_name']) ?></td>
                                 <td><?= htmlspecialchars($supplier['email']) ?></td>
                                 <td><?= htmlspecialchars($supplier['phone']) ?></td>
@@ -216,7 +216,7 @@ if (!isset($_SESSION['user_id'])) {
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="7" class="text-center">
+                            <td colspan="6" class="text-center">
                                 <div class="empty-state">
                                     <i class="fas fa-box-open fa-3x text-muted"></i>
                                     <h5>No suppliers found</h5>
@@ -259,44 +259,15 @@ if (!isset($_SESSION['user_id'])) {
     </div>
 
     <!-- Bootstrap JS (Local Copy) -->
-    <!-- Replace 'js/bootstrap.bundle.min.js' with the actual path to your local file -->
+
     <script src="js/bootstrap.bundle.min.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Test if Bootstrap is loaded
-            if (typeof bootstrap === 'undefined') {
-                console.error('Bootstrap JavaScript is not loaded. Please check the script tag and ensure the file path is correct.');
-            } else {
-                console.log('Bootstrap JavaScript is loaded successfully.');
-
-                // Manually initialize dropdowns to ensure they work
-                const dropdownElementList = document.querySelectorAll('.dropdown-toggle');
-                dropdownElementList.forEach(dropdownToggleEl => {
-                    new bootstrap.Dropdown(dropdownToggleEl);
-                });
-            }
-
-            // Debug: Log when the dropdown button is clicked
-            const dropdownButtons = document.querySelectorAll('.dropdown-toggle');
-            dropdownButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    console.log('Dropdown button clicked:', button.id);
-                });
+            const dropdownElementList = document.querySelectorAll('.dropdown-toggle');
+            dropdownElementList.forEach(dropdownToggleEl => {
+                new bootstrap.Dropdown(dropdownToggleEl);
             });
-
-            // Debug: Log when the dropdown menu is shown or hidden
-            const dropdowns = document.querySelectorAll('.dropdown');
-            dropdowns.forEach(dropdown => {
-                dropdown.addEventListener('show.bs.dropdown', () => {
-                    console.log('Dropdown menu is being shown for:', dropdown.querySelector('.dropdown-toggle').id);
-                });
-                dropdown.addEventListener('hide.bs.dropdown', () => {
-                    console.log('Dropdown menu is being hidden for:', dropdown.querySelector('.dropdown-toggle').id);
-                });
-            });
-
-            // Handle delete modal
             const confirmDeleteModal = document.getElementById('confirmDeleteModal');
             if (confirmDeleteModal) {
                 confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
@@ -312,22 +283,25 @@ if (!isset($_SESSION['user_id'])) {
                 });
             }
 
-            // Search functionality
+
             const searchInput = document.getElementById("searchInput");
             if (searchInput) {
                 searchInput.addEventListener("keyup", function() {
                     let filter = this.value.toLowerCase();
-                    let rows = document.querySelectorAll("tbody tr");
-                
-                    rows.forEach(row => {
-                        let supplierID = row.cells[0].textContent.toLowerCase();
-                        let supplierName = row.cells[1].textContent.toLowerCase();
-                        let email = row.cells[2].textContent.toLowerCase();
-                        let phone = row.cells[3].textContent.toLowerCase();
-                        let address = row.cells[4].textContent.toLowerCase();
-                        let createdAt = row.cells[5].textContent.toLowerCase();
-
-                        row.style.display = supplierID.includes(filter) || supplierName.includes(filter) || email.includes(filter) || phone.includes(filter) || address.includes(filter) || createdAt.includes(filter) ? "" : "none";
+                    let rows = document.querySelectorAll("table tbody tr");
+                    rows.forEach(function(row) {
+                        let cells = row.getElementsByTagName("td");
+                        let found = false;
+                        Array.from(cells).forEach(function(cell) {
+                            if (cell.textContent.toLowerCase().includes(filter)) {
+                                found = true;
+                            }
+                        });
+                        if (found) {
+                            row.style.display = "";
+                        } else {
+                            row.style.display = "none";
+                        }
                     });
                 });
             }
