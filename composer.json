@@ -1,0 +1,13 @@
+{
+    "name": "dell/vc1-g3",
+    "authors": [
+        {
+            "name": "Leader-19",
+            "email": "dinleader200@gmail.com"
+        }
+    ],
+    "require": {
+        "setasign/fpdf": "^1.8",
+        "phpoffice/phpspreadsheet": "^4.1"
+    }
+}
