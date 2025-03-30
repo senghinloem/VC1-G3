@@ -106,7 +106,18 @@ class ProductController extends BaseController
         header("Location: /products");
     }
 
-    
+    // New method to delete multiple products
+    public function deleteMultiple() {
+        $inputData = json_decode(file_get_contents("php://input"), true);
+        
+        if (!isset($inputData['product_ids']) || !is_array($inputData['product_ids']) || empty($inputData['product_ids'])) {
+            echo json_encode(["success" => false, "message" => "No products selected for deletion"]);
+            return;
+        }
+
+        $this->product->deleteMultipleProducts($inputData['product_ids']);
+        echo json_encode(["success" => true, "message" => "Selected products deleted successfully"]);
+    }
 }
 
 ?>

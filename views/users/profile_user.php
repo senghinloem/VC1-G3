@@ -21,13 +21,16 @@ $isOnline = $lastActivity && (strtotime($lastActivity) >= strtotime('-15 minutes
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #007bff;
-            --sidebar-bg: #1a1a1a;
-            --bg-color: #f8f9fa;
-            --text-dark: #333333;
-            --text-light: #666666;
-            --success-color: #28a745;
-            --danger-color: #dc3545;
+            --primary-color: #5d62ff;
+            --secondary-color: #f8faff;
+            --success-color: #00cc88;
+            --danger-color: #ff3366;
+            --text-dark: #1a1c34;
+            --text-light: #6b7280;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
         }
 
         * {
@@ -39,221 +42,277 @@ $isOnline = $lastActivity && (strtotime($lastActivity) >= strtotime('-15 minutes
         body {
             background: var(--bg-color);
             min-height: 100vh;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Inter', 'Segoe UI', 'Arial', sans-serif;
             color: var(--text-dark);
-            overflow-x: hidden;
-        }
-        /* Main Content */
-        .main-content {
-            margin-left: 250px;
-            margin-top: 5px;
-            margin-left: 120px;
-            padding: 40px;
-            width: calc(100% - 250px);
-            min-height: calc(100vh - 70px);
-            display: flex;
-            justify-content: center;
-            transition: margin-left 0.3s ease, width 0.3s ease;
+            line-height: 1.6;
         }
 
-        .main-content.full-screen {
-            margin-left: 0;
-            width: 100%;
+        .main-content {
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(45deg, var(--secondary-color), var(--bg-color));
         }
 
         .profile-container {
             width: 100%;
-            max-width: 600px;
-            background: white;
-            padding: 30px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            max-width: 700px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            animation: slideUp 0.5s ease-out;
         }
 
         .profile-header {
+            background: linear-gradient(135deg, var(--primary-color), #4a4dfd);
+            padding: 3rem 2rem;
             text-align: center;
-            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            transform: rotate(30deg);
         }
 
         .profile-avatar {
-            width: 100px;
-            height: 100px;
+            width: 130px;
+            height: 130px;
             border-radius: 50%;
-            background: #e9ecef;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 15px;
+            border: 5px solid white;
+            margin: 0 auto 1.5rem;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
         }
 
-        .profile-avatar i {
-            font-size: 2.5rem;
-            color: var(--primary-color);
+        .profile-avatar:hover {
+            transform: scale(1.08) rotate(2deg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .profile-name {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin-bottom: 5px;
+            color: white;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem;
+            position: relative;
+            z-index: 1;
         }
 
         .profile-email {
-            font-size: 1rem;
-            color: var(--text-light);
-            margin-bottom: 10px;
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
         }
 
         .profile-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.15);
             font-size: 0.9rem;
             font-weight: 500;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(5px);
         }
 
-        .profile-status.online {
-            color: var(--success-color);
+        .profile-status::before {
+            content: '';
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 2s infinite;
         }
 
-        .profile-status.offline {
-            color: var(--danger-color);
-        }
+        .profile-status.online { color: var(--success-color); }
+        .profile-status.offline { color: var(--danger-color); }
 
         .profile-details {
-            border-top: 1px solid #ddd;
-            padding-top: 20px;
+            padding: 2rem;
+            background: var(--card-bg);
         }
 
         .detail-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
+            display: grid;
+            grid-template-columns: 35% 65%;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f5f5f5;
+            align-items: center;
+            transition: background 0.2s ease;
+        }
+
+        .detail-item:hover {
+            background: var(--secondary-color);
         }
 
         .detail-label {
-            font-weight: 500;
+            font-weight: 600;
             color: var(--text-dark);
-            font-size: 1rem;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 0.75rem;
         }
 
         .detail-label i {
             color: var(--primary-color);
             font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+            transition: transform 0.2s ease;
+        }
+
+        .detail-item:hover .detail-label i {
+            transform: scale(1.1);
         }
 
         .detail-value {
-            font-weight: 400;
             color: var(--text-light);
             font-size: 1rem;
+            padding-left: 1rem;
         }
 
         .btn-edit {
-            display: block;
-            margin: 20px auto 0;
-            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 220px;
+            margin: 1.5rem auto 0;
+            padding: 0.9rem 1.5rem;
             background: var(--primary-color);
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 30px;
             font-size: 1rem;
-            text-align: center;
+            font-weight: 500;
             text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-edit::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .btn-edit:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .btn-edit:hover {
-            background: #0056b3;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
         }
 
-        @media (max-width: 1024px) {
-            .sidebar {
-                width: 200px;
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
             }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-            .navbar {
-                left: 200px;
-                width: calc(100% - 200px);
-            }
-
-            .main-content {
-                margin-left: 200px;
-                width: calc(100% - 200px);
-            }
-
-            .profile-container {
-                max-width: 500px;
-            }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
         }
 
         @media (max-width: 768px) {
-            .sidebar {
-                width: 60px;
-            }
-
-            .sidebar h2, .sidebar ul li a span {
-                display: none;
-            }
-
-            .sidebar ul li a {
-                justify-content: center;
-            }
-
-            .navbar {
-                left: 60px;
-                width: calc(100% - 60px);
-            }
-
-            .main-content {
-                margin-left: 60px;
-                width: calc(100% - 60px);
-            }
-
             .profile-container {
-                padding: 20px;
+                margin: 1rem;
+            }
+
+            .profile-header {
+                padding: 2rem 1rem;
+            }
+
+            .profile-avatar {
+                width: 110px;
+                height: 110px;
             }
 
             .profile-name {
-                font-size: 1.5rem;
+                font-size: 1.8rem;
             }
 
-            .profile-email {
-                font-size: 0.9rem;
+            .detail-item {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .detail-value {
+                padding-left: 2rem;
             }
         }
 
         @media (max-width: 480px) {
-            .profile-container {
-                max-width: 100%;
-                padding: 15px;
-            }
-
-            .profile-avatar {
-                width: 80px;
-                height: 80px;
-            }
-
-            .profile-avatar i {
-                font-size: 2rem;
+            .profile-details {
+                padding: 1.5rem;
             }
 
             .profile-name {
-                font-size: 1.3rem;
+                font-size: 1.6rem;
             }
 
-            .detail-label, .detail-value {
-                font-size: 0.9rem;
+            .btn-edit {
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
-  
-    <!-- Main Content -->
-    <div class="main-content" id="main-content">
+    <div class="main-content">
         <div class="profile-container">
             <div class="profile-header">
                 <div class="profile-avatar">
-                    <i class="fas fa-user-astronaut"></i>
+                    <?php
+                    $userImage = isset($_SESSION['image']) && !empty($_SESSION['image']) 
+                        ? '/uploads/' . htmlspecialchars($_SESSION['image'], ENT_QUOTES, 'UTF-8') 
+                        : '/views/assets/img/user2-160x160.jpg';
+                    $imagePath = $_SERVER['DOCUMENT_ROOT'] . $userImage;
+                    if (!file_exists($imagePath)) {
+                        $userImage = '/views/assets/img/user2-160x160.jpg';
+                    }
+                    ?>
+                    <img src="<?= htmlspecialchars($userImage, ENT_QUOTES, 'UTF-8') ?>" alt="User Image">
                 </div>
                 <h1 class="profile-name">
                     <?= htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_name']) ?>
@@ -275,10 +334,6 @@ $isOnline = $lastActivity && (strtotime($lastActivity) >= strtotime('-15 minutes
                     <span class="detail-value"><?= htmlspecialchars($_SESSION['last_name']) ?></span>
                 </div>
                 <div class="detail-item">
-                    <span class="detail-label"><i class="fas fa-envelope"></i> Email</span>
-                    <span class="detail-value"><?= htmlspecialchars($_SESSION['email']) ?></span>
-                </div>
-                <div class="detail-item">
                     <span class="detail-label"><i class="fas fa-phone"></i> Phone</span>
                     <span class="detail-value"><?= htmlspecialchars($_SESSION['phone'] ?? 'Not provided') ?></span>
                 </div>
@@ -292,23 +347,11 @@ $isOnline = $lastActivity && (strtotime($lastActivity) >= strtotime('-15 minutes
                         <?= $lastActivity ? date('M d, Y H:i', strtotime($lastActivity)) : 'Never' ?>
                     </span>
                 </div>
+                <a href="/users/edit/<?= $_SESSION['user_id'] ?>" class="btn btn-edit">
+                    <i class="fas fa-edit"></i> Edit Profile
+                </a>
             </div>
-            <a href="/users/edit/<?= $_SESSION['user_id'] ?>" class="btn btn-edit">
-                <i class="fas fa-edit"></i> Edit Profile
-            </a>
         </div>
     </div>
-
-    <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const navbar = document.getElementById('navbar');
-            const mainContent = document.getElementById('main-content');
-
-            sidebar.classList.toggle('hidden');
-            navbar.classList.toggle('full-screen');
-            mainContent.classList.toggle('full-screen');
-        }
-    </script>
 </body>
 </html>

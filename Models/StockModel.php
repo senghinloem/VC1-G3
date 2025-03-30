@@ -8,13 +8,11 @@ class StockModel
         try {
             $this->db = new Database("localhost", "vc1_db", "root", "");
         } catch (PDOException $e) {
-            // Log the error and handle it gracefully
             error_log("Database connection failed: " . $e->getMessage());
             throw new Exception("Failed to connect to database");
         }
     }
 
-    // Get all stock items
     public function getStock()
     {
         try {
@@ -46,29 +44,35 @@ class StockModel
         }
     }
 
-    // Add a new stock item
-    public function addStock($stock_name)
+    public function addStock($stock_name, $quantity, $status)
     {
         try {
-            // Assuming the table might have different column names
-            // Adjust these based on your actual table structure
-            $sql = "INSERT INTO stock_management (name, last_updated) VALUES (:name, NOW())";
+            $sql = "INSERT INTO stock_management (stock_name, quantity, status) 
+                    VALUES (:stock_name, :quantity, :status)";
             $stmt = $this->db->prepare($sql);
-            $stmt->bindParam(':name', $stock_name, PDO::PARAM_STR);
+            $stmt->bindParam(':stock_name', $stock_name, PDO::PARAM_STR);
+            $stmt->bindParam(':quantity', $quantity, PDO::PARAM_INT);
+            $stmt->bindParam(':status', $status, PDO::PARAM_STR);
             return $stmt->execute();
         } catch (PDOException $e) {
             error_log("Error adding stock: " . $e->getMessage());
-            return false;
+            throw $e;
         }
     }
 
-    // Update an existing stock item
-    public function updateStock($stock_id, $stock_name)
+    public function updateStock($stock_id, $stock_name, $quantity)
     {
         try {
-            $sql = "UPDATE stock_management SET name = :name, last_updated = NOW() WHERE stock_id = :stock_id";
+            $status = $quantity > 0 ? 'in_stock' : 'out_of_stock';
+            $sql = "UPDATE stock_management 
+                    SET stock_name = :stock_name, 
+                        quantity = :quantity,
+                        status = :status 
+                    WHERE stock_id = :stock_id";
             $stmt = $this->db->prepare($sql);
-            $stmt->bindParam(':name', $stock_name, PDO::PARAM_STR);
+            $stmt->bindParam(':stock_name', $stock_name, PDO::PARAM_STR);
+            $stmt->bindParam(':quantity', $quantity, PDO::PARAM_INT);
+            $stmt->bindParam(':status', $status, PDO::PARAM_STR);
             $stmt->bindParam(':stock_id', $stock_id, PDO::PARAM_INT);
             return $stmt->execute();
         } catch (PDOException $e) {
@@ -77,19 +81,23 @@ class StockModel
         }
     }
 
-    // Delete a stock item
     public function deleteStock($stock_id)
     {
         try {
             $sql = "DELETE FROM stock_management WHERE stock_id = :stock_id";
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':stock_id', $stock_id, PDO::PARAM_INT);
-            return $stmt->execute();
+            $success = $stmt->execute();
+            
+            if (!$success || $stmt->rowCount() === 0) {
+                error_log("No stock item found with ID: " . $stock_id);
+                return false;
+            }
+            return true;
         } catch (PDOException $e) {
             error_log("Error deleting stock: " . $e->getMessage());
             return false;
         }
     }
-    
 }
 ?>
