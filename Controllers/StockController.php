@@ -97,6 +97,7 @@ class StockController extends BaseController
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect('/stock/edit/' . $stock_id);
+            $quantity = $_POST['quantity'] ?? 0;
             return;
         }
 

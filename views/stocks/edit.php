@@ -18,7 +18,7 @@
             style="width: 100%; padding: 12px; font-size: 16px; border-radius: 4px; border: 1px solid #ccc;">
     </div>
     
-    <input type="hidden" id="status" name="status" value="<?= $stock['status'] ?>">
+    <input type="hidden" id="status" name="status" value="<?= htmlspecialchars($stock['status'] ?? '') ?>">
 
     <div style="text-align: right;">
         <a href="/stock" class="btn btn-secondary mt-4 px-4 py-2 fs-5" style="border-radius: 4px;">Cancel</a>

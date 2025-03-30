@@ -16,12 +16,18 @@ class StockModel
     public function getStock()
     {
         try {
-            $result = $this->db->query("SELECT * FROM stock_management ORDER BY stock_name");
+            $result = $this->db->query("SELECT * FROM stock_management");
             return $result->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             error_log("Error fetching stock: " . $e->getMessage());
             return [];
         }
+    }
+
+    public function view_stock($stock_id)
+    {
+        $stock = $this->getStockById($stock_id);
+        return $stock ?: false;
     }
 
     public function getStockById($stock_id)
@@ -35,22 +41,6 @@ class StockModel
         } catch (PDOException $e) {
             error_log("Error fetching stock by ID: " . $e->getMessage());
             return false;
-        }
-    }
-
-    public function searchStock($search_term)
-    {
-        try {
-            $result = $this->db->query(
-                "SELECT * FROM stock_management 
-                 WHERE stock_name LIKE :search_term
-                 ORDER BY stock_name",
-                ["search_term" => "%$search_term%"]
-            );
-            return $result->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            error_log("Error searching stock: " . $e->getMessage());
-            return [];
         }
     }
 
@@ -77,8 +67,7 @@ class StockModel
             $sql = "UPDATE stock_management 
                     SET stock_name = :stock_name, 
                         quantity = :quantity,
-                        status = :status,
-                        updated_at = NOW()
+                        status = :status 
                     WHERE stock_id = :stock_id";
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':stock_name', $stock_name, PDO::PARAM_STR);
