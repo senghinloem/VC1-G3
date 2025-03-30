@@ -1,3 +1,14 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+if (!isset($_SESSION['user_id'])) {
+    header("Location: /login");
+    exit();
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,16 +20,12 @@
     <style>
         body {
             background-color: #f8f9fa;
-            font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
         }
-  
-  
 
-        /* Main Content */
         .main-content {
-            margin-left: 150px;
+            margin-left: 10px;
             padding: 70px 20px;
         }
 
@@ -29,10 +36,11 @@
             border-radius: 15px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
             overflow: hidden;
+            margin: 0 auto;
         }
 
         .profile-card {
-            width: 40%; /* Increased from 30% to 40% */
+            width: 40%;
             padding: 30px;
             text-align: center;
             border-right: 1px solid #e0e0e0;
@@ -45,6 +53,7 @@
             object-fit: cover;
             margin-bottom: 15px;
             margin-top: 110px;
+            border: 2px solid #e0e0e0;
         }
 
         .profile-card h3 {
@@ -72,7 +81,7 @@
         }
 
         .form-container {
-            width: 60%; /* Reduced from 70% to 60% */
+            width: 60%;
             padding: 30px;
         }
 
@@ -97,7 +106,7 @@
 
         .form-control:focus {
             border-color: #00c4cc;
-            box-shadow: none;
+            box-shadow: 0 0 5px rgba(0, 196, 204, 0.3);
             outline: none;
         }
 
@@ -120,6 +129,7 @@
         }
 
         .btn-primary {
+            background-color: #00c4cc;
             border: none;
             border-radius: 25px;
             padding: 10px 20px;
@@ -127,6 +137,7 @@
             font-weight: 500;
             text-transform: uppercase;
             color: #fff;
+            transition: background-color 0.3s ease;
         }
 
         .btn-primary:hover {
@@ -142,6 +153,7 @@
             font-weight: 500;
             text-transform: uppercase;
             color: #333;
+            transition: background-color 0.3s ease;
         }
 
         .btn-secondary:hover {
@@ -157,43 +169,58 @@
         }
 
         .btn {
-    cursor: pointer;
-    padding: 10px 20px;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-}
+            cursor: pointer;
+        }
 
-.btn:hover {
-    background-color: #0056b3;
-}
+        .d-none {
+            display: none;
+        }
 
-.d-none {
-    display: none;
-}
+        .error-message {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .image-preview-label {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
     <!-- Main Content -->
     <div class="main-content">
-        <form action="/users/update/<?php echo isset($user['user_id']) ? htmlspecialchars($user['user_id'], ENT_QUOTES, 'UTF-8') : '0'; ?>" method="POST" enctype="multipart/form-data">
+        <?php if (isset($_GET['error'])): ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <?php echo htmlspecialchars($_GET['error'], ENT_QUOTES, 'UTF-8'); ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
+
+        <form action="/users/update/<?php echo isset($user['user_id']) ? htmlspecialchars($user['user_id'], ENT_QUOTES, 'UTF-8') : '0'; ?>" 
+              method="POST" 
+              enctype="multipart/form-data" 
+              id="editUserForm">
             <div class="profile-container">
                 <div class="profile-card">
-                    <img id="profile-img" src="<?php echo !empty($user['image']) ? '/uploads/' . htmlspecialchars($user['image'], ENT_QUOTES, 'UTF-8') : '/views/assets/img/user2-160x160.jpg'; ?>" alt="Profile">
+                    <img id="profile-img" 
+                         src="<?php echo !empty($user['image']) ? '/uploads/' . htmlspecialchars($user['image'], ENT_QUOTES, 'UTF-8') : '/views/assets/img/user2-160x160.jpg'; ?>" 
+                         alt="Profile">
                     <h3><?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name'], ENT_QUOTES, 'UTF-8'); ?></h3>
                     <p class="username">@<?php echo htmlspecialchars($user['username'] ?? 'username', ENT_QUOTES, 'UTF-8'); ?></p>
                     <div class="form-group">
-    <label for="image" class="btn btn-primary">
-        Change Profile Image
-        <input type="file" 
-               id="image" 
-               name="image" 
-               accept="image/*" 
-               class="d-none" 
-               onchange="this.previousElementSibling.textContent='Image Selected'">
-    </label>
-</div>
+                        <label for="image" class="btn btn-primary">
+                            <span id="image-label">Change Profile Image</span>
+                            <input type="file" 
+                                   id="image" 
+                                   name="image" 
+                                   accept="image/*" 
+                                   class="d-none">
+                        </label>
+                        <div id="image-preview" class="image-preview-label"></div>
+                    </div>
                 </div>
 
                 <div class="form-container">
@@ -201,32 +228,55 @@
                     <div class="row">
                         <div class="col-md-6 form-group">
                             <label for="first_name">First Name</label>
-                            <input type="text" class="form-control" id="first_name" name="first_name" value="<?php echo htmlspecialchars($user['first_name'], ENT_QUOTES, 'UTF-8'); ?>" required>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="first_name" 
+                                   name="first_name" 
+                                   value="<?php echo htmlspecialchars($user['first_name'], ENT_QUOTES, 'UTF-8'); ?>" 
+                                   required>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="last_name">Last Name</label>
-                            <input type="text" class="form-control" id="last_name" name="last_name" value="<?php echo htmlspecialchars($user['last_name'], ENT_QUOTES, 'UTF-8'); ?>" required>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="last_name" 
+                                   name="last_name" 
+                                   value="<?php echo htmlspecialchars($user['last_name'], ENT_QUOTES, 'UTF-8'); ?>" 
+                                   required>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8'); ?>" required>
+                        <input type="email" 
+                               class="form-control" 
+                               id="email" 
+                               name="email" 
+                               value="<?php echo htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8'); ?>" 
+                               required>
                     </div>
                     <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter new password to change">
+                        <label for="password">New Password (optional)</label>
+                        <input type="password" 
+                               class="form-control" 
+                               id="password" 
+                               name="password" 
+                               placeholder="Enter new password to change (min 6 characters)">
+                        <div id="password-error" class="error-message"></div>
                     </div>
                     <div class="form-group">
                         <label for="role">Role</label>
                         <select class="form-control" id="role" name="role" required>
                             <option value="admin" <?php echo $user['role'] === 'admin' ? 'selected' : ''; ?>>Admin</option>
                             <option value="user" <?php echo $user['role'] === 'user' ? 'selected' : ''; ?>>User</option>
-                            <option value="editor" <?php echo $user['role'] === 'editor' ? 'selected' : ''; ?>>Editor</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="phone">Phone</label>
-                        <input type="tel" class="form-control" id="phone" name="phone" value="<?php echo htmlspecialchars($user['phone'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                        <input type="tel" 
+                               class="form-control" 
+                               id="phone" 
+                               name="phone" 
+                               value="<?php echo htmlspecialchars($user['phone'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
                     </div>
                     <div class="d-flex justify-content-end mt-4">
                         <a href="/users" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Cancel</a>
@@ -237,16 +287,44 @@
         </form>
     </div>
 
+
     <script>
-        document.getElementById('image').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('profile-img').src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
+        document.addEventListener('DOMContentLoaded', function () {
+            const imageInput = document.getElementById('image');
+            const profileImg = document.getElementById('profile-img');
+            const imageLabel = document.getElementById('image-label');
+            const imagePreview = document.getElementById('image-preview');
+            const form = document.getElementById('editUserForm');
+            const passwordInput = document.getElementById('password');
+            const passwordError = document.getElementById('password-error');
+
+            // Image preview and label update
+            imageInput.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        profileImg.src = e.target.result;
+                        imageLabel.textContent = 'Image Selected';
+                        imagePreview.textContent = file.name;
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    imageLabel.textContent = 'Change Profile Image';
+                    imagePreview.textContent = '';
+                }
+            });
+
+            // Client-side password validation
+            form.addEventListener('submit', function(event) {
+                const password = passwordInput.value.trim();
+                if (password && password.length < 6) {
+                    event.preventDefault();
+                    passwordError.textContent = 'Password must be at least 6 characters long';
+                } else {
+                    passwordError.textContent = '';
+                }
+            });
         });
     </script>
 </body>

@@ -13,11 +13,6 @@
     <!-- icon -->
     <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
 
-
-    <link rel="stylesheet" href="../../views/assets/css/dashboard.css">
-    <!-- <link rel="stylesheet" href="../images/user.css"> -->
-
-
     <style>
         .card {
             border-radius: 10px;
@@ -101,7 +96,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+
+                        </div>
                 </div>
             </div>
             <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
@@ -175,8 +171,9 @@
                     <p class="stat-number">1 Items</p>
                 </div> -->
 
+
                 
-                        <div class="card">
+                <div class="card">
                             <div class="card-header">
                                 <h4 class="card-title">All Users</h4>
                             </div>
@@ -252,6 +249,7 @@
                     const table = document.getElementById("productTable");
                     const rows = table.getElementsByTagName("tr");
 
+
                     for (let i = 1; i < rows.length; i++) { // Skip header row
                         const unitCell = rows[i].getElementsByTagName("td")[5]; // Unit column
                         if (unitCell) {
@@ -324,6 +322,7 @@
                                 <tr>
                                     <td><?= htmlspecialchars($product['product_id']) ?></td>
                                     <td><img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" style="width: 50px; height: 50px; border-radius: 50px; object-fit: cover"></td>
+
 
                                     <td><?= htmlspecialchars($product['name']) ?></td>
                                     <td><?= htmlspecialchars($product['description']) ?></td>

@@ -109,7 +109,7 @@ if (session_status() == PHP_SESSION_NONE) {
     integrity="sha256-XPpPaZlU8S/HWf7FZLAncLg2SAkP8ScUTII89x9D3lY="
     crossorigin="anonymous"
 ></script>
-<script src="../assets/js/sidebar.js"></script>
+
 
 
 

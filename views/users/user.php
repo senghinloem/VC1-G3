@@ -9,6 +9,7 @@ if (!isset($_SESSION['user_id'])) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,12 +20,16 @@ if (!isset($_SESSION['user_id'])) {
         /* Table container for horizontal and vertical scrolling */
         .table-container {
             transition: opacity 0.3s ease;
-            max-height: 500px; /* Set a maximum height for the table */
-            overflow-y: auto; /* Enable vertical scrolling */
-            overflow-x: auto; /* Enable horizontal scrolling */
+            max-height: 500px;
+            /* Set a maximum height for the table */
+            overflow-y: auto;
+            /* Enable vertical scrolling */
+            overflow-x: auto;
+            /* Enable horizontal scrolling */
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            position: relative; /* For sticky header positioning */
+            position: relative;
+            /* For sticky header positioning */
         }
 
         .table-container.loading {
@@ -56,10 +61,14 @@ if (!isset($_SESSION['user_id'])) {
             border-bottom: 2px solid #dee2e6;
             vertical-align: middle;
             white-space: nowrap;
-            position: sticky; /* Sticky header */
-            top: 0; /* Stick to the top of the container */
-            z-index: 1; /* Ensure header stays above body content */
-            background-color: #f8f9fa; /* Solid background to prevent overlap visibility */
+            position: sticky;
+            /* Sticky header */
+            top: 0;
+            /* Stick to the top of the container */
+            z-index: 1;
+            /* Ensure header stays above body content */
+            background-color: #f8f9fa;
+            /* Solid background to prevent overlap visibility */
         }
 
         /* Table cells */
@@ -74,11 +83,13 @@ if (!isset($_SESSION['user_id'])) {
 
         /* Alternating row colors with increased specificity */
         table.user-table tbody tr:nth-child(odd) {
-            background-color: #e9ecef; /* Gray for odd rows */
+            background-color: #e9ecef;
+            /* Gray for odd rows */
         }
 
         table.user-table tbody tr:nth-child(even) {
-            background-color: #fff; /* White for even rows */
+            background-color: #fff;
+            /* White for even rows */
         }
 
         /* Hover effect */
@@ -171,6 +182,7 @@ if (!isset($_SESSION['user_id'])) {
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
+
             .user-table th,
             .user-table td {
                 padding: 14px 12px;
@@ -218,7 +230,7 @@ if (!isset($_SESSION['user_id'])) {
             padding: 20px;
             border-radius: 8px;
             text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             height: 100%;
         }
 
@@ -265,13 +277,13 @@ if (!isset($_SESSION['user_id'])) {
         /* Card styling */
         .card {
             border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
             border: none;
         }
 
         .card-header {
             background-color: #fff;
-            border-bottom: 1px solid rgba(0,0,0,0.08);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
             padding: 1rem 1.5rem;
         }
 
@@ -282,14 +294,15 @@ if (!isset($_SESSION['user_id'])) {
         }
 
         .modal-header {
-            border-bottom: 1px solid rgba(0,0,0,0.08);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
         }
 
         .modal-footer {
-            border-top: 1px solid rgba(0,0,0,0.08);
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
         }
     </style>
 </head>
+
 <body class="bg-light">
     <div class="container-fluid py-4">
         <div class="row mb-4 mx-2">
@@ -303,31 +316,34 @@ if (!isset($_SESSION['user_id'])) {
                             </h4>
                             <div class="d-flex flex-wrap gap-3">
                                 <div class="search-container">
-                                    <form action="/users/search" method="GET" class="d-flex align-items-center" id="searchForm">
+                                    <form action="/users/search" method="GET" class="d-flex align-items-center"
+                                        id="searchForm">
                                         <div class="input-group">
-                                            <span class="input-group-text bg-white border-end-0">
-                                                <i class="fas fa-search text-muted"></i>
-                                            </span>
-                                            <input type="text" name="search" class="form-control border-start-0" 
-                                                   placeholder="Search users..." 
-                                                   value="<?= htmlspecialchars($searchQuery ?? '') ?>" 
-                                                   id="searchInput">
+                                            <input type="text" name="search" class="form-control border-start-0"
+                                                placeholder="Search users..."
+                                                value="<?= htmlspecialchars($searchQuery ?? '') ?>" id="searchInput">
+                                            <button class="btn btn-primary" type="submit">
+                                                <i class="fas fa-search"></i>
+                                            </button>
                                         </div>
-                                        <i class="fas fa-spinner fa-spin spinner ms-2"></i>
-                                        <?php if (isset($error)): ?>
-                                            <div class="text-danger mt-2"><?= htmlspecialchars($error) ?></div>
-                                        <?php endif; ?>
                                     </form>
+                                    <?php if (isset($error)): ?>
+                                        <div class="text-danger mt-2"><?= htmlspecialchars($error) ?></div>
+                                    <?php endif; ?>
                                 </div>
-                                <a href="/users/create" class="btn btn-primary">
-                                    <i class="fas fa-plus me-2"></i>Add User
-                                </a>
+
+                                <?php if ($_SESSION['user_role'] === 'admin'): ?>
+                                    <a href="/users/create" class="btn btn-primary">
+                                        <i class="fas fa-plus me-2"></i>Add User
+                                    </a>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
+
             <!-- Stat Cards -->
             <div class="col-12 mb-4">
                 <div class="row">
@@ -357,7 +373,7 @@ if (!isset($_SESSION['user_id'])) {
                     </div>
                 </div>
             </div>
-            
+
             <!-- User Table -->
             <div class="col-12">
                 <div class="card">
@@ -371,7 +387,11 @@ if (!isset($_SESSION['user_id'])) {
                                         <th class="text-center">Last Name</th>
                                         <th class="text-center">Email</th>
                                         <th class="text-center">Status</th>
-                                        <th class="text-center">Actions</th>
+
+
+                                        <?php if ($_SESSION['user_role'] === 'admin'): ?>
+                                            <th class="text-center">Actions</th>
+                                        <?php endif; ?>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -381,7 +401,8 @@ if (!isset($_SESSION['user_id'])) {
                                                 <div class="empty-state">
                                                     <i class="fas fa-users-slash"></i>
                                                     <h5>No users found</h5>
-                                                    <p>There are no users matching your criteria or no users have been added yet.</p>
+                                                    <p>There are no users matching your criteria or no users have been added
+                                                        yet.</p>
                                                 </div>
                                             </td>
                                         </tr>
@@ -391,7 +412,8 @@ if (!isset($_SESSION['user_id'])) {
                                                 <td class="text-center">
                                                     <div class="user-avatar">
                                                         <?php if (!empty($user['image'])): ?>
-                                                            <img src="/uploads/<?= htmlspecialchars($user['image']) ?>" alt="<?= htmlspecialchars($user['first_name']) ?>">
+                                                            <img src="/uploads/<?= htmlspecialchars($user['image']) ?>"
+                                                                alt="<?= htmlspecialchars($user['first_name']) ?>">
                                                         <?php else: ?>
                                                             <i class="fas fa-user"></i>
                                                         <?php endif; ?>
@@ -406,71 +428,78 @@ if (!isset($_SESSION['user_id'])) {
                                                 </td>
                                                 <td class="text-center">
                                                     <?php
-                                                    $isOnline = $user['last_activity'] && 
-                                                               (strtotime($user['last_activity']) >= strtotime('-15 minutes'));
+                                                    $isOnline = $user['last_activity'] &&
+                                                        (strtotime($user['last_activity']) >= strtotime('-15 minutes'));
                                                     ?>
                                                     <span class="user-status <?= $isOnline ? 'online' : 'offline' ?>">
                                                         <?= htmlspecialchars($isOnline ? 'Online' : 'Offline') ?>
                                                     </span>
                                                 </td>
-                                                <td class="text-center">
-                                                    <button class="action-btn" type="button" 
-                                                            data-bs-toggle="dropdown" 
-                                                            aria-expanded="false"
-                                                            data-bs-toggle="tooltip" 
-                                                            title="Actions">
-                                                        <i class="fa-solid fa-ellipsis-vertical"></i>
-                                                    </button>
-                                                    <ul class="dropdown-menu dropdown-menu-end">
-                                                        <li>
-                                                            <a class="dropdown-item" href="/users/detail/<?= $user['user_id'] ?>">
-                                                                <i class="fas fa-eye text-primary me-2"></i> View
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="dropdown-item" href="/users/edit/<?= $user['user_id'] ?>">
-                                                                <i class="fas fa-edit text-success me-2"></i> Edit
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <button type="button" 
-                                                                    class="dropdown-item text-danger" 
-                                                                    data-bs-toggle="modal" 
-                                                                    data-bs-target="#confirmDeleteModal" 
-                                                                    data-userid="<?= $user['user_id'] ?>" 
+                                                <?php if ($_SESSION['user_role'] === 'admin'): ?>
+                                                    <td class="text-center">
+                                                        <button class="action-btn" type="button" data-bs-toggle="dropdown"
+                                                            aria-expanded="false" data-bs-toggle="tooltip" title="Actions">
+                                                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                                                        </button>
+                                                        <ul class="dropdown-menu dropdown-menu-end">
+
+                                                            <li>
+                                                                <a class="dropdown-item"
+                                                                    href="/users/detail/<?= $user['user_id'] ?>">
+                                                                    <i class="fas fa-eye text-primary me-2"></i> View
+                                                                </a>
+                                                            </li>
+
+                                                            <li>
+                                                                <a class="dropdown-item" href="/users/edit/<?= $user['user_id'] ?>">
+                                                                    <i class="fas fa-edit text-success me-2"></i> Edit
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <button type="button" class="dropdown-item text-danger"
+                                                                    data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"
+                                                                    data-userid="<?= $user['user_id'] ?>"
                                                                     data-username="<?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?>">
-                                                                <i class="fas fa-trash-alt me-2"></i> Delete
-                                                            </button>
-                                                        </li>
-                                                    </ul>
-                                                </td>
+                                                                    <i class="fas fa-trash-alt me-2"></i> Delete
+                                                                </button>
+
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                <?php endif; ?>
                                             </tr>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
                                 </tbody>
                             </table>
-                            
+
                             <!-- Pagination -->
                             <?php if (!empty($users) && ($totalPages ?? 0) > 1): ?>
                                 <div class="card-footer bg-white py-3">
                                     <nav aria-label="Page navigation">
                                         <ul class="pagination justify-content-center mb-0">
                                             <li class="page-item <?= ($currentPage ?? 1) <= 1 ? 'disabled' : '' ?>">
-                                                <a class="page-link" href="?page=<?= ($currentPage ?? 1) - 1 ?><?= isset($searchQuery) ? '&search=' . urlencode($searchQuery) : '' ?>" aria-label="Previous">
+                                                <a class="page-link"
+                                                    href="?page=<?= ($currentPage ?? 1) - 1 ?><?= isset($searchQuery) ? '&search=' . urlencode($searchQuery) : '' ?>"
+                                                    aria-label="Previous">
                                                     <span aria-hidden="true">«</span>
                                                 </a>
                                             </li>
-                                            
+
                                             <?php for ($i = 1; $i <= ($totalPages ?? 1); $i++): ?>
                                                 <li class="page-item <?= $i === ($currentPage ?? 1) ? 'active' : '' ?>">
-                                                    <a class="page-link" href="?page=<?= $i ?><?= isset($searchQuery) ? '&search=' . urlencode($searchQuery) : '' ?>">
+                                                    <a class="page-link"
+                                                        href="?page=<?= $i ?><?= isset($searchQuery) ? '&search=' . urlencode($searchQuery) : '' ?>">
                                                         <?= $i ?>
                                                     </a>
                                                 </li>
                                             <?php endfor; ?>
-                                            
-                                            <li class="page-item <?= ($currentPage ?? 1) >= ($totalPages ?? 1) ? 'disabled' : '' ?>">
-                                                <a class="page-link" href="?page=<?= ($currentPage ?? 1) + 1 ?><?= isset($searchQuery) ? '&search=' . urlencode($searchQuery) : '' ?>" aria-label="Next">
+
+                                            <li
+                                                class="page-item <?= ($currentPage ?? 1) >= ($totalPages ?? 1) ? 'disabled' : '' ?>">
+                                                <a class="page-link"
+                                                    href="?page=<?= ($currentPage ?? 1) + 1 ?><?= isset($searchQuery) ? '&search=' . urlencode($searchQuery) : '' ?>"
+                                                    aria-label="Next">
                                                     <span aria-hidden="true">»</span>
                                                 </a>
                                             </li>
@@ -486,7 +515,8 @@ if (!isset($_SESSION['user_id'])) {
     </div>
 
     <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -498,7 +528,8 @@ if (!isset($_SESSION['user_id'])) {
                         <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
                     </div>
                     <h5 class="mb-2">Are you sure?</h5>
-                    <p class="text-muted mb-0">You are about to delete user <strong id="deleteUserName"></strong>. This action cannot be undone.</p>
+                    <p class="text-muted mb-0">You are about to delete user <strong id="deleteUserName"></strong>. This
+                        action cannot be undone.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -533,16 +564,16 @@ if (!isset($_SESSION['user_id'])) {
                     var button = event.relatedTarget;
                     var userId = button.getAttribute('data-userid');
                     var userName = button.getAttribute('data-username');
-                    
+
                     var userNameElement = document.getElementById('deleteUserName');
                     if (userNameElement) userNameElement.textContent = userName;
-                    
+
                     var form = document.getElementById('deleteForm');
                     if (form) form.action = "/users/destroy/" + userId;
                 });
 
                 confirmDeleteModal.addEventListener('show.bs.modal', function () {
-                    tooltipList.forEach(function(tooltip) { tooltip.hide(); });
+                    tooltipList.forEach(function (tooltip) { tooltip.hide(); });
                 });
             }
 
@@ -580,4 +611,5 @@ if (!isset($_SESSION['user_id'])) {
         });
     </script>
 </body>
+
 </html>

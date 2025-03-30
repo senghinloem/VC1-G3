@@ -1,3 +1,12 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+if (!isset($_SESSION['user_id'])) {
+    header("Location: /login");
+    exit();
+}
+?>
 <div class="container my-5">
   <!-- Large Card to display the supplier details -->
   <div class="card" style="max-width: 150vh; margin: 0 auto;">
