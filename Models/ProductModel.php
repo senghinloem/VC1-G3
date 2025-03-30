@@ -47,6 +47,19 @@ class ProductModel
         }
     }
 
+    // New method to delete multiple products
+    public function deleteMultipleProducts($product_ids)
+    {
+        try {
+            if (!empty($product_ids)) {
+                $placeholders = implode(',', array_fill(0, count($product_ids), '?'));
+                $query = "DELETE FROM products WHERE product_id IN ($placeholders)";
+                $this->db->query($query, $product_ids);
+            }
+        } catch (PDOException $e) {
+            echo "Error deleting products: " . $e->getMessage();
+        }
+    }
    
 }
 

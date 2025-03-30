@@ -1,10 +1,24 @@
 <?php
-// session_start();
+
+// Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
     header("Location: /login");
     exit();
 }
+
+// Check if the user has the role 'user' and redirect them
+if ($_SESSION['user_role'] === 'user') {
+    header("Location: /user");
+    exit();
+}
+
+// Optional: Restrict access to only 'admin' users
+if ($_SESSION['user_role'] !== 'admin') {
+    header("Location: /user"); // Redirect to a 403 Forbidden page or another appropriate page
+    exit();
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -202,7 +216,7 @@ if (!isset($_SESSION['user_id'])) {
 </head>
 <body>
 
-<div class="dashboard-container">
+
         <!-- Create User Form -->
         <div class="create-user-container">
             <h5><i class="fas fa-user-plus me-2"></i>Create New User</h5>
@@ -246,5 +260,3 @@ if (!isset($_SESSION['user_id'])) {
         </div>
     </div>
 </div>
-</body>
-</html>

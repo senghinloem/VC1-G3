@@ -7,6 +7,8 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -266,7 +268,6 @@ if (!isset($_SESSION['user_id'])) {
                         <select class="form-control" id="role" name="role" required>
                             <option value="admin" <?php echo $user['role'] === 'admin' ? 'selected' : ''; ?>>Admin</option>
                             <option value="user" <?php echo $user['role'] === 'user' ? 'selected' : ''; ?>>User</option>
-                            <option value="editor" <?php echo $user['role'] === 'editor' ? 'selected' : ''; ?>>Editor</option>
                         </select>
                     </div>
                     <div class="form-group">
