@@ -1,18 +1,97 @@
-<form action="/stock/view_stock" method="GET" style="background-color: #f9f9f9; padding: 40px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); max-width: 700px; width: 100%; margin: auto; position: absolute; top: 30%; left: 50%; transform: translate(-50%, -30%);">
-    <div class="form-group">
-        <label for="stock_id" style="font-size: 18px;">Stock ID</label>
-        <input type="text" id="stock_id" name="stock_id" class="form-control" required placeholder="Enter Stock ID" style="width: 100%; padding: 12px; font-size: 16px; border-radius: 4px; border: 1px solid #ccc;">
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">
+                <i class="fas fa-box me-2"></i>Stock Details
+            </h4>
+            <a href="/stock" class="btn btn-light btn-sm">
+                <i class="fas fa-arrow-left me-1"></i> Back to Stock
+            </a>
+        </div>
+        <div class="card-body">
+            <?php if (isset($stock)): ?>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2">Basic Information</h5>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <th style="width: 40%">Stock ID</th>
+                                    <td><?= htmlspecialchars($stock['stock_id']) ?></td>
+                                </tr>
+                                <tr>
+                                    <th>Stock Name</th>
+                                    <td><?= htmlspecialchars($stock['stock_name']) ?></td>
+                                </tr>
+                                <tr>
+                                    <th>Quantity</th>
+                                    <td><?= htmlspecialchars($stock['quantity']) ?></td>
+                                </tr>
+                                <tr>
+                                    <th>Status</th>
+                                    <td>
+                                        <span class="badge <?= $stock['quantity'] > 0 ? 'bg-success' : 'bg-danger' ?>">
+                                            <?= $stock['quantity'] > 0 ? 'In Stock' : 'Out of Stock' ?>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <?php if (isset($stock['created_at'])): ?>
+                                <tr>
+                                    <th>Created At</th>
+                                    <td><?= htmlspecialchars($stock['created_at']) ?></td>
+                                </tr>
+                                <?php endif; ?>
+                                <?php if (isset($stock['updated_at'])): ?>
+                                <tr>
+                                    <th>Last Updated</th>
+                                    <td><?= htmlspecialchars($stock['updated_at']) ?></td>
+                                </tr>
+                                <?php endif; ?>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a href="/stock/edit/<?= $stock['stock_id'] ?>" class="btn btn-warning">
+                        <i class="fas fa-edit me-1"></i> Edit
+                    </a>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                        <i class="fas fa-trash-alt me-1"></i> Delete
+                    </button>
+                </div>
+            <?php else: ?>
+                <div class="alert alert-danger">Stock not found.</div>
+            <?php endif; ?>
+        </div>
     </div>
-    <div class="form-group">
-        <label for="stock_name" style="font-size: 18px;" class="mt-4">Items</label>
-        <input type="text" id="stock_name" name="stock_name" class="form-control" required placeholder="Enter Stock Name" style="width: 100%; padding: 12px; font-size: 16px; border-radius: 4px; border: 1px solid #ccc;">
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-3">
+                    <i class="fas fa-exclamation-triangle text-danger fa-3x"></i>
+                </div>
+                <p class="text-center">Are you sure you want to delete this stock item?</p>
+                <p class="text-center fw-bold"><?= isset($stock) ? htmlspecialchars($stock['stock_name']) : '' ?></p>
+                <p class="text-center text-muted">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="/stock/delete/<?= isset($stock) ? $stock['stock_id'] : '' ?>" method="POST">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash-alt me-1"></i> Delete
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label for="quantity" style="font-size: 18px;" class="mt-4">Quantity</label>
-        <input type="text" id="quantity" name="quantity" class="form-control" required placeholder="Enter Quantity" style="width: 100%; padding: 12px; font-size: 16px; border-radius: 4px; border: 1px solid #ccc;">
-    </div>
-
-    <button type="submit" class="btn btn-primary" style="background-color: #007bff; color: white; padding: 10px 20px; font-size: 18px; border: none; border-radius: 4px; cursor: pointer;">Submit</button>
-</form>
-
+</div>

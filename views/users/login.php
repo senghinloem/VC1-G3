@@ -2,10 +2,6 @@
     <div class="container d-flex justify-content-center align-items-center vh-100">
         <div class="card p-4 shadow-sm" style="width: 550px;">
             <h3 class="text-center fw-bold mb-3">Login Form</h3>
-            <!-- <div class="d-flex justify-content-center mb-3">
-                <button class="btn btn-primary me-2">Login</button>
-                <button class="btn btn-light">Register</button>
-            </div> -->
             <form>
                 <div class="mb-3">
                     <label class="form-label">Email address:</label>

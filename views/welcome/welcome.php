@@ -76,8 +76,8 @@
         <nav class="navbar navbar-expand-lg py-3">
             <a class="navbar-brand fw-bold text-primary" href="#">PNN</a>
             <div class="ms-auto">
-                <a href="/register" class="btn btn-outline-primary me-2">Register</a>
-                <a href="/login" class="btn btn-primary">Login</a>
+                <!-- <a href="/register" class="btn btn-outline-primary me-2">Register</a> -->
+                <!-- <a href="/login" class="btn btn-primary">Login</a> -->
             </div>
         </nav>
 

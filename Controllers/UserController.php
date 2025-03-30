@@ -1,6 +1,8 @@
 <?php
 require_once "Models/UserModel.php";
 
+
+
 class UserController extends BaseController
 {
     private $user;
@@ -30,6 +32,38 @@ class UserController extends BaseController
             'totalUsers' => $totalUsers,
             'activeUsers' => $activeUsers,
             'inactiveUsers' => $inactiveUsers
+        ]);
+    }
+
+    public function profile()
+    {
+        if (!isset($_SESSION['user_id'])) {
+            header("Location: /login");
+            exit();
+        }
+
+        $user = $this->user->getUserById($_SESSION['user_id']);
+        if (!$user) {
+            session_unset();
+            session_destroy();
+            header("Location: /login?error=User not found");
+            exit();
+        }
+
+        $lastActivity = $user['last_activity'] ?? null;
+        $isOnline = $lastActivity && (strtotime($lastActivity) >= strtotime('-15 minutes'));
+
+        $_SESSION['last_activity'] = $lastActivity;
+        $_SESSION['first_name'] = $user['first_name'];
+        $_SESSION['last_name'] = $user['last_name'];
+        $_SESSION['email'] = $user['email'];
+        $_SESSION['phone'] = $user['phone'];
+        $_SESSION['user_role'] = $user['role'];
+        $_SESSION['image'] = $user['image'];
+
+        $this->view('users/profile_user', [
+            'lastActivity' => $lastActivity,
+            'isOnline' => $isOnline
         ]);
     }
 
@@ -101,6 +135,12 @@ class UserController extends BaseController
     public function update($user_id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $password = trim($_POST['password'] ?? '');
+            if (!empty($password) && strlen($password) < 6) {
+                header("Location: /users/edit/$user_id?error=Password must be at least 6 characters");
+                exit();
+            }
+            
             $image = null;
             if (isset($_FILES['image']) && $_FILES['image']['error'] !== UPLOAD_ERR_NO_FILE) {
                 $image = $this->handleImageUpload($_FILES['image']);
@@ -110,17 +150,27 @@ class UserController extends BaseController
                 }
             }
             
-            if ($this->user->updateUser(
+            $result = $this->user->updateUser(
                 $user_id,
                 $_POST['first_name'] ?? '',
                 $_POST['last_name'] ?? '',
                 $_POST['email'] ?? '',
-                $_POST['password'] ?? '',
+                $password,
                 $_POST['role'] ?? '',
                 $_POST['phone'] ?? '',
                 $image
-            )) {
-                header("Location: /users");
+            );
+            
+            if ($result) {
+                $_SESSION['first_name'] = $_POST['first_name'];
+                $_SESSION['last_name'] = $_POST['last_name'];
+                $_SESSION['email'] = $_POST['email'];
+                $_SESSION['phone'] = $_POST['phone'];
+                $_SESSION['user_role'] = $_POST['role'];
+                if ($image) {
+                    $_SESSION['image'] = $image;
+                }
+                header("Location: /users?success=User updated successfully");
             } else {
                 header("Location: /users/edit/$user_id?error=Failed to update user");
             }
@@ -236,16 +286,17 @@ class UserController extends BaseController
                 $_SESSION['user_role'] = $user['role'];
                 $_SESSION['email'] = $user['email'];
                 $_SESSION['phone'] = $user['phone'];
+                $_SESSION['image'] = $user['image'];
+                $_SESSION['last_activity'] = $user['last_activity'];
                 $_SESSION['success'] = 'Login successful! Welcome, ' . $user['first_name'] . '!';
                 
                 $this->user->updateLastActivity($user['user_id']);
 
                 header("Location: /dashboard");
                 exit();
-
             } catch (Exception $e) {
                 error_log("Login error: " . $e->getMessage());
-                $_SESSION['error_message로'] = 'system_error';
+                $_SESSION['error_message'] = 'system_error';
                 header('Location: /login');
                 exit();
             }

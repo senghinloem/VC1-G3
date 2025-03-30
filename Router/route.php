@@ -27,6 +27,7 @@ $route->post("/users/authenticate", [UserController::class, 'authenticate']);
 $route->get ("/users/logout", [UserController::class, 'logout']);
 $route->get("/users/search", [UserController::class, 'search']);
 $route->get("/users/detail/{user_id}", [UserController::class, 'userDetail']);
+$route->get("/users/profile", [UserController::class, 'profile']);
 
 // welcome
 $route->get("/", [WelcomeController::class, 'welcome']);
@@ -36,17 +37,27 @@ $route->get("/dashboard", [DashboardController::class, 'dashboard']);
 $route->get("/products", [ProductController::class, 'product']);
 $route->get("/create", [ProductController::class, 'create']);
 $route->post("/products/store", [ProductController::class, 'store']);
-$route->delete("/products/destroy/{product_id}", [ProductController::class, 'delete']);
+$route->post("/products/destroy/multiple", [ProductController::class, 'deleteMultiple']);
 $route->post("/products/import", [ProductController::class, 'import']);
 
 
 // stock routes
+// $route->get("/stock", [StockController::class, 'stock']);
+// $route->get("/stock/create", [StockController::class, 'create_stock']);
+// $route->post("/stock/store", [StockController::class, 'store']);
+// $route->get("/stock/edit/{stock_id}", [StockController::class, 'edit']);
+// $route->post("/stock/update/{stock_id}", [StockController::class, 'update']);
+// $route->post("/stock/destroy/{stock_id}", [StockController::class, 'destroy']);
+
+// Stock Management (Fixed and Enhanced)
 $route->get("/stock", [StockController::class, 'stock']);
 $route->get("/stock/create", [StockController::class, 'create_stock']);
 $route->post("/stock/store", [StockController::class, 'store']);
+$route->get("/stock/view/{stock_id}", [StockController::class, 'view_detail']);  // Added view detail route
 $route->get("/stock/edit/{stock_id}", [StockController::class, 'edit']);
 $route->post("/stock/update/{stock_id}", [StockController::class, 'update']);
-$route->post("/stock/destroy/{stock_id}", [StockController::class, 'destroy']);
+$route->delete("/stock/delete/{stock_id}", [StockController::class, 'destroy']); // Changed to DELETE method
+$route->get("/stock/search", [StockController::class, 'search']); // Added search route
 
 // product list
 $route->get("/product_list", [ProductListController::class, 'product_list']);
@@ -69,7 +80,7 @@ $route->get("/supplier/detail/{supplier_id}", [SupplierController::class, 'detai
 
 // login and register
 $route->get("/login", [LoginRegisterController::class, 'login']);
-$route->get("/register", [LoginRegisterController::class, 'register']);
+// $route->get("/register", [LoginRegisterController::class, 'register']);
 $route->get("/error", [LoginRegisterController::class, 'error']);
 
 // help
