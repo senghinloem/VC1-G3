@@ -69,69 +69,73 @@ if (session_status() == PHP_SESSION_NONE) {
             </li>
             
             <!--end::Notifications Dropdown-->
-           <!--begin::User Menu Dropdown-->
-           <li class="nav-item dropdown user-menu">
-                        <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
-                            <?php
-                            if (isset($users) && is_array($users)) {
-                                foreach ($users as $user) {
-                                    if ($user['user_id'] == $_SESSION['user_id']) {
-                                        $userImage = !empty($user['image']) ? '/uploads/' . htmlspecialchars($user['image'], ENT_QUOTES, 'UTF-8') : '/views/assets/img/user2-160x160.jpg';
-                            ?>
-                                        <img src="<?php echo $userImage; ?>"
-                                             class="user-image rounded-circle shadow-sm me-2"
-                                             alt="User Image"
-                                             width="40"
-                                             height="40"
-                            />
-                            <?php
-                                    }
-                                }
-                            } else {
-                            ?>
-                                <img src="<?php echo $_SESSION['user_image'] ?? '/views/assets/img/user2-160x160.jpg'; ?>"
-                                     class="user-image rounded-circle shadow-sm me-2"
-                                     alt="User Image"
-                                     width="40"
-                                     height="40"
-                               />
-                            <?php
-                            }
-                            ?>
-                            <span class="d-none d-md-inline text-dark fw-semibold">
-                                <?php echo $_SESSION['last_name'] ?? 'Unknown'; ?>
-                            </span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end shadow border-0 rounded-3">
-                            <li class="user-header text-center p-3 bg-light border-bottom">
-                                <img src="<?php echo $_SESSION['user_image'] ?? '/views/assets/img/user2-160x160.jpg'; ?>"
-                                     class="rounded-circle shadow-sm mb-2"
-                                     alt="User Image"
-                                     width="80"
-                                     height="80"
-                                    />
-                                <p class="mb-0 fw-bold">
-                                    <?php echo $_SESSION['last_name'] ?? 'Unknown'; ?>
-                                </p>
-                                <small class="opacity-75">
-                                    <?php echo $_SESSION['user_role'] ?? 'Role Unknown'; ?>
-                                </small>
-                            </li>
-                            <li class="p-2">
-                                <a href="#" class="dropdown-item d-flex align-items-center">
-                                    <i class="bi bi-person-circle me-2"></i> Profile
-                                </a>
-                                <a href="#" class="dropdown-item d-flex align-items-center">
-                                    <i class="bi bi-gear me-2"></i> Settings
-                                </a>
-                                <div class="dropdown-divider"></div>
-                                <a href="/users/logout" class="dropdown-item d-flex align-items-center text-danger">
-                                    <i class="bi bi-box-arrow-right me-2"></i> Log out
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <!--end::Use-->
+
+
+            <!--begin::User Menu Dropdown-->
+            <li class="nav-item dropdown user-menu">
+              <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
+                <?php
+                if (isset($users) && is_array($users)) {
+                  foreach ($users as $user) {
+                    if ($user['user_id'] == $_SESSION['user_id']) {
+                      // Set a default image path if the user's image is not set or empty
+                      $userImage = !empty($user['image']) ? '/uploads/' . htmlspecialchars($user['image'], ENT_QUOTES, 'UTF-8') : '/views/assets/img/user2-160x160.jpg';
+                ?>
+                      <img
+                        src="<?php echo $userImage; ?>"
+                        class="user-image rounded-circle shadow-sm me-2"
+                        alt="User Image"
+                        width="40"
+                        height="40" />
+                  <?php
+                    }
+                  }
+                } else {
+                  // Fallback if $users is not set or not an array
+                  ?>
+                  <img
+                    src="../../uploads/1743166799_13a6e7c7214158c4f676084788520266.jpg"
+                    class="user-image rounded-circle shadow-sm me-2"
+                    alt="User Image"
+                    width="35"
+                    height="35" />
+                <?php
+                }
+                ?>
+                <!-- admin -->
+                <?php if (isset($_SESSION['last_name'])): ?>
+                  <span class="d-none d-md-inline text-dark fw-semibold"><?= $_SESSION['last_name']; ?></span>
+                <?php endif; ?>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end shadow border-0 rounded-3">
+                <li class="user-header text-center p-3 bg-light border-bottom">
+                  <img
+                    src="<?= isset($_SESSION['user_image']) ? $_SESSION['user_image'] : $userImage ?>"
+                    class="rounded-circle shadow-sm mb-2"
+                    alt="User Image"
+                    width="80"
+                    height="80" />
+                  <p class="mb-0 fw-bold">
+                    <?= isset($_SESSION['last_name']) ? $_SESSION['last_name'] : 'Unknown user'; ?>
+                  </p>
+                  <small class="opacity-75"><?= isset($_SESSION['user_role']) ? $_SESSION['user_role'] : 'Role Unknown'; ?></small>
+                  <br>
+                </li>
+                <li class="p-2">
+                  <a href="#" class="dropdown-item d-flex align-items-center">
+                    <i class="bi bi-person-circle me-2"></i> Profile
+                  </a>
+                  <a href="#" class="dropdown-item d-flex align-items-center">
+                    <i class="bi bi-gear me-2"></i> Settings
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  <a href="/users/logout" class="dropdown-item d-flex align-items-center text-danger">
+                    <i class="bi bi-box-arrow-right me-2"></i> Log out
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <!--end::User Menu Dropdown-->
           </ul>
           <!--end::End Navbar Links-->
         </div>
