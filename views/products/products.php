@@ -308,6 +308,20 @@
             border-color: #dee2e6;
         }
 
+        /* Adding modal-specific styles from user management */
+        .modal-content {
+            border: none;
+            border-radius: 12px;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+        }
+
+        .modal-footer {
+            border-top: 1px solid rgba(0,0,0,0.08);
+        }
+
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .product-cell .product-name-box {
@@ -382,20 +396,19 @@
         </div>
     </div>
     <div class="action-buttons mb-4">
-        <!-- <button class="btn btn-danger" id="deleteSelected">Delete</button> -->
-        <a href="/products/destroy/ <?= $product["product_id"]?>" class="btn btn-danger" id="deleteSelected">Delete</a>
-        <div class="dropdown">
-            <button class="btn btn-primary dropdown-toggle" type="button" id="stockDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                Select Stock
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="stockDropdown">
-                <?php foreach ($stocks as $stock): ?>
-                    <li><a class="dropdown-item" href="#" data-value="<?= htmlspecialchars($stock['stock_name']) ?>"><?= htmlspecialchars($stock['stock_name']) ?></a></li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
-        <button class="btn btn-apply" id="applyStock" style="background:green; color:white;">Apply</button>
+    <button class="btn btn-danger" id="deleteSelected" type="button" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">Delete</button>
+    <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="stockDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            Select Stock
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="stockDropdown">
+            <?php foreach ($stocks as $stock): ?>
+                <li><a class="dropdown-item" href="#" data-value="<?= htmlspecialchars($stock['stock_name']) ?>"><?= htmlspecialchars($stock['stock_name']) ?></a></li>
+            <?php endforeach; ?>
+        </ul>
     </div>
+    <button class="btn btn-apply" id="applyStock" style="background:green; color:white;">Apply</button>
+</div>
     <div class="table-responsive">
         <table class="table table-bordered table-hover">
             <thead>
@@ -463,6 +476,33 @@
                 </li>
             </ul>
         </nav>
+    </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <div class="mb-3">
+                        <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
+                    </div>
+                    <h5 class="mb-2">Are you sure?</h5>
+                    <p class="text-muted mb-0">You are about to delete <strong id="deleteCount"></strong> product(s). This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form id="deleteForm" method="POST">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash-alt me-2"></i>Delete Product(s)
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -645,36 +685,43 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Delete selected products
-    document.getElementById('deleteSelected').addEventListener('click', function() {
-        const selectedCheckboxes = document.querySelectorAll('.productCheckbox:checked');
-        const productIds = Array.from(selectedCheckboxes).map(checkbox => checkbox.value);
+// Delete selected products
+document.getElementById('deleteSelected').addEventListener('click', function() {
+    const selectedCheckboxes = document.querySelectorAll('.productCheckbox:checked');
+    const productIds = Array.from(selectedCheckboxes).map(checkbox => checkbox.value);
 
-        if (productIds.length === 0) {
-            alert("Please select at least one product to delete.");
-            return;
-        }
+    if (productIds.length === 0) {
+        alert("Please select at least one product to delete.");
+        return;
+    }
 
-        if (confirm(`Are you sure you want to delete ${productIds.length} product(s)?`)) {
-            fetch('/products/destroy/multiple', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ product_ids: productIds })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(data.message || "Selected products deleted successfully!");
-                    location.reload();
-                } else {
-                    alert(data.message || "Failed to delete selected products.");
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
-    });
+    // Update modal content
+    document.getElementById('deleteCount').textContent = productIds.length;
+    const deleteForm = document.getElementById('deleteForm');
+    deleteForm.action = '/products/destroy/multiple';
+
+    // Handle form submission
+    deleteForm.onsubmit = function(e) {
+        e.preventDefault();
+        
+        fetch('/products/destroy/multiple', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ product_ids: productIds })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert(data.message || "Failed to delete selected products.");
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    };
+});
 
     // Existing dropdown and image upload logic remains unchanged
     document.querySelectorAll('.dropdown-item').forEach(item => {
