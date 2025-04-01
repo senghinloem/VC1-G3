@@ -57,7 +57,7 @@ $route->get("/product_list/edit/{id}", [ProductListController::class, 'edit']);
 $route->post("/product_list/update/{id}", [ProductListController::class, 'update']); // Changed to POST and added {id}
 $route->delete("/product_list/destroy/{id}", [ProductListController::class, 'destroy']);
 $route->get('/product_list/search', [ProductListController::class, 'search']);
-
+$route->post("/products/assign-stock", [ProductController::class, 'assignStock']);
 
 // suppliers
 $route->get("/supplier", [SupplierController::class, 'supplier']);
