@@ -169,6 +169,50 @@ if (!isset($_SESSION['user_id'])) {
             color: #6c757d;
             margin-bottom: 1rem;
         }
+
+        /* Custom Search Bar Styling */
+        .custom-search-bar {
+            position: relative;
+            width: 300px; /* Adjust width as needed */
+        }
+
+        .custom-search-input {
+            border: 1px solid #ced4da;
+            border-right: none; /* Remove right border to blend with the button */
+            border-radius: 4px 0 0 4px; /* Rounded corners on the left */
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            height: 38px; /* Match button height */
+            box-shadow: none; /* Remove default Bootstrap shadow */
+        }
+
+        .custom-search-btn {
+            border: none;
+            border-radius: 0 4px 4px 0; /* Rounded corners on the right */
+            padding: 0 12px;
+            height: 38px; /* Match input height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #0d6efd; /* Bootstrap primary blue */
+            transition: background-color 0.2s ease;
+        }
+
+        .custom-search-btn i {
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .custom-search-btn:hover {
+            background-color: #0b5ed7; /* Slightly darker blue on hover */
+        }
+
+        /* Remove default focus outline for a cleaner look */
+        .custom-search-input:focus {
+            outline: none;
+            box-shadow: none;
+            border-color: #ced4da;
+        }
     </style>
 </head>
 
@@ -187,13 +231,13 @@ if (!isset($_SESSION['user_id'])) {
                             <!-- Search Form -->
                             <div class="search-container">
                                 <form action="/suppliers/search" method="GET" class="d-flex align-items-center" id="searchForm">
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-white border-end-0">
-                                            <i class="fas fa-search text-muted"></i>
-                                        </span>
-                                        <input type="text" name="search" class="form-control border-start-0" 
+                                    <div class="custom-search-bar d-flex align-items-center">
+                                        <input type="text" name="search" class="form-control custom-search-input" 
                                                placeholder="Search for supplier..." 
                                                id="searchInput">
+                                        <button type="submit" class="btn btn-primary custom-search-btn">
+                                            <i class="fas fa-search"></i>
+                                        </button>
                                     </div>
                                 </form>
                             </div>
@@ -312,9 +356,7 @@ if (!isset($_SESSION['user_id'])) {
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> -->
-
+    
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Initialize tooltips (matching Product List)
@@ -376,7 +418,7 @@ if (!isset($_SESSION['user_id'])) {
                     tbody.innerHTML = `
                         <tr>
                             <td colspan="6">
-                                <divs
+
                                 <div class="empty-state">
                                     <i class="fas fa-box-open"></i>
                                     <h5>No suppliers found</h5>
