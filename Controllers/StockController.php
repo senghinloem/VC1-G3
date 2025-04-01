@@ -129,6 +129,7 @@ class StockController extends BaseController
 
         $stock_name = trim($_POST['stock_name']);
         $quantity = (int)$_POST['quantity'];
+        $status = $quantity > 0 ? 'in_stock' : 'out_of_stock';
 
         try {
             $success = $this->stockModel->updateStock($stock_id, $stock_name, $quantity);

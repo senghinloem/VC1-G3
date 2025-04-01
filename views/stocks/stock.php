@@ -19,7 +19,7 @@
                             </form>
                         </div>
                         <a href="/stock/create" class="btn btn-primary">
-                            <i class="fas fa-plus me-2"></i>Add Stock
+                            <i class="fas fa-plus me-2"></i>Create Stock
                         </a>
                     </div>
                 </div>
@@ -205,4 +205,111 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// Go to specific page
+function goToPage(page) {
+    if (page < 1 || page > totalPages) return;
+    
+    currentPage = page;
+    const rows = document.querySelectorAll('#productTableBody tr');
+    
+    // Hide all rows
+    rows.forEach(row => row.style.display = 'none');
+    
+    // Show rows for current page
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+    
+    for (let i = startIndex; i < endIndex; i++) {
+        if (rows[i]) {
+            rows[i].style.display = '';
+        }
+    }
+    
+    // Update pagination controls
+    document.querySelectorAll('.page-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.textContent === page.toString()) {
+            item.classList.add('active');
+        }
+    });
+    
+    document.getElementById('prevPage').classList.toggle('disabled', page === 1);
+    document.getElementById('nextPage').classList.toggle('disabled', page === totalPages);
+    
+    // Update showing text
+    document.getElementById('showingFrom').textContent = startIndex + 1;
+    document.getElementById('showingTo').textContent = endIndex;
+}
+
+// Initialize on page load
+function goToPage(page) {
+    if (page < 1 || page > totalPages) return;
+    
+    currentPage = page;
+    const rows = document.querySelectorAll('#productTableBody tr');
+    
+    // Hide all rows
+    rows.forEach(row => row.style.display = 'none');
+    
+    // Show rows for current page
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+    
+    for (let i = startIndex; i < endIndex; i++) {
+        if (rows[i]) {
+            rows[i].style.display = '';
+        }
+    }
+    
+    // Update pagination controls
+    document.querySelectorAll('.page-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.textContent === page.toString()) {
+            item.classList.add('active');
+        }
+    });
+    
+    document.getElementById('prevPage').classList.toggle('disabled', page === 1);
+    document.getElementById('nextPage').classList.toggle('disabled', page === totalPages);
+    
+    // Update showing text
+    document.getElementById('showingFrom').textContent = startIndex + 1;
+    document.getElementById('showingTo').textContent = endIndex;
+}
+
+// Initialize on page load
+// document.addEventListener('DOMContentLoaded', function() {
+//     initPagination();
+//     goToPage(1);
+    
+//     // Existing search functionality
+//     document.getElementById('searchInput').addEventListener('input', function() {
+//         const searchValue = this.value.toLowerCase();
+//         const rows = document.querySelectorAll('#productTableBody tr');
+
+//         rows.forEach(row => {
+//             const name = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+//             const description = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
+//             const price = row.querySelector('td:nth-child(6)').textContent; 
+//             const unit = row.querySelector('td:nth-child(7)').textContent; 
+//             const quantity = row.querySelector('td:nth-child(8)').textContent; 
+//             const stock = row.querySelector('td:nth-child(9)').textContent; 
+
+//             if (
+//                 name.includes(searchValue) || 
+//                 description.includes(searchValue) ||
+//                 price.includes(this.value) || 
+//                 unit.includes(this.value) || 
+//                 quantity.includes(this.value) ||
+//                 stock.includes(searchValue)
+//             ) {
+//                 row.style.display = '';
+//             } else {
+//                 row.style.display = 'none';
+//             }
+//         });
+//     });
+
 </script>
+
