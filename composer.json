@@ -7,7 +7,12 @@
         }
     ],
     "require": {
+<<<<<<< HEAD
         "setasign/fpdf": "*",
         "phpoffice/phpspreadsheet": "*"
+=======
+        "setasign/fpdf": "^1.8",
+        "phpoffice/phpspreadsheet": "^1.29.0"
+>>>>>>> c9b718bb0988a3d0925ce9be3418883cb5bfb832
     }
 }

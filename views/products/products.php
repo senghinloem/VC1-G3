@@ -15,11 +15,50 @@ if (!isset($_SESSION['user_id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventory System Management</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">`
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         /* Container styling */
         .container {
-            padding: 1.5rem;
+            padding: 2rem;
+        }
+
+        /* Header section styling */
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border: none; 
+            border-radius: 6px 6px 0 0; 
+            background: #ffffff; 
+            padding: 1rem 1.5rem 1rem 1.5rem; 
+            margin-top: -3.5rem;
+            box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 0px 8px;
+        }
+        .header-section h4 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-section h4 i {
+            margin-right: 0.5rem;
+            color: #0d6efd;
+        }
+
+        .header-section .search-container {
+            flex-grow: 1;
+            margin: 0 1rem;
+        }
+
+        .header-section .button-group {
+            display: flex;
+            gap: 0.5rem;
         }
 
         /* Button styling */
@@ -80,6 +119,17 @@ if (!isset($_SESSION['user_id'])) {
         .btn-outline-secondary:hover {
             background: #f8f9fa;
             color: #0d6efd;
+        }
+
+        /* Search loading state */
+        .search-container .spinner {
+            display: none;
+            margin-left: 100px;
+            color: #0d6efd;
+        }
+
+        .search-container.loading .spinner {
+            display: inline-block;
         }
 
         /* Stat cards */
@@ -181,54 +231,23 @@ if (!isset($_SESSION['user_id'])) {
             border: 1px solid #ced4da;
             border-radius: 4px;
             padding: 5px 10px;
-            width: 200px; /* Fixed width */
+            width: 200px;
             background: #fff;
-            overflow-x: auto; /* Enable scrolling */
-            white-space: nowrap; /* Keep text on one line */
+            overflow-x: auto;
+            white-space: nowrap;
             display: inline-block;
             line-height: 1.5;
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
-        /* Hide scrollbar for Chrome, Safari and Opera */
         .product-cell .product-name-box::-webkit-scrollbar {
             display: none;
         }
-        /* Barcode search button - Updated to match the image */
-        .barcode-search {
-            display: flex;
-            align-items: center;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            padding: 6px 12px;
-            background: #fff;
-            width: 220px; /* Slightly wider to accommodate spacing */
-            cursor: pointer;
-            height: 34px;
-            justify-content: space-between; /* This will help separate text and icon */
-        }
 
-        .barcode-search .barcode-icon {
-            color: #6c757d;
-            font-size: 16px;
-            margin-right: 8px;
-        }
-
-        .barcode-search .barcode-text {
-            color: #6c757d;
-            font-size: 12px;
-            font-weight: 400;
-            letter-spacing: 0.2px;
-            white-space: nowrap;
-            margin-right: 20px; /* Added space between text and search icon */
-            flex-grow: 1; /* Allow text to take available space */
-        }
-
-        .barcode-search .search-icon {
-            color: #6c757d;
-            font-size: 14px;
-            margin-left: 0; /* Reset margin since we're using justify-content: space-between */
+        .input-group {
+            width: 250px;
+            margin-left: auto
         }
 
         .default-product-image {
@@ -250,10 +269,6 @@ if (!isset($_SESSION['user_id'])) {
         .default-product-image:hover {
             transform: scale(1.05);
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .image-placeholder-icon {
-            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
         }
 
         /* Action buttons container */
@@ -318,7 +333,7 @@ if (!isset($_SESSION['user_id'])) {
             border-color: #dee2e6;
         }
 
-        /* Adding modal-specific styles from user management */
+        /* Adding modal-specific styles */
         .modal-content {
             border: none;
             border-radius: 12px;
@@ -332,10 +347,53 @@ if (!isset($_SESSION['user_id'])) {
             border-top: 1px solid rgba(0,0,0,0.08);
         }
 
+        /* Loading spinner styles */
+        .btn .spinner-border {
+            vertical-align: text-top;
+            margin-right: 5px;
+        }
+
+        #applyStock:disabled {
+            opacity: 0.7;
+        }
+
+        /* Add to your existing styles */
+        .no-results td {
+            padding: 40px 0 !important;
+            color: #6c757d;
+            font-size: 1.1rem;
+            font-style: italic;
+        }
+
+        /* Make sure the "no products" message is centered */
+        .text-center {
+            text-align: center !important;
+        }
+
+        .empty-state td, 
+        .search-empty-state td {
+            padding: 3rem 1rem !important;
+            text-align: center !important;
+            border: none !important;
+            background: transparent !important;
+        }
+
+        .empty-state i,
+        .search-empty-state i {
+            opacity: 0.5;
+        }
+
+        .empty-state p,
+        .search-empty-state p {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+        
+
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .product-cell .product-name-box {
-                width: 150px; /* Adjust width for smaller screens */
+                width: 150px;
             }
             .table th,
             .table td {
@@ -354,28 +412,51 @@ if (!isset($_SESSION['user_id'])) {
             .stat-card p {
                 font-size: 0.9rem;
             }
+
+            .header-section {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .header-section .search-container {
+                flex-grow: 1;
+                margin: 0;
+                width: 100%;
+            }
+
+            .header-section .button-group {
+                width: 100%;
+                justify-content: flex-end;
+            }
         }
     </style>
 </head>
 <body>
 <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div class="input-group w-50">
-            <input type="text" id="searchInput" class="form-control" placeholder="Search for product...">
-            <button class="btn btn-outline-secondary" type="button">
-                <i class="bi bi-search"></i>
+    <!-- Header Section -->
+    <div class="header-section">
+        <h4>
+            <i class="fas fa-box me-2 text-primary"></i> Products
+        </h4>
+        <div class="search-container">
+            <div class="input-group">
+                <input type="text" class="form-control border-start-0" id="searchInput" placeholder="Search for product...">
+                <button class="btn btn-primary" type="button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+        <div class="button-group">
+            <a href="/create" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Add Product
+            </a>
+            <input type="file" id="excelFileInput" accept=".xlsx, .xls" style="display: none;">
+            <button class="btn btn-dark" id="importProductsButton">
+                <i class="fas fa-file-import me-2"></i>Import Products
             </button>
         </div>
-        <div>
-            <a href="/create" class="btn btn-primary">Add Product</a>
-            
-            <input type="file" id="excelFileInput" accept=".xlsx, .xls" style="display: none;">
-            
-            <button class="btn btn-dark" id="importProductsButton">Import Products</button>
-        </div>
-    </div>
-    
-    <h4>Products</h4>
+    </div> 
+
 
     <div class="col-12 mb-4">
         <div class="row">
@@ -405,20 +486,29 @@ if (!isset($_SESSION['user_id'])) {
             </div>
         </div>
     </div>
+    
     <div class="action-buttons mb-4">
-    <button class="btn btn-danger" id="deleteSelected" type="button" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">Delete</button>
-    <div class="dropdown">
-        <button class="btn btn-primary dropdown-toggle" type="button" id="stockDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-            Select Stock
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="stockDropdown">
-            <?php foreach ($stocks as $stock): ?>
-                <li><a class="dropdown-item" href="#" data-value="<?= htmlspecialchars($stock['stock_name']) ?>"><?= htmlspecialchars($stock['stock_name']) ?></a></li>
-            <?php endforeach; ?>
-        </ul>
+        <button class="btn btn-danger" id="deleteSelected" type="button" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">Delete</button>
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="stockDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                Select Stock
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="stockDropdown">
+                <?php if (!empty($stocks)): ?>
+                    <?php foreach ($stocks as $stock): ?>
+                        <li><a class="dropdown-item" href="#" data-stock-id="<?= htmlspecialchars($stock['stock_id']) ?>" data-stock-name="<?= htmlspecialchars($stock['stock_name']) ?>">
+                            <?= htmlspecialchars($stock['stock_name']) ?>
+                        </a></li>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <li><span class="dropdown-item text-muted">No stocks available</span></li>
+                <?php endif; ?>
+            </ul>
+        </div>
+        <button class="btn btn-success" id="applyStock" disabled>Apply to Selected</button>
+        <button class="btn btn-outline-secondary" id="clearStockSelection">Clear</button>
     </div>
-    <button class="btn btn-apply" id="applyStock" style="background:green; color:white;">Apply</button>
-</div>
+    
     <div class="table-responsive">
         <table class="table table-bordered table-hover">
             <thead>
@@ -458,8 +548,11 @@ if (!isset($_SESSION['user_id'])) {
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <tr>
-                        <td colspan="9" class="text-center">There are no products.</td>
+                    <tr class="empty-state">
+                        <td colspan="7" class="text-center">
+                            <i class="bi bi-box-seam" style="font-size: 3rem; color: #adb5bd;"></i>
+                            <p class="mt-2 mb-0">No products found</p>
+                        </td>
                     </tr>
                 <?php endif; ?>
             </tbody>
@@ -488,8 +581,8 @@ if (!isset($_SESSION['user_id'])) {
         </nav>
     </div>
 
-        <!-- Delete Confirmation Modal -->
-        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -520,8 +613,98 @@ if (!isset($_SESSION['user_id'])) {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+// Stock management functionality
+let selectedStockId = null;
+let selectedStockName = null;
+const stockDropdownElement = document.getElementById('stockDropdown');
+const stockDropdown = new bootstrap.Dropdown(stockDropdownElement);
+
+// Handle stock selection from dropdown
+document.querySelectorAll('.dropdown-item[data-stock-id]').forEach(item => {
+    item.addEventListener('click', function(e) {
+        e.preventDefault();
+        selectedStockId = this.getAttribute('data-stock-id');
+        selectedStockName = this.getAttribute('data-stock-name');
+        
+        // Update the dropdown button text
+        stockDropdownElement.innerHTML = selectedStockName + ' <span class="caret"></span>';
+        
+        // Enable apply button
+        document.getElementById('applyStock').disabled = false;
+        
+        // Close the dropdown
+        stockDropdown.hide();
+    });
+});
+
+// Handle apply button click
+document.getElementById('applyStock').addEventListener('click', function() {
+    if (!selectedStockId) {
+        alert("Please select a stock first");
+        return;
+    }
+    
+    // Get all selected products
+    const selectedCheckboxes = document.querySelectorAll('.productCheckbox:checked');
+    const productIds = Array.from(selectedCheckboxes).map(checkbox => checkbox.value);
+    
+    if (productIds.length === 0) {
+        alert("Please select at least one product");
+        return;
+    }
+    
+    // Confirm with user
+    if (!confirm(`Assign ${productIds.length} product(s) to ${selectedStockName}?`)) {
+        return;
+    }
+    
+    // Show loading state
+    const applyBtn = document.getElementById('applyStock');
+    const originalText = applyBtn.innerHTML;
+    applyBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Applying...';
+    applyBtn.disabled = true;
+    
+    // Send data to server
+    fetch('/products/assign-stock', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            product_ids: productIds,
+            stock_id: selectedStockId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(`Successfully assigned ${productIds.length} product(s) to ${selectedStockName}`);
+            // Refresh the page to show changes
+            location.reload();
+        } else {
+            alert("Failed to assign products: " + (data.message || "Unknown error"));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("An error occurred while assigning products");
+    })
+    .finally(() => {
+        applyBtn.innerHTML = originalText;
+        applyBtn.disabled = false;
+    });
+});
+
+// Handle clear selection
+document.getElementById('clearStockSelection').addEventListener('click', function() {
+    selectedStockId = null;
+    selectedStockName = null;
+    stockDropdownElement.innerHTML = 'Select Stock <span class="caret"></span>';
+    document.getElementById('applyStock').disabled = true;
+});
+
 // Pagination variables
-const itemsPerPage = 8;
+const itemsPerPage = 6;
 let currentPage = 1;
 const totalItems = <?= count($products) ?>;
 const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -624,13 +807,15 @@ document.addEventListener('DOMContentLoaded', function() {
             const price = row.querySelector('td:nth-child(6)').textContent; 
             const unit = row.querySelector('td:nth-child(7)').textContent; 
             const quantity = row.querySelector('td:nth-child(8)').textContent; 
+            const stock = row.querySelector('td:nth-child(9)').textContent; 
 
             if (
                 name.includes(searchValue) || 
                 description.includes(searchValue) ||
                 price.includes(this.value) || 
                 unit.includes(this.value) || 
-                quantity.includes(this.value) 
+                quantity.includes(this.value) ||
+                stock.includes(searchValue)
             ) {
                 row.style.display = '';
             } else {
@@ -695,77 +880,125 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-// Delete selected products
-document.getElementById('deleteSelected').addEventListener('click', function() {
-    const selectedCheckboxes = document.querySelectorAll('.productCheckbox:checked');
-    const productIds = Array.from(selectedCheckboxes).map(checkbox => checkbox.value);
+    // Delete selected products
+    document.getElementById('deleteSelected').addEventListener('click', function() {
+        const selectedCheckboxes = document.querySelectorAll('.productCheckbox:checked');
+        const productIds = Array.from(selectedCheckboxes).map(checkbox => checkbox.value);
 
-    if (productIds.length === 0) {
-        alert("Please select at least one product to delete.");
-        return;
-    }
+        if (productIds.length === 0) {
+            alert("Please select at least one product to delete.");
+            return;
+        }
 
-    // Update modal content
-    document.getElementById('deleteCount').textContent = productIds.length;
-    const deleteForm = document.getElementById('deleteForm');
-    deleteForm.action = '/products/destroy/multiple';
+        // Update modal content
+        document.getElementById('deleteCount').textContent = productIds.length;
+        const deleteForm = document.getElementById('deleteForm');
+        deleteForm.action = '/products/destroy/multiple';
 
-    // Handle form submission
-    deleteForm.onsubmit = function(e) {
-        e.preventDefault();
-        
-        fetch('/products/destroy/multiple', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ product_ids: productIds })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert(data.message || "Failed to delete selected products.");
-            }
-        })
-        .catch(error => console.error('Error:', error));
-    };
-});
-
-    // Existing dropdown and image upload logic remains unchanged
-    document.querySelectorAll('.dropdown-item').forEach(item => {
-        item.addEventListener('click', function(e) {
+        // Handle form submission
+        deleteForm.onsubmit = function(e) {
             e.preventDefault();
-            const value = this.getAttribute('data-value');
-            const text = this.textContent;
-            const dropdownButton = document.getElementById('stockDropdown');
-            dropdownButton.textContent = text;
-            dropdownButton.setAttribute('data-selected', value);
-        });
-    });
-
-    document.querySelectorAll('[id^="addImageForm_"]').forEach(form => {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-
-            fetch('/products/add-image', {
+            
+            fetch('/products/destroy/multiple', {
                 method: 'POST',
-                body: formData
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ product_ids: productIds })
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert(data.message || "Image added successfully!");
                     location.reload();
                 } else {
-                    alert(data.message || "Failed to add image.");
+                    alert(data.message || "Failed to delete selected products.");
                 }
             })
             .catch(error => console.error('Error:', error));
-        });
+        };
     });
+
+    // search
+    document.getElementById('searchInput').addEventListener('input', function() {
+    const searchValue = this.value.trim().toLowerCase();
+    const rows = document.querySelectorAll('#productTableBody tr');
+    let hasMatches = false;
+
+    // Remove any existing search empty state
+    const existingSearchEmpty = document.querySelector('.search-empty-state');
+    if (existingSearchEmpty) existingSearchEmpty.remove();
+
+    // Hide the default empty state if visible
+    const defaultEmptyState = document.querySelector('.empty-state');
+    if (defaultEmptyState) defaultEmptyState.style.display = 'none';
+
+    rows.forEach(row => {
+        // Skip empty state rows
+        if (row.classList.contains('empty-state') || row.classList.contains('search-empty-state')) {
+            return;
+        }
+
+        // Get all searchable columns (adjust indices as needed)
+        const productId = row.cells[0].textContent.toLowerCase();
+        const productName = row.cells[1].textContent.toLowerCase();
+        const price = row.cells[2].textContent.toLowerCase();
+        const unit = row.cells[3].textContent.toLowerCase();
+        const stockId = row.cells[4]?.textContent.toLowerCase() || '';
+        const stockName = row.cells[5]?.textContent.toLowerCase() || '';
+
+        // Check if any field matches search
+        const isMatch = searchValue === '' || 
+                        productId.includes(searchValue) ||
+                        productName.includes(searchValue) ||
+                        price.includes(searchValue) ||
+                        unit.includes(searchValue) ||
+                        stockId.includes(searchValue) ||
+                        stockName.includes(searchValue);
+
+        // Toggle row visibility
+        row.style.display = isMatch ? '' : 'none';
+        
+        // Track if we have any matches
+        if (isMatch) hasMatches = true;
+    });
+
+    // Show appropriate empty state
+    if (searchValue === '') {
+        // If search is empty, show default empty state if no products
+        if (defaultEmptyState && rows.length === 1) {
+            defaultEmptyState.style.display = '';
+        }
+    } else if (!hasMatches) {
+        // Show search-specific empty state
+        const emptyRow = document.createElement('tr');
+        emptyRow.className = 'search-empty-state';
+        emptyRow.innerHTML = `
+            <td colspan="${rows[0]?.cells.length || 7}" class="text-center">
+                <i class="bi bi-search" style="font-size: 3rem; color: #adb5bd;"></i>
+                <p class="mt-2 mb-0">No products match your search criteria</p>
+            </td>
+        `;
+        document.getElementById('productTableBody').appendChild(emptyRow);
+    }
+
+    // Update pagination/showing text
+    updateShowingText(hasMatches ? document.querySelectorAll('#productTableBody tr:not([style*="display: none"]):not(.empty-state):not(.search-empty-state)').length : 0);
+});
+
+function updateShowingText(visibleCount) {
+    document.getElementById('showingFrom').textContent = visibleCount > 0 ? '1' : '0';
+    document.getElementById('showingTo').textContent = visibleCount;
+    document.getElementById('totalItems').textContent = visibleCount;
+    
+    // Hide pagination when searching (optional)
+    if (document.getElementById('searchInput').value.trim() !== '') {
+        document.querySelector('.pagination').style.display = 'none';
+    } else {
+        document.querySelector('.pagination').style.display = '';
+    }
+}
+    
+    
 });
 </script>
 </body>

@@ -9,12 +9,17 @@ class ProductController extends BaseController
 
     public function __construct() {
         $this->product = new ProductModel();
+        $stocks = $this->product->getAllStocks(); 
     }
 
-    public function product() {
-        $products = $this->product->getAllProducts();
-        $this->view('products/products', ['products' => $products]); 
-    }
+public function product() {
+    $products = $this->product->getAllProducts(true); // true to include stock info
+    $stocks = $this->product->getAllStocks();
+    $this->view('products/products', [
+        'products' => $products,
+        'stocks' => $stocks
+    ]); 
+}
     
     public function create() {
         $this->view('products/create');
@@ -117,6 +122,34 @@ class ProductController extends BaseController
 
         $this->product->deleteMultipleProducts($inputData['product_ids']);
         echo json_encode(["success" => true, "message" => "Selected products deleted successfully"]);
+    }
+
+    public function assignStock() {
+        $inputData = json_decode(file_get_contents("php://input"), true);
+        
+        if (empty($inputData['product_ids']) || empty($inputData['stock_id'])) {
+            echo json_encode(["success" => false, "message" => "Invalid data"]);
+            return;
+        }
+        
+        try {
+            $successCount = 0;
+            foreach ($inputData['product_ids'] as $productId) {
+                if ($this->product->assignProductToStock($productId, $inputData['stock_id'])) {
+                    $successCount++;
+                }
+            }
+            
+            echo json_encode([
+                "success" => true,
+                "message" => "Assigned {$successCount} products to stock"
+            ]);
+        } catch (Exception $e) {
+            echo json_encode([
+                "success" => false, 
+                "message" => $e->getMessage()
+            ]);
+        }
     }
 }
 

@@ -15,6 +15,16 @@ class ProductModel
         return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 
+
+    // public function getAllProducts() {
+    //     $result = $this->db->query("
+    //         SELECT p.*, s.stock_name 
+    //         FROM products p
+    //         LEFT JOIN stock_management s ON p.stock_id = s.stock_id
+    //     ");
+    //     return $result->fetchAll(PDO::FETCH_ASSOC);
+    // }
+
     public function getProductById($product_id)
 
     {
@@ -60,7 +70,22 @@ class ProductModel
             echo "Error deleting products: " . $e->getMessage();
         }
     }
-   
+    public function getAllStocks() {
+        $result = $this->db->query("SELECT * FROM stock_management");
+        return $result->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function assignProductToStock($productId, $stockId) {
+        $result = $this->db->query(
+            "UPDATE products SET stock_id = :stock_id WHERE product_id = :product_id",
+            [
+                ':stock_id' => $stockId,
+                ':product_id' => $productId
+            ]
+        );
+        return $result->rowCount() > 0;
+    }
+    
 }
 
 ?>
