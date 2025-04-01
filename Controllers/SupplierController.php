@@ -8,8 +8,10 @@ class SupplierController extends BaseController
 
     public function __construct() {
         $this->supply = new SupplierModel();
-
-        
+        // Start session if not already started
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
     }
 
     public function supplier() {
@@ -29,9 +31,14 @@ class SupplierController extends BaseController
 
         try {
             $this->supply->addSupplier($supplier_name, $email, $phone, $address);
+            $_SESSION['success_message'] = "Supplier '$supplier_name' successfully created!";
             header("Location: /supplier");
+            exit();
         } catch(PDOException $e) {
-            echo "error";
+            // You might want to handle this error better in production
+            $_SESSION['error_message'] = "Error creating supplier: " . $e->getMessage();
+            header("Location: /supplier/create");
+            exit();
         }
     }
 
@@ -46,26 +53,42 @@ class SupplierController extends BaseController
             $email = $_POST['email'];
             $phone = $_POST['phone'];
             $address = $_POST['address'];
-            $this->supply->updateSupplier($supplier_id, $supplier_name, $email, $phone, $address);
-            header("Location: /supplier");
+
+            try {
+                $this->supply->updateSupplier($supplier_id, $supplier_name, $email, $phone, $address);
+                $_SESSION['success_message'] = "Supplier '$supplier_name' successfully updated!";
+                header("Location: /supplier");
+                exit();
+            } catch(PDOException $e) {
+                $_SESSION['error_message'] = "Error updating supplier: " . $e->getMessage();
+                header("Location: /supplier/edit/$supplier_id");
+                exit();
+            }
         } else {
-            echo "Invalid method for updating supplier.";
+            $_SESSION['error_message'] = "Invalid method for updating supplier.";
+            header("Location: /supplier");
+            exit();
         }
     }
 
     public function detail($supplier_id) {
-        $supplier = $this->supply->getSupplierById($supplier_id);  // Corrected line
-        $this->view('users/supplier_detail', ['supplier' => $supplier]);  // Pass the supplier to the view
+        $supplier = $this->supply->getSupplierById($supplier_id);
+        $this->view('users/supplier_detail', ['supplier' => $supplier]);
     }
 
     public function destroy($supplier_id) {
-        $this->supply->deleteSupplier($supplier_id);
-        header('Location: /supplier');
+        try {
+            $supplier = $this->supply->getSupplierById($supplier_id); // Get supplier name before deleting
+            $supplier_name = $supplier['supplier_name'];
+            $this->supply->deleteSupplier($supplier_id);
+            $_SESSION['success_message'] = "Supplier '$supplier_name' successfully deleted!";
+            header('Location: /supplier');
+            exit();
+        } catch(PDOException $e) {
+            $_SESSION['error_message'] = "Error deleting supplier: " . $e->getMessage();
+            header('Location: /supplier');
+            exit();
+        }
     }
-
-
-    
-
-
 }
 ?>
