@@ -12,11 +12,6 @@ if (!isset($_SESSION['user_id'])) {
   <div class="card" style="max-width: 150vh; margin: 0 auto;">
     <h5 class="card-header text-center bg-primary text-white">Supplier Detail</h5>
     <div class="card-body">
-      
-      <!-- Display Supplier Id -->
-      <div class="mb-3">
-        <p class="card-text"><strong>Supplier ID:</strong> <?= htmlspecialchars($supplier['supplier_id']) ?></p>
-      </div>
 
       <!-- Display Supplier Name -->
       <div class="mb-3">

@@ -66,7 +66,6 @@ if (session_status() === PHP_SESSION_NONE) {
                             </div>
                         </li>
                         <!--end::Notifications Dropdown-->
-
                         <!--begin::User Menu Dropdown-->
                         <li class="nav-item dropdown user-menu">
                             <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
@@ -204,7 +203,6 @@ if (session_status() === PHP_SESSION_NONE) {
                     </nav>
                 </div>
             </aside>
-
             <!-- Sidebar Toggle and Active Link Script -->
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
