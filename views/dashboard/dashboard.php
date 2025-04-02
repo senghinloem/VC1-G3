@@ -59,8 +59,7 @@
                                     <p class="text-sm mb-0 text-uppercase font-weight-bold">Item Count</p>
                                     <h5 class="font-weight-bolder"><?= $totalQuantity; ?></h5>
                                     <p class="mb-0">
-                                        <span class="text-success text-sm font-weight-bolder">+3%</span>
-                                        since last week
+                                        All the products
                                     </p>
                                 </div>
                             </div>
@@ -82,7 +81,7 @@
                                     <p class="text-sm mb-0 text-uppercase font-weight-bold">Overall Cost</p>
                                     <h5 class="font-weight-bolder"><?= $text . $totalPrice ?></h5>
                                     <p class="mb-0">
-                                        <span class="text-success text-sm font-weight-bolder"></span> than last month
+                                        <span class="text-success text-sm font-weight-bolder"></span> Product's Price
                                     </p>
                                 </div>
                             </div>
