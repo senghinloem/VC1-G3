@@ -1,20 +1,17 @@
-<div class="container mt-4">
+<div class="container mt-4 ">
     <div class="card">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h4 class="mb-0">
                 <i class="fas fa-box me-2"></i>Stock Details
             </h4>
-            <a href="/stock" class="btn btn-light btn-sm">
-                <i class="fas fa-arrow-left me-1"></i> Back to Stock
-            </a>
         </div>
         <div class="card-body">
             <?php if (isset($stock)): ?>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-4">
-                            <h5 class="border-bottom pb-2">Basic Information</h5>
-                            <table class="table table-borderless">
+                            <h5 class="border-bottom pb-2 ms-3">Basic Information</h5>
+                            <table class="table table-borderless ms-3">
                                 <tr>
                                     <th style="width: 40%">Stock ID</th>
                                     <td><?= htmlspecialchars($stock['stock_id']) ?></td>
@@ -36,26 +33,29 @@
                                     </td>
                                 </tr>
                                 <?php if (isset($stock['created_at'])): ?>
-                                <tr>
-                                    <th>Created At</th>
-                                    <td><?= htmlspecialchars($stock['created_at']) ?></td>
-                                </tr>
+                                    <tr>
+                                        <th>Created At</th>
+                                        <td><?= htmlspecialchars($stock['created_at']) ?></td>
+                                    </tr>
                                 <?php endif; ?>
                                 <?php if (isset($stock['updated_at'])): ?>
-                                <tr>
-                                    <th>Last Updated</th>
-                                    <td><?= htmlspecialchars($stock['updated_at']) ?></td>
-                                </tr>
+                                    <tr>
+                                        <th>Last Updated</th>
+                                        <td><?= htmlspecialchars($stock['updated_at']) ?></td>
+                                    </tr>
                                 <?php endif; ?>
                             </table>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="d-flex justify-content-end gap-2 mt-4">
-                    <a href="/stock/edit/<?= $stock['stock_id'] ?>" class="btn btn-warning">
-                        <i class="fas fa-edit me-1"></i> Edit
+                    <a href="/stock" class="btn btn-primary btn-sm">
+                        <i class="fas fa-arrow-left me-1"></i> Back to Stock
                     </a>
+                    <!-- <a href="/stock/edit/<?= $stock['stock_id'] ?>" class="btn btn-warning">
+                        <i class="fas fa-edit me-1"></i> Edit
+                    </a> -->
                     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
                         <i class="fas fa-trash-alt me-1"></i> Delete
                     </button>
