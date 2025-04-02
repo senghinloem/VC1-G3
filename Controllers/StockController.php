@@ -134,7 +134,7 @@ class StockController extends BaseController
         try {
             $success = $this->stockModel->updateStock($stock_id, $stock_name, $quantity);
             if ($success) {
-                $this->redirect('/stock/view/' . $stock_id . '?success=Stock updated successfully');
+                $this->redirect('/stock?success=Stock updated successfully');
             } else {
                 throw new Exception("Update failed");
             }
