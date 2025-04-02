@@ -39,7 +39,7 @@ class StockController extends BaseController
             $this->view("stocks/create_stock", ['error' => 'Stock name is required.']);
             return;
         }
-        
+
         if (!isset($_POST['quantity']) || !is_numeric($_POST['quantity'])) {
             $this->view("stocks/create_stock", ['error' => 'Valid quantity is required.']);
             return;
@@ -78,10 +78,18 @@ class StockController extends BaseController
 
     public function search()
     {
+        // Get search term, status, and quantity from the URL
         $search_term = $_GET['search'] ?? '';
-        $stock_management = $this->stockModel->searchStock($search_term);
+        $status = $_GET['status'] ?? '';  // 'in_stock' or 'out_of_stock'
+        $quantity = $_GET['quantity'] ?? null;  // Quantity for stock search (optional)
+
+        // Pass search term, status, and quantity to the model
+        $stock_management = $this->stockModel->searchStock($search_term, $status, $quantity);
         $this->view("stocks/stock", ["stock_management" => $stock_management]);
     }
+
+
+
 
     public function edit($stock_id)
     {
@@ -121,6 +129,7 @@ class StockController extends BaseController
 
         $stock_name = trim($_POST['stock_name']);
         $quantity = (int)$_POST['quantity'];
+        $status = $quantity > 0 ? 'in_stock' : 'out_of_stock';
 
         try {
             $success = $this->stockModel->updateStock($stock_id, $stock_name, $quantity);
@@ -141,4 +150,3 @@ class StockController extends BaseController
         }
     }
 }
-?>
