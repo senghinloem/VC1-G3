@@ -169,6 +169,49 @@ if (!isset($_SESSION['user_id'])) {
             color: #6c757d;
             margin-bottom: 1rem;
         }
+
+        /* Search container styling */
+        .search-container .input-group {
+            max-width: 300px; /* Adjust width as needed */
+        }
+
+        /* Style the input field */
+        .search-container .form-control {
+            border: 1px solid #ced4da;
+            border-right: none; /* Remove right border to blend with the button */
+            border-radius: 4px 0 0 4px; /* Rounded corners on the left */
+            padding: 8px 12px;
+            box-shadow: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .search-container .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: none;
+        }
+
+        /* Style the search button */
+        .search-container .btn-primary {
+            border-radius: 0 4px 4px 0; /* Rounded corners on the right */
+            padding: 8px 12px;
+            border: 1px solid #0d6efd;
+            border-left: none; /* Remove left border to blend with the input */
+            background-color: #0d6efd;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-container .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        /* Icon inside the button */
+        .search-container .btn-primary i {
+            font-size: 1rem;
+        }
     </style>
 </head>
 
@@ -188,12 +231,12 @@ if (!isset($_SESSION['user_id'])) {
                             <div class="search-container">
                                 <form action="/suppliers/search" method="GET" class="d-flex align-items-center" id="searchForm">
                                     <div class="input-group">
-                                        <span class="input-group-text bg-white border-end-0">
-                                            <i class="fas fa-search text-muted"></i>
-                                        </span>
-                                        <input type="text" name="search" class="form-control border-start-0" 
+                                        <input type="text" name="search" class="form-control" 
                                                placeholder="Search for supplier..." 
                                                id="searchInput">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-search"></i>
+                                        </button>
                                     </div>
                                 </form>
                             </div>
@@ -284,193 +327,195 @@ if (!isset($_SESSION['user_id'])) {
         </div>
     </div>
 
-    <!-- In your HTML body, keep your existing success alert container -->
-<div class="col-12">
-    <?php if (isset($_SESSION['success_message'])): ?>
-        <div class="alert alert-success alert-dismissible fade show alert-slide" role="alert">
-            <i class="fas fa-check-circle me-2"></i>
-            <?= htmlspecialchars($_SESSION['success_message']) ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        <?php unset($_SESSION['success_message']); ?>
-    <?php endif; ?>
-</div>
+    <!-- Success Alert Container -->
+    <div class="col-12">
+        <?php if (isset($_SESSION['success_message'])): ?>
+            <div class="alert alert-success alert-dismissible fade show alert-slide" role="alert">
+                <i class="fas fa-check-circle me-2"></i>
+                <?= htmlspecialchars($_SESSION['success_message']) ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php unset($_SESSION['success_message']); ?>
+        <?php endif; ?>
+    </div>
 
-<!-- Delete Confirmation Modal (unchanged) -->
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Delete</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center py-4">
-                <div class="mb-3">
-                    <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <h5 class="mb-2">Are you sure?</h5>
-                <p class="text-muted mb-0">You are about to delete supplier <strong id="deleteSupplierName"></strong>. This action cannot be undone.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <form id="deleteForm" method="POST" action="">
-                    <input type="hidden" name="_token" value="<?= htmlspecialchars($csrfToken ?? '') ?>">
-                    <button type="submit" class="btn btn-danger">
-                        <i class="fas fa-trash-alt me-2"></i>Delete Supplier
-                    </button>
-                </form>
+                <div class="modal-body text-center py-4">
+                    <div class="mb-3">
+                        <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
+                    </div>
+                    <h5 class="mb-2">Are you sure?</h5>
+                    <p class="text-muted mb-0">You are about to delete supplier <strong id="deleteSupplierName"></strong>. This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form id="deleteForm" method="POST" action="">
+                        <input type="hidden" name="_token" value="<?= htmlspecialchars($csrfToken ?? '') ?>">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash-alt me-2"></i>Delete Supplier
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Edit Confirmation Modal -->
-<div class="modal fade" id="confirmEditModal" tabindex="-1" aria-labelledby="confirmEditModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmEditModalLabel">Confirm Edit</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center py-4">
-                <div class="mb-3">
-                    <i class="fas fa-edit text-primary fa-3x"></i>
+    <!-- Edit Confirmation Modal -->
+    <div class="modal fade" id="confirmEditModal" tabindex="-1" aria-labelledby="confirmEditModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmEditModalLabel">Confirm Edit</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <h5 class="mb-2">Are you sure?</h5>
-                <p class="text-muted mb-0">
-                    You are about to edit supplier <strong id="editSupplierName"></strong>. 
-                    Please confirm your changes before proceeding.
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <form id="editForm" method="POST" action="">
-                    <input type="hidden" name="_token" value="<?= htmlspecialchars($csrfToken ?? '') ?>">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-2"></i>Save
-                    </button>
-                </form>
+                <div class="modal-body text-center py-4">
+                    <div class="mb-3">
+                        <i class="fas fa-edit text-primary fa-3x"></i>
+                    </div>
+                    <h5 class="mb-2">Are you sure?</h5>
+                    <p class="text-muted mb-0">
+                        You are about to edit supplier <strong id="editSupplierName"></strong>. 
+                        Please confirm your changes before proceeding.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form id="editForm" method="POST" action="">
+                        <input type="hidden" name="_token" value="<?= htmlspecialchars($csrfToken ?? '') ?>">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Save
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-    
+    <!-- Bootstrap JS and Popper.js -->
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Initialize tooltips
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    const tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl, {
-            trigger: 'hover'
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        const tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl, {
+                trigger: 'hover'
+            });
         });
-    });
 
-    // Handle delete modal
-    const confirmDeleteModal = document.getElementById('confirmDeleteModal');
-    if (confirmDeleteModal) {
-        confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
-            const supplierId = button.getAttribute('data-supplierid');
-            const supplierName = button.getAttribute('data-suppliername');
-            
-            const supplierNameElement = document.getElementById('deleteSupplierName');
-            if (supplierNameElement) supplierNameElement.textContent = supplierName;
-            
-            const form = document.getElementById('deleteForm');
-            if (form) form.action = "/supplier/destroy/" + supplierId;
+        // Handle delete modal
+        const confirmDeleteModal = document.getElementById('confirmDeleteModal');
+        if (confirmDeleteModal) {
+            confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const supplierId = button.getAttribute('data-supplierid');
+                const supplierName = button.getAttribute('data-suppliername');
+                
+                const supplierNameElement = document.getElementById('deleteSupplierName');
+                if (supplierNameElement) supplierNameElement.textContent = supplierName;
+                
+                const form = document.getElementById('deleteForm');
+                if (form) form.action = "/supplier/destroy/" + supplierId;
 
-            // Hide tooltips when modal opens
-            tooltipList.forEach(tooltip => tooltip.hide());
-        });
-    }
+                // Hide tooltips when modal opens
+                tooltipList.forEach(tooltip => tooltip.hide());
+            });
+        }
 
-    // Handle edit modal
-    const confirmEditModal = document.getElementById('confirmEditModal');
-    if (confirmEditModal) {
-        confirmEditModal.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
-            const supplierId = button.getAttribute('data-supplierid');
-            const supplierName = button.getAttribute('data-suppliername');
-            
-            const supplierNameElement = document.getElementById('editSupplierName');
-            if (supplierNameElement) supplierNameElement.textContent = supplierName;
-            
-            const form = document.getElementById('editForm');
-            if (form) form.action = "/supplier/update/" + supplierId; // Changed to update route
+        // Handle edit modal
+        const confirmEditModal = document.getElementById('confirmEditModal');
+        if (confirmEditModal) {
+            confirmEditModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const supplierId = button.getAttribute('data-supplierid');
+                const supplierName = button.getAttribute('data-suppliername');
+                
+                const supplierNameElement = document.getElementById('editSupplierName');
+                if (supplierNameElement) supplierNameElement.textContent = supplierName;
+                
+                const form = document.getElementById('editForm');
+                if (form) form.action = "/supplier/update/" + supplierId;
 
-            // Hide tooltips when modal opens
-            tooltipList.forEach(tooltip => tooltip.hide());
-        });
-    }
+                // Hide tooltips when modal opens
+                tooltipList.forEach(tooltip => tooltip.hide());
+            });
+        }
 
-    // Search functionality
-    const searchInput = document.getElementById("searchInput");
-    const tableContainer = document.querySelector('.table-container');
-    const tbody = document.querySelector('.supplier-table tbody');
-    let debounceTimeout;
-    const debounceDelay = 300;
+        // Search functionality
+        const searchInput = document.getElementById("searchInput");
+        const tableContainer = document.querySelector('.table-container');
+        const tbody = document.querySelector('.supplier-table tbody');
+        let debounceTimeout;
+        const debounceDelay = 300;
 
-    function updateTable(filter) {
-        const rows = tbody.querySelectorAll('tr');
-        let hasVisibleRows = false;
+        function updateTable(filter) {
+            const rows = tbody.querySelectorAll('tr');
+            let hasVisibleRows = false;
 
-        rows.forEach(row => {
-            const cells = row.getElementsByTagName('td');
-            let found = false;
-            Array.from(cells).forEach(cell => {
-                if (cell.textContent.toLowerCase().includes(filter.toLowerCase())) {
-                    found = true;
+            rows.forEach(row => {
+                const cells = row.getElementsByTagName('td');
+                let found = false;
+                Array.from(cells).forEach(cell => {
+                    if (cell.textContent.toLowerCase().includes(filter.toLowerCase())) {
+                        found = true;
+                    }
+                });
+                if (found) {
+                    row.style.display = '';
+                    hasVisibleRows = true;
+                } else {
+                    row.style.display = 'none';
                 }
             });
-            if (found) {
-                row.style.display = '';
-                hasVisibleRows = true;
-            } else {
-                row.style.display = 'none';
+
+            // If no rows are visible, show empty state
+            if (!hasVisibleRows && rows.length > 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <i class="fas fa-box-open"></i>
+                                <h5>No suppliers found</h5>
+                                <p>No suppliers match your search criteria.</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        searchInput.addEventListener('input', function() {
+            clearTimeout(debounceTimeout);
+            const query = this.value.trim();
+            debounceTimeout = setTimeout(() => {
+                updateTable(query);
+            }, debounceDelay);
+        });
+
+        searchInput.addEventListener('change', function() {
+            if (this.value.trim() === '') {
+                updateTable('');
             }
         });
 
-        // If no rows are visible, show empty state
-        if (!hasVisibleRows && rows.length > 0) {
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="6">
-                        <div class="empty-state">
-                            <i class="fas fa-box-open"></i>
-                            <h5>No suppliers found</h5>
-                            <p>No suppliers match your search criteria.</p>
-                        </div>
-                    </td>
-                </tr>
-            `;
-        }
-    }
-
-    searchInput.addEventListener('input', function() {
-        clearTimeout(debounceTimeout);
-        const query = this.value.trim();
-        debounceTimeout = setTimeout(() => {
-            updateTable(query);
-        }, debounceDelay);
+        // Auto-dismiss alerts after 5 seconds
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+                if (bsAlert) bsAlert.close();
+            }, 5000);
+        });
     });
-
-    searchInput.addEventListener('change', function() {
-        if (this.value.trim() === '') {
-            updateTable('');
-        }
-    });
-
-    // Auto-dismiss alerts after 5 seconds
-    const alerts = document.querySelectorAll('.alert');
-    alerts.forEach(alert => {
-        setTimeout(() => {
-            const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
-            if (bsAlert) bsAlert.close();
-        }, 5000);
-    });
-});
-</script>
+    </script>
 </body>
 </html>
