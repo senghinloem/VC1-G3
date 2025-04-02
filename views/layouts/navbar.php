@@ -87,9 +87,6 @@ if (session_status() === PHP_SESSION_NONE) {
                                      alt="User Image"
                                      width="40"
                                      height="40">
-                                <span class="d-none d-md-inline text-dark fw-semibold">
-                                    <?= htmlspecialchars($fullName ?: 'Unknown') ?>
-                                </span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end shadow border-0 rounded-3">
                                 <li class="user-header text-center p-3 bg-light border-bottom">
