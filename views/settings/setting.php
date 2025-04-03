@@ -307,6 +307,7 @@
                                 </label>
                                 <input type="color" class="form-control form-control-color w-100" value="#198754">
                             </div>
+
                             
                             <div class="mb-3">
                                 <label class="form-label d-flex justify-content-between">
@@ -857,7 +858,6 @@
         </div>
     </div>
 </div>
-
 <script>
     // Make sure Font Awesome is loaded
     if (typeof FontAwesome === 'undefined') {
