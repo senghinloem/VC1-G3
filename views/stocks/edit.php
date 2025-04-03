@@ -10,14 +10,14 @@
             value="<?= htmlspecialchars($stock['stock_name']) ?>" required
             style="width: 100%; padding: 12px; font-size: 16px; border-radius: 4px; border: 1px solid #ccc;">
     </div>
-    
+
     <div class="form-group mt-4">
         <label for="quantity" style="font-size: 18px;">Quantity</label>
         <input type="number" id="quantity" name="quantity" class="form-control"
             value="<?= htmlspecialchars($stock['quantity']) ?>" required min="0"
             style="width: 100%; padding: 12px; font-size: 16px; border-radius: 4px; border: 1px solid #ccc;">
     </div>
-    
+
     <input type="hidden" id="status" name="status" value="<?= htmlspecialchars($stock['status'] ?? '') ?>">
 
     <div style="text-align: right;">
@@ -31,5 +31,6 @@
         const quantity = document.getElementById('quantity').value;
         const statusField = document.getElementById('status');
         statusField.value = quantity > 0 ? 'in_stock' : 'out_of_stock';
+        console.log('Status set to:', statusField.value); // For debugging
     }
 </script>

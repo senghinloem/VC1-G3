@@ -67,10 +67,10 @@ class ProductListController extends BaseController {
     public function update($product_id) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Validate and sanitize input
-            $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
-            $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
+            $name = filter_input(INPUT_POST, 'name');
+            $description = filter_input(INPUT_POST, 'description');
             $price = filter_input(INPUT_POST, 'price', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-            $unit = filter_input(INPUT_POST, 'unit', FILTER_SANITIZE_STRING);
+            $unit = filter_input(INPUT_POST, 'unit');
 
             // Basic validation
             if (empty($name) || empty($price) || empty($unit)) {

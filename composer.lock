@@ -4,7 +4,19 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "73e893c4bb56239e49858a91459b46ae",
+<<<<<<< HEAD
+    "content-hash": "277db4bb3f2373bea065e02530f7032d",
+=======
+<<<<<<< HEAD
+    "content-hash": "425c12940b52331a48464511795077cb",
+=======
+<<<<<<< HEAD
+    "content-hash": "277db4bb3f2373bea065e02530f7032d",
+=======
+    "content-hash": "02510d9474713327691b2cf09e32f4ec",
+>>>>>>> c9b718bb0988a3d0925ce9be3418883cb5bfb832
+>>>>>>> master
+>>>>>>> 9d5ceb931c035250c8ef93eaf06b9d563fd3adef
     "packages": [
         {
             "name": "composer/pcre",
@@ -66,26 +78,89 @@
                 "regular expression"
             ],
             "support": {
-                "issues": "https://github.com/composer/pcre/issues",
-                "source": "https://github.com/composer/pcre/tree/3.3.2"
+                "issues": "https://github.com/ezyang/htmlpurifier/issues",
+                "source": "https://github.com/ezyang/htmlpurifier/tree/v4.18.0"
             },
-            "funding": [
-                {
-                    "url": "https://packagist.com",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/composer",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/composer/composer",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2024-11-12T16:29:46+00:00"
+            "time": "2024-11-01T03:51:45+00:00"
         },
         {
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+            "name": "maennchen/zipstream-php",
+            "version": "2.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/maennchen/ZipStream-PHP.git",
+                "reference": "3fa72e4c71a43f9e9118752a5c90e476a8dc9eb3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/maennchen/ZipStream-PHP/zipball/3fa72e4c71a43f9e9118752a5c90e476a8dc9eb3",
+                "reference": "3fa72e4c71a43f9e9118752a5c90e476a8dc9eb3",
+=======
+            "name": "ezyang/htmlpurifier",
+            "version": "v4.18.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ezyang/htmlpurifier.git",
+                "reference": "cb56001e54359df7ae76dc522d08845dc741621b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ezyang/htmlpurifier/zipball/cb56001e54359df7ae76dc522d08845dc741621b",
+                "reference": "cb56001e54359df7ae76dc522d08845dc741621b",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.6.0 || ~7.0.0 || ~7.1.0 || ~7.2.0 || ~7.3.0 || ~7.4.0 || ~8.0.0 || ~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0"
+            },
+            "require-dev": {
+                "cerdic/css-tidy": "^1.7 || ^2.0",
+                "simpletest/simpletest": "dev-master"
+            },
+            "suggest": {
+                "cerdic/css-tidy": "If you want to use the filter 'Filter.ExtractStyleBlocks'.",
+                "ext-bcmath": "Used for unit conversion and imagecrash protection",
+                "ext-iconv": "Converts text to and from non-UTF-8 encodings",
+                "ext-tidy": "Used for pretty-printing HTML"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "library/HTMLPurifier.composer.php"
+                ],
+                "psr-0": {
+                    "HTMLPurifier": "library/"
+                },
+                "exclude-from-classmap": [
+                    "/library/HTMLPurifier/Language/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-2.1-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Edward Z. Yang",
+                    "email": "admin@htmlpurifier.org",
+                    "homepage": "http://ezyang.com"
+                }
+            ],
+            "description": "Standards compliant HTML filter written in PHP",
+            "homepage": "http://htmlpurifier.org/",
+            "keywords": [
+                "html"
+            ],
+            "support": {
+                "issues": "https://github.com/ezyang/htmlpurifier/issues",
+                "source": "https://github.com/ezyang/htmlpurifier/tree/v4.18.0"
+            },
+            "time": "2024-11-01T03:51:45+00:00"
+        },
+        {
+>>>>>>> 9d5ceb931c035250c8ef93eaf06b9d563fd3adef
             "name": "maennchen/zipstream-php",
             "version": "3.1.2",
             "source": {
@@ -95,14 +170,30 @@
             },
             "dist": {
                 "type": "zip",
+<<<<<<< HEAD
                 "url": "https://api.github.com/repos/maennchen/ZipStream-PHP/zipball/aeadcf5c412332eb426c0f9b4485f6accba2a99f",
                 "reference": "aeadcf5c412332eb426c0f9b4485f6accba2a99f",
+=======
+                "url": "https://api.github.com/repos/maennchen/ZipStream-PHP/zipball/6187e9cc4493da94b9b63eb2315821552015fca9",
+                "reference": "6187e9cc4493da94b9b63eb2315821552015fca9",
+>>>>>>> master
+>>>>>>> 9d5ceb931c035250c8ef93eaf06b9d563fd3adef
                 "shasum": ""
             },
             "require": {
                 "ext-mbstring": "*",
+<<<<<<< HEAD
+                "myclabs/php-enum": "^1.5",
+                "php": "^8.0",
+                "psr/http-message": "^1.0"
+=======
                 "ext-zlib": "*",
+<<<<<<< HEAD
                 "php-64bit": "^8.2"
+=======
+                "php-64bit": "^8.1"
+>>>>>>> master
+>>>>>>> 9d5ceb931c035250c8ef93eaf06b9d563fd3adef
             },
             "require-dev": {
                 "brianium/paratest": "^7.7",
@@ -110,6 +201,11 @@
                 "friendsofphp/php-cs-fixer": "^3.16",
                 "guzzlehttp/guzzle": "^7.5",
                 "mikey179/vfsstream": "^1.6",
+<<<<<<< HEAD
+                "php-coveralls/php-coveralls": "^2.4",
+                "phpunit/phpunit": "^8.5.8 || ^9.4.2",
+                "vimeo/psalm": "^5.0"
+=======
                 "php-coveralls/php-coveralls": "^2.5",
                 "phpunit/phpunit": "^11.0",
                 "vimeo/psalm": "^6.0"
@@ -117,6 +213,7 @@
             "suggest": {
                 "guzzlehttp/psr7": "^2.4",
                 "psr/http-message": "^2.0"
+>>>>>>> master
             },
             "type": "library",
             "autoload": {
@@ -153,7 +250,15 @@
             ],
             "support": {
                 "issues": "https://github.com/maennchen/ZipStream-PHP/issues",
+<<<<<<< HEAD
                 "source": "https://github.com/maennchen/ZipStream-PHP/tree/3.1.2"
+=======
+<<<<<<< HEAD
+                "source": "https://github.com/maennchen/ZipStream-PHP/tree/2.4.0"
+=======
+                "source": "https://github.com/maennchen/ZipStream-PHP/tree/3.1.1"
+>>>>>>> master
+>>>>>>> 9d5ceb931c035250c8ef93eaf06b9d563fd3adef
             },
             "funding": [
                 {
@@ -161,7 +266,15 @@
                     "type": "github"
                 }
             ],
+<<<<<<< HEAD
             "time": "2025-01-27T12:07:53+00:00"
+=======
+<<<<<<< HEAD
+            "time": "2022-12-08T12:29:14+00:00"
+=======
+            "time": "2024-10-10T12:33:01+00:00"
+>>>>>>> master
+>>>>>>> 9d5ceb931c035250c8ef93eaf06b9d563fd3adef
         },
         {
             "name": "markbaker/complex",
@@ -272,7 +385,23 @@
         },
         {
             "name": "phpoffice/phpspreadsheet",
+<<<<<<< HEAD
             "version": "4.1.0",
+=======
+<<<<<<< HEAD
+            "version": "1.29.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PHPOffice/PhpSpreadsheet.git",
+                "reference": "fde2ccf55eaef7e86021ff1acce26479160a0fa0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/fde2ccf55eaef7e86021ff1acce26479160a0fa0",
+                "reference": "fde2ccf55eaef7e86021ff1acce26479160a0fa0",
+=======
+            "version": "1.29.10",
+>>>>>>> 9d5ceb931c035250c8ef93eaf06b9d563fd3adef
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPOffice/PhpSpreadsheet.git",
@@ -280,8 +409,14 @@
             },
             "dist": {
                 "type": "zip",
+<<<<<<< HEAD
                 "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/6ff18c3a8df3a945492f75ce455d77f7ad55dd5c",
                 "reference": "6ff18c3a8df3a945492f75ce455d77f7ad55dd5c",
+=======
+                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/c80041b1628c4f18030407134fe88303661d4e4e",
+                "reference": "c80041b1628c4f18030407134fe88303661d4e4e",
+>>>>>>> master
+>>>>>>> 9d5ceb931c035250c8ef93eaf06b9d563fd3adef
                 "shasum": ""
             },
             "require": {
@@ -309,14 +444,30 @@
             },
             "require-dev": {
                 "dealerdirect/phpcodesniffer-composer-installer": "dev-main",
+<<<<<<< HEAD
                 "dompdf/dompdf": "^2.0 || ^3.0",
+=======
+<<<<<<< HEAD
+                "dompdf/dompdf": "^1.0 || ^2.0",
+=======
+                "dompdf/dompdf": "^1.0 || ^2.0 || ^3.0",
+>>>>>>> master
+>>>>>>> 9d5ceb931c035250c8ef93eaf06b9d563fd3adef
                 "friendsofphp/php-cs-fixer": "^3.2",
                 "mitoteam/jpgraph": "^10.3",
                 "mpdf/mpdf": "^8.1.1",
                 "phpcompatibility/php-compatibility": "^9.3",
                 "phpstan/phpstan": "^1.1",
                 "phpstan/phpstan-phpunit": "^1.0",
+<<<<<<< HEAD
                 "phpunit/phpunit": "^10.5",
+=======
+<<<<<<< HEAD
+                "phpunit/phpunit": "^8.5 || ^9.0 || ^10.0",
+=======
+                "phpunit/phpunit": "^8.5 || ^9.0",
+>>>>>>> master
+>>>>>>> 9d5ceb931c035250c8ef93eaf06b9d563fd3adef
                 "squizlabs/php_codesniffer": "^3.7",
                 "tecnickcom/tcpdf": "^6.5"
             },
@@ -371,9 +522,21 @@
             ],
             "support": {
                 "issues": "https://github.com/PHPOffice/PhpSpreadsheet/issues",
+<<<<<<< HEAD
                 "source": "https://github.com/PHPOffice/PhpSpreadsheet/tree/4.1.0"
             },
             "time": "2025-03-02T06:52:24+00:00"
+=======
+<<<<<<< HEAD
+                "source": "https://github.com/PHPOffice/PhpSpreadsheet/tree/1.29.0"
+            },
+            "time": "2023-06-14T22:48:31+00:00"
+=======
+                "source": "https://github.com/PHPOffice/PhpSpreadsheet/tree/1.29.10"
+            },
+            "time": "2025-02-08T02:56:14+00:00"
+>>>>>>> master
+>>>>>>> 9d5ceb931c035250c8ef93eaf06b9d563fd3adef
         },
         {
             "name": "psr/http-client",
