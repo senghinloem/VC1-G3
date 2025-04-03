@@ -1,20 +1,20 @@
 <?php
+require_once "BaseController.php";
 
 class LoginRegisterController extends BaseController
 {
-    public function login () 
+    public function login()
     {
-        $this->view("auth/login");
+        $this->view('auth/login', [], false); // Bypass layout for login
     }
 
-    public function register() 
+    public function register()
     {
-        $this->view("auth/register");
+        $this->view('auth/register', [], false); // Bypass layout for register
     }
 
-    public function error() {
-        $this->view("errors/404");
+    public function error()
+    {
+        $this->view('errors/error');
     }
 }
-
-?>

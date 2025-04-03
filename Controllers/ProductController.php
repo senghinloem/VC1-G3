@@ -28,6 +28,8 @@ public function product() {
     public function store() {
         $imagePath = "uploads/default.png"; 
         $errors = [];
+
+        
     
         if (!empty($_FILES['image']['name'])) {
             $imageInfo = getimagesize($_FILES['image']['tmp_name']);
@@ -108,7 +110,7 @@ public function product() {
 
     public function delete($product_id) {
         $this->product->deleteProduct($product_id);
-        header("Location: /products");
+        header("Location: /products");  
     }
 
     // New method to delete multiple products
