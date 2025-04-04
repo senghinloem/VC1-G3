@@ -49,9 +49,9 @@ switch ($report_period) {
     default:
         $start_date = date('Y-m-d', strtotime('-30 days'));
         break;
-    case 'sales':
-        $start_date = date('Y-m-d', strtotime('-30 days'));
-        break;
+   
+        
+
 }
 
 // Apply filters if submitted
@@ -97,10 +97,8 @@ try {
     $total_stock = $stmt->fetch(PDO::FETCH_ASSOC)['total_stock'] ?? 1;
     $data['monthly_turnover'] = ($total_out / $total_stock) * 100;
 
-    if ($report_period === 'sales') {
-        $stmt = $pdo->query("SELECT SUM(price * quantity) as total_sales FROM products p WHERE last_updated BETWEEN '$start_date' AND '$end_date'" . $whereClause);
-        $data['total_sales'] = $stmt->fetch(PDO::FETCH_ASSOC)['total_sales'] ?? 0;
-    }
+    
+
 
     $stmt = $pdo->query("
         SELECT 
@@ -165,9 +163,10 @@ if (isset($_GET['export'])) {
                 $pdf->Cell(0, 10, "Inventory Value: $" . number_format($data['inventory_value'] ?? 0, 2), 0, 1);
                 $pdf->Cell(0, 10, "Low Stock Items: " . ($data['low_stock_items'] ?? 0), 0, 1);
                 $pdf->Cell(0, 10, "Turnover: " . number_format($data['monthly_turnover'] ?? 0, 1) . "%", 0, 1);
-                if ($report_period === 'sales') {
-                    $pdf->Cell(0, 10, "Total Sales: $" . number_format($data['total_sales'] ?? 0, 2), 0, 1);
-                }
+            
+                
+
+
                 $pdf->Ln(10);
 
                 $pdf->SetFont('Arial', 'B', 12);
@@ -225,9 +224,8 @@ if (isset($_GET['export'])) {
                 ['Low Stock Items', $data['low_stock_items'] ?? 0],
                 ['Turnover', number_format($data['monthly_turnover'] ?? 0, 1) . '%'],
             ];
-            if ($report_period === 'sales') {
-                $stats[] = ['Total Sales', '$' . number_format($data['total_sales'] ?? 0, 2)];
-            }
+            
+            
             $sheet->fromArray($stats, NULL, 'A4');
 
             $sheet->setCellValue('A9', 'Top Products by Value');
@@ -283,9 +281,9 @@ if (isset($_GET['export'])) {
             fputcsv($output, ['Inventory Value', '$' . number_format($data['inventory_value'] ?? 0, 2)]);
             fputcsv($output, ['Low Stock Items', $data['low_stock_items'] ?? 0]);
             fputcsv($output, ['Turnover', number_format($data['monthly_turnover'] ?? 0, 1) . '%']);
-            if ($report_period === 'sales') {
-                fputcsv($output, ['Total Sales', '$' . number_format($data['total_sales'] ?? 0, 2)]);
-            }
+            
+            
+
             fputcsv($output, []);
 
             fputcsv($output, ['Top Products by Value']);
@@ -417,21 +415,10 @@ if (isset($_GET['export'])) {
                 </div>
             </div>
         </div>
-        <?php if ($report_period === 'sales'): ?>
-            <div class="col-md-3 mb-3">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body d-flex align-items-center">
-                        <div class="rounded-circle bg-success bg-opacity-10 p-3 me-3">
-                            <i class="fas fa-chart-line text-success fa-2x"></i>
-                        </div>
-                        <div>
-                            <h6 class="text-muted mb-1">Total Sales</h6>
-                            <h3 class="mb-0"><?php echo '$' . number_format($data['total_sales'] ?? 0, 2); ?></h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <?php endif; ?>
+        
+        
+
+
     </div>
 
     <div class="row mb-4">
@@ -445,9 +432,8 @@ if (isset($_GET['export'])) {
                         <a href="?period=monthly" class="list-group-item list-group-item-action <?php echo $report_period == 'monthly' ? 'active' : ''; ?> d-flex align-items-center">
                             <i class="fas fa-chart-line me-3"></i><span>Overview Dashboard</span>
                         </a>
-                        <a href="?period=sales" class="list-group-item list-group-item-action <?php echo $report_period == 'sales' ? 'active' : ''; ?> d-flex align-items-center">
-                            <i class="fas fa-shopping-cart me-3"></i><span>Sales Analysis</span>
-                        </a>
+                       
+                        
                     </div>
                 </div>
             </div>
@@ -465,7 +451,6 @@ if (isset($_GET['export'])) {
                                 <option value="daily" <?php echo $report_period == 'daily' ? 'selected' : ''; ?>>Daily</option>
                                 <option value="weekly" <?php echo $report_period == 'weekly' ? 'selected' : ''; ?>>Weekly</option>
                                 <option value="monthly" <?php echo $report_period == 'monthly' ? 'selected' : ''; ?>>Monthly</option>
-                                <option value="sales" <?php echo $report_period == 'sales' ? 'selected' : ''; ?>>Sales (30 days)</option>
                             </select>
                             <div class="row g-2">
                                 <div class="col-6">
@@ -716,7 +701,6 @@ if (isset($_GET['export'])) {
                         <label class="form-label">Report Type</label>
                         <select class="form-select" name="period">
                             <option value="monthly">Inventory Overview</option>
-                            <option value="sales">Sales Analysis</option>
                         </select>
                     </div>
                     <div class="row mb-3">
@@ -752,7 +736,6 @@ if (isset($_GET['export'])) {
                     <label class="form-label">Select Report</label>
                     <select class="form-select">
                         <option value="monthly">Inventory Overview</option>
-                        <option value="sales">Sales Analysis</option>
                     </select>
                 </div>
                 <div class="mb-3">
