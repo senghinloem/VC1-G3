@@ -8,23 +8,16 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- <link rel="stylesheet" href="views/assets/css/help.css"> -->
-
 </head>
 
 <body>
-
-    <!-- Header with Search -->
-    <!-- Help Content - This will fit inside your dashboard's main content area -->
     <div class="container-fluid px-4 py-3">
-        <!-- Page Title -->
         <h1 class="mb-4">How can we help?</h1>
 
-        <!-- Search Bar -->
         <div class="row mb-4">
             <div class="col-md-6">
                 <div class="input-group">
-                    <input type="text" id="searchInput" class="form-control" placeholder="Search for help..." onkeyup="searchFAQs()">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Search for help..." onkeyup="searchAllContent()">
                     <button class="btn btn-primary" type="button">
                         <i class="fas fa-search"></i>
                     </button>
@@ -32,8 +25,7 @@
             </div>
         </div>
 
-        <!-- Help Categories -->
-        <div class="row mb-5">
+        <div class="row mb-5" id="helpCategories">
             <div class="col-md-4 mb-4">
                 <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
                     <div class="card-body p-4">
@@ -86,16 +78,13 @@
             </div>
         </div>
 
-        <!-- FAQs Section -->
-        <div class="row mb-5">
+        <div class="row mb-5" id="faqSection">
             <div class="col-12">
                 <h2 class="mb-4">Frequently Asked Questions</h2>
             </div>
 
             <div class="col-12">
                 <div class="accordion" id="faqAccordion">
-
-                    <!-- Dashboard Management -->
                     <div class="accordion-item border-0 mb-3 shadow-sm rounded">
                         <h2 class="accordion-header" id="headingOne">
                             <button class="accordion-button rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
@@ -111,7 +100,6 @@
                         </div>
                     </div>
 
-                    <!-- Product Management -->
                     <div class="accordion-item border-0 mb-3 shadow-sm rounded">
                         <h2 class="accordion-header" id="headingTwo">
                             <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
@@ -128,8 +116,6 @@
                         </div>
                     </div>
 
-
-                    <!-- Stock Management -->
                     <div class="accordion-item border-0 mb-3 shadow-sm rounded">
                         <h2 class="accordion-header" id="headingFour">
                             <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
@@ -144,7 +130,6 @@
                         </div>
                     </div>
 
-                    <!-- Suppliers Management -->
                     <div class="accordion-item border-0 mb-3 shadow-sm rounded">
                         <h2 class="accordion-header" id="headingThree">
                             <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
@@ -159,7 +144,6 @@
                         </div>
                     </div>
 
-                    <!-- Productlist Management -->
                     <div class="accordion-item border-0 mb-3 shadow-sm rounded">
                         <h2 class="accordion-header" id="headingFive">
                             <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
@@ -174,9 +158,6 @@
                         </div>
                     </div>
 
-
-
-                    <!-- User Management -->
                     <div class="accordion-item border-0 mb-3 shadow-sm rounded">
                         <h2 class="accordion-header" id="headingSix">
                             <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
@@ -193,7 +174,6 @@
                         </div>
                     </div>
 
-                    <!-- Setiting Page -->
                     <div class="accordion-item border-0 mb-3 shadow-sm rounded">
                         <h2 class="accordion-header" id="headingSeven">
                             <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
@@ -207,7 +187,6 @@
                         </div>
                     </div>
 
-                    <!-- Settings -->
                     <div class="accordion-item border-0 mb-3 shadow-sm rounded">
                         <h2 class="accordion-header" id="headingEight">
                             <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
@@ -222,13 +201,12 @@
                     </div>
                 </div>
                 <div id="noResultsMessage" class="alert alert-info mt-3 d-none">
-                    No FAQs match your search. Try different keywords or contact our support team for assistance.
+                    No results match your search. Try different keywords or contact our support team for assistance.
                 </div>
             </div>
         </div>
 
-        <!-- Contact Support Section -->
-        <div class="row mb-5">
+        <div class="row mb-5" id="contactSupport">
             <div class="col-12">
                 <h2 class="mb-4">Contact Support</h2>
             </div>
@@ -279,8 +257,7 @@
             </div>
         </div>
 
-        <!-- Resources Section -->
-        <div class="row mb-4">
+        <div class="row mb-4" id="resourcesSection">
             <div class="col-12">
                 <h2 class="mb-4">Additional Resources</h2>
             </div>
@@ -352,7 +329,6 @@
     </div>
 
     <style>
-        /* Custom styles that will work within your dashboard */
         .hover-lift {
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
@@ -370,40 +346,93 @@
         .accordion-button:focus {
             box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
         }
+
+        .hidden {
+            display: none;
+        }
     </style>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Make sure Font Awesome is loaded
-        if (typeof FontAwesome === 'undefined') {
-            var link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css';
-            document.head.appendChild(link);
-        }
-
-        function searchFAQs() {
+        function searchAllContent() {
             const input = document.getElementById('searchInput').value.toLowerCase();
-            const accordionItems = document.querySelectorAll('.accordion-item');
             const noResultsMessage = document.getElementById('noResultsMessage');
             let resultsFound = false;
 
-            accordionItems.forEach(item => {
-                const question = item.querySelector('.accordion-button').textContent.toLowerCase();
-                const answer = item.querySelector('.accordion-body').textContent.toLowerCase();
-
-                if (question.includes(input) || answer.includes(input)) {
-                    item.style.display = 'block';
+            // Search Help Categories
+            const categoryCards = document.querySelectorAll('#helpCategories .card');
+            categoryCards.forEach(card => {
+                const title = card.querySelector('.card-title').textContent.toLowerCase();
+                const text = card.querySelector('.card-text').textContent.toLowerCase();
+                if (title.includes(input) || text.includes(input)) {
+                    card.closest('.col-md-4').classList.remove('hidden');
                     resultsFound = true;
                 } else {
-                    item.style.display = 'none';
+                    card.closest('.col-md-4').classList.add('hidden');
                 }
             });
 
-            if (resultsFound) {
-                noResultsMessage.classList.add('d-none');
-            } else {
-                noResultsMessage.classList.remove('d-none');
-            }
+            // Search FAQs
+            const accordionItems = document.querySelectorAll('.accordion-item');
+            accordionItems.forEach(item => {
+                const question = item.querySelector('.accordion-button').textContent.toLowerCase();
+                const answer = item.querySelector('.accordion-body').textContent.toLowerCase();
+                if (question.includes(input) || answer.includes(input)) {
+                    item.classList.remove('hidden');
+                    resultsFound = true;
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+
+            // Search Contact Support
+            const supportCards = document.querySelectorAll('#contactSupport .card');
+            supportCards.forEach(card => {
+                const title = card.querySelector('.card-title').textContent.toLowerCase();
+                const text = card.querySelector('.card-text')?.textContent.toLowerCase() || '';
+                const link = card.querySelector('a')?.textContent.toLowerCase() || '';
+                if (title.includes(input) || text.includes(input) || link.includes(input)) {
+                    card.closest('.col-md-4').classList.remove('hidden');
+                    resultsFound = true;
+                } else {
+                    card.closest('.col-md-4').classList.add('hidden');
+                }
+            });
+
+            // Search Additional Resources
+            const resourceCards = document.querySelectorAll('#resourcesSection .card');
+            resourceCards.forEach(card => {
+                const title = card.querySelector('h5').textContent.toLowerCase();
+                const text = card.querySelector('p').textContent.toLowerCase();
+                if (title.includes(input) || text.includes(input)) {
+                    card.closest('.col-md-6').classList.remove('hidden');
+                    resultsFound = true;
+                } else {
+                    card.closest('.col-md-6').classList.add('hidden');
+                }
+            });
+
+            // Show/hide section headers based on results
+            const sections = [
+                { id: 'helpCategories', header: 'How can we help?' },
+                { id: 'faqSection', header: 'Frequently Asked Questions' },
+                { id: 'contactSupport', header: 'Contact Support' },
+                { id: 'resourcesSection', header: 'Additional Resources' }
+            ];
+
+            sections.forEach(section => {
+                const sectionElement = document.getElementById(section.id);
+                const visibleItems = sectionElement.querySelectorAll('.col-md-4:not(.hidden), .col-md-6:not(.hidden), .accordion-item:not(.hidden)');
+                const header = sectionElement.querySelector('h2');
+                if (visibleItems.length > 0) {
+                    header.classList.remove('hidden');
+                } else {
+                    header.classList.add('hidden');
+                }
+            });
+
+            // Show/hide no results message
+            noResultsMessage.classList.toggle('d-none', resultsFound);
         }
     </script>
 </body>
