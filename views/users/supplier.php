@@ -179,20 +179,20 @@ if (!isset($_SESSION['user_id'])) {
         .search-container .form-control {
             border: 1px solid #ced4da;
             border-right: none;
-            border-radius: 8px 0 0 8px; 
-            padding: 8px 16px; 
-            font-size: 0.9rem; 
-            box-shadow: none; 
+            border-radius: 8px 0 0 8px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            box-shadow: none;
         }
 
         /* Style the button */
         .search-container .btn-primary {
-            border: 1px solid #0d6efd; 
-            border-left: none; 
-            border-radius: 0 8px 8px 0; 
-            background-color: #0d6efd; 
-            color: #fff; 
-            padding: 8px 16px; 
+            border: 1px solid #0d6efd;
+            border-left: none;
+            border-radius: 0 8px 8px 0;
+            background-color: #0d6efd;
+            color: #fff;
+            padding: 8px 16px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -200,13 +200,13 @@ if (!isset($_SESSION['user_id'])) {
 
         /* Style the icon inside the button */
         .search-container .btn-primary i {
-            font-size: 1rem; /* Adjust icon size */
+            font-size: 1rem;
         }
 
         /* Remove focus outline for better aesthetics */
         .search-container .form-control:focus {
             box-shadow: none;
-            border-color: #ced4da; 
+            border-color: #ced4da;
         }
 
         /* Optional: Hover effect for the button */
@@ -219,110 +219,112 @@ if (!isset($_SESSION['user_id'])) {
 
 <body class="bg-light">
 
-    <div class="container-fluid py-4" id="supplierListView">
-        <!-- Header Card -->
-        <div class="col-12 mb-4">
-            <div class="card">
-                <div class="card-header">
-                    <div class="d-flex flex-wrap justify-content-between align-items-center">
-                        <h4 class="mb-0 d-flex align-items-center">
-                            <i class="fas fa-truck me-2 text-primary"></i> Suppliers Management
-                        </h4>
-                        <div class="d-flex flex-wrap gap-3">
-                            <!-- Search Form -->
-                            <div class="search-container">
-                                <form action="/suppliers/search" method="GET" class="d-flex align-items-center" id="searchForm">
-                                    <div class="input-group">
-                                        <input type="text" name="search" class="form-control" 
-                                               placeholder="Search for supplier..." 
-                                               id="searchInput">
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="fas fa-search"></i>
-                                        </button>
-                                    </div>
-                                </form>
+    <div class="container-fluid py-4">
+        <div class="row mb-4 mx-2">
+            <!-- Header Card -->
+            <div class="col-12 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center">
+                            <h4 class="mb-0 d-flex align-items-center">
+                                <i class="fas fa-truck me-2 text-primary"></i> Suppliers Management
+                            </h4>
+                            <div class="d-flex flex-wrap gap-3">
+                                <!-- Search Form -->
+                                <div class="search-container">
+                                    <form action="/suppliers/search" method="GET" class="d-flex align-items-center" id="searchForm">
+                                        <div class="input-group">
+                                            <input type="text" name="search" class="form-control" 
+                                                   placeholder="Search for supplier..." 
+                                                   id="searchInput">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- Add Supplier Button -->
+                                <a href="/supplier/create" class="btn btn-primary">
+                                    <i class="fas fa-plus me-2"></i>Create Supplier
+                                </a>
                             </div>
-                            <!-- Add Supplier Button -->
-                            <a href="/supplier/create" class="btn btn-primary">
-                                <i class="fas fa-plus me-2"></i>Create Supplier
-                            </a>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Supplier Table -->
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body p-0">
-                    <div class="table-container">
-                        <table class="supplier-table table-borderless">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Supplier Name</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">Phone</th>
-                                    <th scope="col">Address</th>
-                                    <th scope="col">Created At</th>
-                                    <th scope="col">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (!empty($suppliers) && is_array($suppliers)): ?>
-                                    <?php foreach ($suppliers as $supplier): ?>
+            <!-- Supplier Table -->
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body p-0">
+                        <div class="table-container">
+                            <table class="supplier-table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Supplier Name</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Phone</th>
+                                        <th scope="col">Address</th>
+                                        <th scope="col">Created At</th>
+                                        <th scope="col">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (!empty($suppliers) && is_array($suppliers)): ?>
+                                        <?php foreach ($suppliers as $supplier): ?>
+                                            <tr>
+                                                <td><?= htmlspecialchars($supplier['supplier_name']) ?></td>
+                                                <td><?= htmlspecialchars($supplier['email']) ?></td>
+                                                <td><?= htmlspecialchars($supplier['phone']) ?></td>
+                                                <td><?= htmlspecialchars($supplier['address']) ?></td>
+                                                <td><?= htmlspecialchars($supplier['created_at']) ?></td>
+                                                <td>
+                                                    <button class="action-btn" type="button" 
+                                                            data-bs-toggle="dropdown" 
+                                                            aria-expanded="false"
+                                                            data-bs-toggle="tooltip" 
+                                                            title="Actions">
+                                                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu dropdown-menu-end">
+                                                        <li>
+                                                            <a class="dropdown-item" href="/supplier/detail/<?= $supplier['supplier_id'] ?>">
+                                                                <i class="fas fa-eye text-primary me-2"></i> Detail
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" href="/supplier/edit/<?= $supplier['supplier_id'] ?>">
+                                                                <i class="fas fa-edit text-success me-2"></i> Edit
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <button type="button" 
+                                                                    class="dropdown-item text-danger" 
+                                                                    data-bs-toggle="modal" 
+                                                                    data-bs-target="#confirmDeleteModal" 
+                                                                    data-supplierid="<?= $supplier['supplier_id'] ?>" 
+                                                                    data-suppliername="<?= htmlspecialchars($supplier['supplier_name']) ?>">
+                                                                <i class="fas fa-trash-alt me-2"></i> Delete
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
                                         <tr>
-                                            <td><?= htmlspecialchars($supplier['supplier_name']) ?></td>
-                                            <td><?= htmlspecialchars($supplier['email']) ?></td>
-                                            <td><?= htmlspecialchars($supplier['phone']) ?></td>
-                                            <td><?= htmlspecialchars($supplier['address']) ?></td>
-                                            <td><?= htmlspecialchars($supplier['created_at']) ?></td>
-                                            <td>
-                                                <button class="action-btn" type="button" 
-                                                        data-bs-toggle="dropdown" 
-                                                        aria-expanded="false"
-                                                        data-bs-toggle="tooltip" 
-                                                        title="Actions">
-                                                    <i class="fa-solid fa-ellipsis-vertical"></i>
-                                                </button>
-                                                <ul class="dropdown-menu dropdown-menu-end">
-                                                    <li>
-                                                        <a class="dropdown-item" href="/supplier/detail/<?= $supplier['supplier_id'] ?>">
-                                                            <i class="fas fa-eye text-primary me-2"></i> Detail
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="dropdown-item" href="/supplier/edit/<?= $supplier['supplier_id'] ?>">
-                                                            <i class="fas fa-edit text-success me-2"></i> Edit
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <button type="button" 
-                                                                class="dropdown-item text-danger" 
-                                                                data-bs-toggle="modal" 
-                                                                data-bs-target="#confirmDeleteModal" 
-                                                                data-supplierid="<?= $supplier['supplier_id'] ?>" 
-                                                                data-suppliername="<?= htmlspecialchars($supplier['supplier_name']) ?>">
-                                                            <i class="fas fa-trash-alt me-2"></i> Delete
-                                                        </button>
-                                                    </li>
-                                                </ul>
+                                            <td colspan="6">
+                                                <div class="empty-state">
+                                                    <i class="fas fa-box-open"></i>
+                                                    <h5>No suppliers found</h5>
+                                                    <p>Add a new supplier to get started.</p>
+                                                </div>
                                             </td>
                                         </tr>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <tr>
-                                        <td colspan="6">
-                                            <div class="empty-state">
-                                                <i class="fas fa-box-open"></i>
-                                                <h5>No suppliers found</h5>
-                                                <p>Add a new supplier to get started.</p>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
