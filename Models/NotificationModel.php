@@ -1,120 +1,83 @@
 <?php
-require_once "Database/Database.php";
+require_once __DIR__ . "/../Database/Database.php";
 
-class NotificationModel {
+class NotificationModel
+{
     private $db;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->db = new Database("localhost", "vc1_db", "root", "");
     }
 
-    // public function getNotifications($user_id, $limit = 20, $unread_only = false) {
-    //     $sql = "SELECT * FROM notifications WHERE user_id = ?";
-    //     if ($unread_only) {
-    //         $sql .= " AND is_read = 0";
-    //     }
-    //     $sql .= " ORDER BY is_read ASC, created_at DESC LIMIT ?";
-    //     $stmt = $this->db->prepare($sql);
-    //     $stmt->bindValue(1, $user_id, PDO::PARAM_INT);
-    //     $stmt->bindValue(2, $limit, PDO::PARAM_INT);
-    //     $stmt->execute();
-    //     return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    // }
-
-    // public function countUnread($user_id) {
-    //     $sql = "SELECT COUNT(*) FROM notifications WHERE user_id = ? AND is_read = 0";
-    //     $stmt = $this->db->prepare($sql);
-    //     $stmt->bindValue(1, $user_id, PDO::PARAM_INT);
-    //     $stmt->execute();
-    //     return $stmt->fetchColumn();
-    // }
-
-    // public function markAsRead($user_id) {
-    //     $sql = "UPDATE notifications SET is_read = 1 WHERE user_id = ? AND is_read = 0";
-    //     $stmt = $this->db->prepare($sql);
-    //     $stmt->bindValue(1, $user_id, PDO::PARAM_INT);
-    //     return $stmt->execute();
-    // }
-
-    // public function markSingleAsRead($notification_id, $user_id) {
-    //     $sql = "UPDATE notifications SET is_read = 1 WHERE notification_id = ? AND user_id = ?";
-    //     $stmt = $this->db->prepare($sql);
-    //     $stmt->bindValue(1, $notification_id, PDO::PARAM_INT);
-    //     $stmt->bindValue(2, $user_id, PDO::PARAM_INT);
-    //     return $stmt->execute();
-    // }
-
-    public function clearAll($user_id) {
-        $sql = "DELETE FROM notifications WHERE user_id = ?";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(1, $user_id, PDO::PARAM_INT);
-        return $stmt->execute();
-    }
-
-    public function logAction($user_id, $message, $type = 'info', $link = null) {
-        $sql = "INSERT INTO notifications (user_id, message, type, link) VALUES (?, ?, ?, ?)";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(1, $user_id, PDO::PARAM_INT);
-        $stmt->bindValue(2, $message, PDO::PARAM_STR);
-        $stmt->bindValue(3, $type, PDO::PARAM_STR);
-        $stmt->bindValue(4, $link, PDO::PARAM_STR);
-        return $stmt->execute();
-    }
-
-    public function getNotificationTypes() {
-        return [
-            'info' => ['icon' => 'bi-info-circle', 'color' => 'info'],
-            'success' => ['icon' => 'bi-check-circle', 'color' => 'success'],
-            'warning' => ['icon' => 'bi-exclamation-triangle', 'color' => 'warning'],
-            'danger' => ['icon' => 'bi-x-circle', 'color' => 'danger']
-        ];
-    }
-
-    public function getNotifications($user_id, $limit = 10)
+    // Existing method for user-specific notifications
+    public function getNotifications($user_id, $limit = null, $unread_only = false)
     {
-        $stmt = $this->db->prepare("
-            SELECT * FROM notifications 
-            WHERE user_id = :user_id 
-            ORDER BY created_at DESC 
-            LIMIT :limit
-        ");
+        $query = "SELECT * FROM notifications WHERE user_id = :user_id";
+        if ($unread_only) {
+            $query .= " AND is_read = 0";
+        }
+        $query .= " ORDER BY created_at DESC";
+        if ($limit) {
+            $query .= " LIMIT :limit";
+        }
+
+        $stmt = $this->db->prepare($query);
         $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        if ($limit) {
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        }
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // New method for system-wide notifications
+    public function getSystemNotifications()
+    {
+        $query = "SELECT * FROM notifications WHERE user_id IS NULL OR type IN ('system_event', 'other_action') ORDER BY created_at DESC";
+        $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function countUnread($user_id)
     {
-        $stmt = $this->db->prepare("
-            SELECT COUNT(*) FROM notifications 
-            WHERE user_id = :user_id AND is_read = 0
-        ");
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM notifications WHERE user_id = :user_id AND is_read = 0");
         $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchColumn();
-    }
-
-    public function markSingleAsRead($notification_id, $user_id)
-    {
-        $stmt = $this->db->prepare("
-            UPDATE notifications 
-            SET is_read = 1 
-            WHERE notification_id = :id AND user_id = :user_id
-        ");
-        $stmt->bindParam(':id', $notification_id, PDO::PARAM_INT);
-        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-        return $stmt->execute();
+        return (int)$stmt->fetchColumn();
     }
 
     public function markAsRead($user_id)
     {
-        $stmt = $this->db->prepare("
-            UPDATE notifications 
-            SET is_read = 1 
-            WHERE user_id = :user_id AND is_read = 0
-        ");
+        $stmt = $this->db->prepare("UPDATE notifications SET is_read = 1 WHERE user_id = :user_id AND is_read = 0");
         $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-        return $stmt->execute();
+        $stmt->execute();
+    }
+
+    public function clearAll($user_id)
+    {
+        $stmt = $this->db->prepare("DELETE FROM notifications WHERE user_id = :user_id");
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    public function markSingleAsRead($notification_id, $user_id)
+    {
+        $stmt = $this->db->prepare("UPDATE notifications SET is_read = 1 WHERE notification_id = :id AND user_id = :user_id");
+        $stmt->bindParam(':id', $notification_id, PDO::PARAM_INT);
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->rowCount() > 0;
+    }
+
+    public function getNotificationTypes()
+    {
+        return [
+            'stock_created' => ['color' => 'success', 'icon' => 'bi-box-seam'],
+            'low_stock' => ['color' => 'warning', 'icon' => 'bi-exclamation-triangle'],
+            'system_event' => ['color' => 'info', 'icon' => 'bi-gear'],
+            'other_action' => ['color' => 'secondary', 'icon' => 'bi-person']
+        ];
     }
 }

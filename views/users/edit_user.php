@@ -254,7 +254,7 @@ if (!isset($_SESSION['user_id'])) {
                                value="<?php echo htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8'); ?>" 
                                required>
                     </div>
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <label for="password">New Password (optional)</label>
                         <input type="password" 
                                class="form-control" 
@@ -262,7 +262,7 @@ if (!isset($_SESSION['user_id'])) {
                                name="password" 
                                placeholder="Enter new password to change (min 6 characters)">
                         <div id="password-error" class="error-message"></div>
-                    </div>
+                    </div> -->
                     <div class="form-group">
                         <label for="role">Role</label>
                         <select class="form-control" id="role" name="role" required>
