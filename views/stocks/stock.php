@@ -1,5 +1,5 @@
 
-<div class="container mt-4">
+<div class="container mt-4 px-4">
     <div class="col-12 mb-4">
         <div class="card">
             <div class="card-header bg-white p-3">
