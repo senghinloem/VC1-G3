@@ -53,11 +53,10 @@ class StockController extends BaseController
             $this->stockModel->addStock($stock_name, $quantity, $status);
             $this->redirect('/stock?success=Stock added successfully');
         } catch (PDOException $e) {
-            echo "Error:" . $e->getMessage();
-            if ($e->getCode() == 23000) {
-                $this->view("stocks/create_stock", ['error' => 'Stock already exists.']);
+            if ($e->getCode() == '23000') { // Duplicate entry error
+                $this->view("stocks/create_stock", ['error' => 'Stock already created.']);
             } else {
-                $this->view("stocks/create_stock", ['error' => 'An error occurred while creating stock.']);
+                $this->view("stocks/create_stock", ['error' => 'An error occurred while creating stock: ' . $e->getMessage()]);
             }
         }
     }
