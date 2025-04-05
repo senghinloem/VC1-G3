@@ -46,33 +46,46 @@
                 </thead>
                 <tbody>
                     <?php
-                    // Sample data (replace with your actual data from the database)
-                    $stocks = [
-                        ['id' => 1, 'item' => 'Plastic plate', 'quantity' => 100],
-                        ['id' => 2, 'item' => 'Plastic plate', 'quantity' => 100],
-                        ['id' => 3, 'item' => 'Plastic plate', 'quantity' => 100],
-                        ['id' => 4, 'item' => 'Plastic plate', 'quantity' => 100],
-                        ['id' => 5, 'item' => 'Plastic plate', 'quantity' => 100],
-                        ['id' => 6, 'item' => 'Plastic plate', 'quantity' => 100],
-                    ];
+                    // Database connection
+                    try {
+                        // Replace these with your actual database credentials
+                        $host = 'localhost';
+                        $dbname = 'vc1_db';
+                        $username = 'your_username';
+                        $password = '';
+                        
+                        $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+                        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-                    foreach ($stocks as $stock): ?>
-                        <tr>
-                            <td><?= htmlspecialchars($stock['id']) ?></td>
-                            <td><?= htmlspecialchars($stock['item']) ?></td>
-                            <td><?= htmlspecialchars($stock['quantity']) ?></td>
-                            <td>
-                                <!-- View Button (Green "+") -->
-                                <a href="/stock/view/<?=$stock['id']?>" class="btn btn-success btn-sm">
-                                    <i class="fas fa-plus"></i>
-                                </a>
-                                <!-- Delete Button (Red "−") -->
-                                <a href="/stock/delete/<?= $stock['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this item?')">
-                                    <i class="fas fa-minus"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
+                        // Query to fetch stock items
+                        $stmt = $pdo->prepare("SELECT id, item, quantity FROM stocks");
+                        $stmt->execute();
+                        
+                        // Fetch all stock items
+                        $stocks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                        foreach ($stocks as $stock): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($stock['id']) ?></td>
+                                <td><?= htmlspecialchars($stock['item']) ?></td>
+                                <td><?= htmlspecialchars($stock['quantity']) ?></td>
+                                <td>
+                                    <!-- View Button (Green "+") -->
+                                    <a href="/stock/view/<?=$stock['id']?>" class="btn btn-success btn-sm">
+                                        <i class="fas fa-plus"></i>
+                                    </a>
+                                    <!-- Delete Button (Red "−") -->
+                                    <a href="/stock/delete/<?= $stock['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this item?')">
+                                        <i class="fas fa-minus"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php
+                    } catch (PDOException $e) {
+                        echo "<tr><td colspan='4'>Error: " . htmlspecialchars($e->getMessage()) . "</td></tr>";
+                    }
+                    ?>
                 </tbody>
             </table>
         </div>

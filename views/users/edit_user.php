@@ -263,6 +263,7 @@ if (!isset($_SESSION['user_id'])) {
                                placeholder="Enter new password to change (min 6 characters)">
                         <div id="password-error" class="error-message"></div>
                     </div> -->
+                    <?php if ($_SESSION['user_role'] === 'admin'): ?>                  
                     <div class="form-group">
                         <label for="role">Role</label>
                         <select class="form-control" id="role" name="role" required>
@@ -270,6 +271,7 @@ if (!isset($_SESSION['user_id'])) {
                             <option value="user" <?php echo $user['role'] === 'user' ? 'selected' : ''; ?>>User</option>
                         </select>
                     </div>
+                    <?php endif; ?>
                     <div class="form-group">
                         <label for="phone">Phone</label>
                         <input type="tel" 

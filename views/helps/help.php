@@ -8,19 +8,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- <link rel="stylesheet" href="views/assets/css/help.css"> -->
+    <link rel="stylesheet" href="../../views/assets/css/help.css">
 
 </head>
 
 <body>
-
-    <!-- Header with Search -->
-    <!-- Help Content - This will fit inside your dashboard's main content area -->
     <div class="container-fluid px-4 py-3">
-        <!-- Page Title -->
         <h1 class="mb-4">How can we help?</h1>
 
-        <!-- Search Bar -->
         <div class="row mb-4">
             <div class="col-md-6">
                 <div class="input-group">
@@ -32,7 +27,6 @@
             </div>
         </div>
 
-        <!-- Help Categories -->
         <div class="row mb-5">
             <div class="col-md-4 mb-4">
                 <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
@@ -86,7 +80,6 @@
             </div>
         </div>
 
-        <!-- FAQs Section -->
         <div class="row mb-5">
             <div class="col-12">
                 <h2 class="mb-4">Frequently Asked Questions</h2>
@@ -94,8 +87,6 @@
 
             <div class="col-12">
                 <div class="accordion" id="faqAccordion">
-
-                    <!-- Dashboard Management -->
                     <div class="accordion-item border-0 mb-3 shadow-sm rounded">
                         <h2 class="accordion-header" id="headingOne">
                             <button class="accordion-button rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
@@ -105,13 +96,12 @@
                         <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
                             <div class="accordion-body">
                                 View key metrics like total products, item count, overall cost, and low stock alerts at the top.
-                                Check stock levels with the bar chart (low stock in red, high stock in blue) and unit distribution in the pie chart show with specifict unit and precentage.
+                                Check stock levels with the bar chart (low stock in red, high stock in blue) and unit distribution in the pie chart show with specific unit and percentage.
                                 Use the "Filter Product" section to search products by name and price or filter by unit, and sort the table by clicking column headers like Product ID or Price.
                             </div>
                         </div>
                     </div>
 
-                    <!-- Product Management -->
                     <div class="accordion-item border-0 mb-3 shadow-sm rounded">
                         <h2 class="accordion-header" id="headingTwo">
                             <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
@@ -128,8 +118,6 @@
                         </div>
                     </div>
 
-
-                    <!-- Stock Management -->
                     <div class="accordion-item border-0 mb-3 shadow-sm rounded">
                         <h2 class="accordion-header" id="headingFour">
                             <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
@@ -144,7 +132,6 @@
                         </div>
                     </div>
 
-                    <!-- Suppliers Management -->
                     <div class="accordion-item border-0 mb-3 shadow-sm rounded">
                         <h2 class="accordion-header" id="headingThree">
                             <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
@@ -159,7 +146,6 @@
                         </div>
                     </div>
 
-                    <!-- Productlist Management -->
                     <div class="accordion-item border-0 mb-3 shadow-sm rounded">
                         <h2 class="accordion-header" id="headingFive">
                             <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
@@ -174,9 +160,6 @@
                         </div>
                     </div>
 
-
-
-                    <!-- User Management -->
                     <div class="accordion-item border-0 mb-3 shadow-sm rounded">
                         <h2 class="accordion-header" id="headingSix">
                             <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
@@ -193,7 +176,7 @@
                         </div>
                     </div>
 
-                    <!-- Setiting Page -->
+                    <!-- Settings Guide Accordion Item -->
                     <div class="accordion-item border-0 mb-3 shadow-sm rounded">
                         <h2 class="accordion-header" id="headingSeven">
                             <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
@@ -202,21 +185,127 @@
                         </h2>
                         <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven" data-bs-parent="#faqAccordion">
                             <div class="accordion-body">
-                                Not yet
-                            </div>
-                        </div>
-                    </div>
+                                <!-- Inner Tabs for Settings Guide -->
+                                <ul class="nav nav-tabs" id="settingsTabs" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button" role="tab" aria-controls="general" aria-selected="true">
+                                            <span class="icon">⚙️</span> General
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="stock-levels-tab" data-bs-toggle="tab" data-bs-target="#stock-levels" type="button" role="tab" aria-controls="stock-levels" aria-selected="false">
+                                            <span class="icon">📊</span> Stock Levels
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="locations-tab" data-bs-toggle="tab" data-bs-target="#locations" type="button" role="tab" aria-controls="locations" aria-selected="false">
+                                            <span class="icon">🏠</span> Locations
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="notifications-tab" data-bs-toggle="tab" data-bs-target="#notifications" type="button" role="tab" aria-controls="notifications" aria-selected="false">
+                                            <span class="icon">🔔</span> Notifications
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="advanced-tab" data-bs-toggle="tab" data-bs-target="#advanced" type="button" role="tab" aria-controls="advanced" aria-selected="false">
+                                            <span class="icon">⚡</span> Advanced
+                                        </button>
+                                    </li>
+                                </ul>
 
-                    <!-- Settings -->
-                    <div class="accordion-item border-0 mb-3 shadow-sm rounded">
-                        <h2 class="accordion-header" id="headingEight">
-                            <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
-                                How To Use Help Page?
-                            </button>
-                        </h2>
-                        <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingEight" data-bs-parent="#faqAccordion">
-                            <div class="accordion-body">
-                                Not yet
+                                <!-- Inner Tab Content -->
+                                <div class="tab-content" id="settingsTabsContent">
+                                    <!-- General Tab -->
+                                    <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
+                                        <h4>General Settings (Basic Rules)</h4>
+                                        <p>This tab sets the basic rules for your inventory.</p>
+                                        <ul>
+                                            <li><strong>Basic Rules:</strong> Start with how you count and track items.</li>
+                                            <li>Pick "FIFO (First In, First Out)" for counting sold items (uses oldest stock first).</li>
+                                            <li>Choose "Piece" to measure items (one item at a time).</li>
+                                            <li>Turn "Allow Negative Stock" to "Off" (gray) so you can’t sell at zero stock.</li>
+                                            <li>Turn "Update Stock on Sales" to "On" (blue) to lower stock automatically when you sell.</li>
+                                            <li><strong>Business Year:</strong> Set your year for reports.</li>
+                                            <li>Pick "January" as the start month.</li>
+                                            <li>Turn "Schedule Annual Inventory Count" to "On" to count stock yearly.</li>
+                                            <li>Set date format to "MM/DD/YYYY" for reports.</li>
+                                        </ul>
+                                        <p>Click "Save Changes" to keep your settings, or "Cancel" to skip.</p>
+                                    </div>
+
+                                    <!-- Stock Levels Tab -->
+                                    <div class="tab-pane fade" id="stock-levels" role="tabpanel" aria-labelledby="stock-levels-tab">
+                                        <h4>Stock Levels (Track Stock)</h4>
+                                        <p>This tab sets when to warn you about low or high stock and helps with reordering.</p>
+                                        <ul>
+                                            <li><strong>Stock Warnings:</strong> Set when to get alerts for low or high stock.</li>
+                                            <li>Set "Low Stock Warning" to 20%. Example: If normal stock is 100, it warns at 20 items.</li>
+                                            <li>Set "Critical Stock Warning" to 10%. Example: Warns at 10 items if normal is 100.</li>
+                                            <li>Set "Overstock Warning" to 150%. Example: Warns at 150 items if normal is 100.</li>
+                                            <li><strong>Reorder Help:</strong> Suggest when to order more stock.</li>
+                                            <li>Turn "Enable Automatic Reorder Suggestions" to "On."</li>
+                                            <li>Set "Default Lead Time" to 7 days (time to get new stock).</li>
+                                            <li>Set "Safety Stock" to 3 days (extra stock to avoid running out).</li>
+                                        </ul>
+                                        <p>Click "Save Changes" to keep your settings, or "Cancel" to skip.</p>
+                                    </div>
+
+                                    <!-- Locations Tab -->
+                                    <div class="tab-pane fade" id="locations" role="tabpanel" aria-labelledby="locations-tab">
+                                        <h4>Locations (Manage Where You Store Stock)</h4>
+                                        <p>This tab manages where you store your stock.</p>
+                                        <ul>
+                                            <li><strong>Add Warehouses:</strong> Add places where you keep stock.</li>
+                                            <li>Click "+ Add Location." Add name, type (like Primary), address, and status (Active or Inactive).</li>
+                                            <li>To change or remove, click the pencil to edit or trash can to delete.</li>
+                                            <li><strong>Name Storage Spots:</strong> Set how to name spots in your warehouse.</li>
+                                            <li>Pick "Aisle-Shelf-Bin." Example: A spot might be "A1-S2-B3."</li>
+                                            <li><strong>Move Stock:</strong> Set rules for moving stock between places.</li>
+                                            <li>Pick "Two-Step (Ship & Receive)" for transfers.</li>
+                                            <li>Turn "Require Transfer Approval" to "Off" (gray) if you don’t want approvals.</li>
+                                            <li>Set "Auto-receive After" to 3 days (auto-receives stock after 3 days).</li>
+                                        </ul>
+                                        <p>Click "Save Changes" to keep your settings, or "Cancel" to skip.</p>
+                                    </div>
+
+                                    <!-- Notifications Tab -->
+                                    <div class="tab-pane fade" id="notifications" role="tabpanel" aria-labelledby="notifications-tab">
+                                        <h4>Notifications (Get Alerts)</h4>
+                                        <p>This tab sets how and when you get alerts about your stock.</p>
+                                        <ul>
+                                            <li><strong>Stock Alerts:</strong></li>
+                                            <li>Turn "Low Stock Alerts" to "On" for low stock warnings.</li>
+                                            <li>Turn "Out of Stock Alerts" to "On" for zero stock warnings.</li>
+                                            <li>Turn "Overstock Alerts" to "On" for too much stock warnings.</li>
+                                            <li>Turn "Expiration Date Alerts" to "On" for items near expiry.</li>
+                                            <li>Set "Expiration Lead Time" to 30 days (warns 30 days before expiry).</li>
+                                            <li><strong>How to Get Alerts:</strong> Choose how to get warnings.</li>
+                                            <li>Check "Email," "SMS," "In-App," and "Push Notifications" to get alerts everywhere.</li>
+                                            <li>Pick "Daily Digest" to get one summary email per day.</li>
+                                        </ul>
+                                        <p>Make sure at least one alert method (like Email) is on to get warnings. Click "Save Changes" to keep your settings, or "Cancel" to skip.</p>
+                                    </div>
+
+                                    <!-- Advanced Tab -->
+                                    <div class="tab-pane fade" id="advanced" role="tabpanel" aria-labelledby="advanced-tab">
+                                        <h4>Advanced (Track Batches and Data)</h4>
+                                        <p>This tab has extra settings for tracking batches and managing data.</p>
+                                        <ul>
+                                            <li><strong>Batch Tracking:</strong> Track items by batch numbers (like for expiry dates).</li>
+                                            <li>Turn "Enable Batch/Lot Tracking" to "On."</li>
+                                            <li>Set "Batch Number Format" to "BAT-[YYYY][MM]-[#####]." Example: "BAT-202504-00001."</li>
+                                            <li>Turn "Enforce Expiry Dates for Batches" to "On" to require expiry dates.</li>
+                                            <li>Pick "FIFO (First Expiry, First Out)" to use batches expiring first.</li>
+                                            <li><strong>Data Saving:</strong> Decide how long to keep data.</li>
+                                            <li>Set "Stock History Retention" to "1 Year" to keep data for 1 year.</li>
+                                            <li>Set "Auto-archive Inactive Products" to "After 90 days" to hide old products.</li>
+                                            <li>Turn "Enable Scheduled Data Exports" to "On" to export data automatically.</li>
+                                            <li>Pick "CSV" as the export format.</li>
+                                        </ul>
+                                        <p>Click "Save Changes" to keep your settings, or "Cancel" to skip.</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -227,7 +316,6 @@
             </div>
         </div>
 
-        <!-- Contact Support Section -->
         <div class="row mb-5">
             <div class="col-12">
                 <h2 class="mb-4">Contact Support</h2>
@@ -279,14 +367,13 @@
             </div>
         </div>
 
-        <!-- Resources Section -->
         <div class="row mb-4">
             <div class="col-12">
                 <h2 class="mb-4">Additional Resources</h2>
             </div>
 
             <div class="col-md-6 mb-3">
-                <a href="#" class="text-decoration-none">
+                <a href="../views/helps/user-guide.pdf" target="_blank" class="text-decoration-none">
                     <div class="card border-0 shadow-sm rounded-3 hover-lift">
                         <div class="card-body p-3 d-flex align-items-center">
                             <div class="bg-primary bg-opacity-10 rounded p-3 me-3">
@@ -350,30 +437,7 @@
             </div>
         </div>
     </div>
-
-    <style>
-        /* Custom styles that will work within your dashboard */
-        .hover-lift {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .hover-lift:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
-        }
-
-        .accordion-button:not(.collapsed) {
-            background-color: rgba(var(--bs-primary-rgb), 0.1);
-            color: var(--bs-primary);
-        }
-
-        .accordion-button:focus {
-            box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
-        }
-    </style>
-
     <script>
-        // Make sure Font Awesome is loaded
         if (typeof FontAwesome === 'undefined') {
             var link = document.createElement('link');
             link.rel = 'stylesheet';
@@ -406,6 +470,9 @@
             }
         }
     </script>
+
+    <!-- Bootstrap JS (required for accordion and tabs) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
