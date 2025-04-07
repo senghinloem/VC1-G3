@@ -1,26 +1,21 @@
 <?php
-
-class SupplierModel
-{
+class SupplierModel {
     private $db;
 
     public function __construct() {
         $this->db = new Database("localhost", "vc1_db", "root", "");
     }
 
-    // Retrieve all suppliers
     public function getSupplier() {
         $result = $this->db->query("SELECT * FROM suppliers");
         return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Get supplier by ID
     public function getSupplierById($supplier_id) {
         $result = $this->db->query("SELECT * FROM suppliers WHERE supplier_id = :supplier_id", [':supplier_id' => $supplier_id]);
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 
-    // Add a new supplier
     public function addSupplier($supplier_name, $email, $phone, $address) {
         try {
             $this->db->query(
@@ -38,7 +33,6 @@ class SupplierModel
         }
     }
 
-    // Update supplier information
     public function updateSupplier($supplier_id, $supplier_name, $email, $phone, $address) {
         try {
             $query = "UPDATE suppliers 
@@ -57,7 +51,6 @@ class SupplierModel
         }
     }
 
-    // Delete supplier
     public function deleteSupplier($supplier_id) {
         try {
             $this->db->query("DELETE FROM suppliers WHERE supplier_id = :supplier_id", [':supplier_id' => $supplier_id]);
@@ -66,5 +59,4 @@ class SupplierModel
         }
     }
 }
-
 ?>

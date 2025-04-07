@@ -1,14 +1,14 @@
 <?php
-
 require_once "Models/SupplierModel.php";
+require_once "Models/NotificationModel.php";
 
-class SupplierController extends BaseController
-{
+class SupplierController extends BaseController {
     private $supply;
+    private $notification;
 
     public function __construct() {
         $this->supply = new SupplierModel();
-        // Start session if not already started
+        $this->notification = new NotificationModel();
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
@@ -31,11 +31,20 @@ class SupplierController extends BaseController
 
         try {
             $this->supply->addSupplier($supplier_name, $email, $phone, $address);
+            $this->notification->addNotification(
+                $_SESSION['user_id'],
+                "New supplier '$supplier_name' added",
+                'success'
+            );
             $_SESSION['success_message'] = "Supplier '$supplier_name' successfully created!";
             header("Location: /supplier");
             exit();
         } catch(PDOException $e) {
-            // You might want to handle this error better in production
+            $this->notification->addNotification(
+                $_SESSION['user_id'],
+                "Failed to add supplier: " . $e->getMessage(),
+                'error'
+            );
             $_SESSION['error_message'] = "Error creating supplier: " . $e->getMessage();
             header("Location: /supplier/create");
             exit();
@@ -56,15 +65,30 @@ class SupplierController extends BaseController
 
             try {
                 $this->supply->updateSupplier($supplier_id, $supplier_name, $email, $phone, $address);
+                $this->notification->addNotification(
+                    $_SESSION['user_id'],
+                    "Supplier '$supplier_name' updated",
+                    'success'
+                );
                 $_SESSION['success_message'] = "Supplier '$supplier_name' successfully updated!";
                 header("Location: /supplier");
                 exit();
             } catch(PDOException $e) {
+                $this->notification->addNotification(
+                    $_SESSION['user_id'],
+                    "Failed to update supplier: " . $e->getMessage(),
+                    'error'
+                );
                 $_SESSION['error_message'] = "Error updating supplier: " . $e->getMessage();
                 header("Location: /supplier/edit/$supplier_id");
                 exit();
             }
         } else {
+            $this->notification->addNotification(
+                $_SESSION['user_id'],
+                "Invalid method for updating supplier",
+                'error'
+            );
             $_SESSION['error_message'] = "Invalid method for updating supplier.";
             header("Location: /supplier");
             exit();
@@ -78,13 +102,23 @@ class SupplierController extends BaseController
 
     public function destroy($supplier_id) {
         try {
-            $supplier = $this->supply->getSupplierById($supplier_id); // Get supplier name before deleting
+            $supplier = $this->supply->getSupplierById($supplier_id);
             $supplier_name = $supplier['supplier_name'];
             $this->supply->deleteSupplier($supplier_id);
+            $this->notification->addNotification(
+                $_SESSION['user_id'],
+                "Supplier '$supplier_name' deleted",
+                'success'
+            );
             $_SESSION['success_message'] = "Supplier '$supplier_name' successfully deleted!";
             header('Location: /supplier');
             exit();
         } catch(PDOException $e) {
+            $this->notification->addNotification(
+                $_SESSION['user_id'],
+                "Failed to delete supplier: " . $e->getMessage(),
+                'error'
+            );
             $_SESSION['error_message'] = "Error deleting supplier: " . $e->getMessage();
             header('Location: /supplier');
             exit();
