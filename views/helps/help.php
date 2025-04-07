@@ -1,3 +1,8 @@
+<?php
+// Check if an email has been clicked and submitted via GET
+$selectedEmail = isset($_GET['email']) ? htmlspecialchars($_GET['email']) : '';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -317,55 +322,125 @@
         </div>
 
         <div class="row mb-5">
-            <div class="col-12">
-                <h2 class="mb-4">Contact Support</h2>
-            </div>
+    <div class="col-12">
+        <h2 class="mb-4">Contact Support</h2>
+    </div>
 
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
-                    <div class="card-body p-4 text-center">
-                        <div class="mb-3">
-                            <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block">
-                                <i class="fas fa-envelope text-primary fa-2x"></i>
-                            </div>
-                        </div>
-                        <h4 class="card-title">Email Support</h4>
-                        <p class="card-text text-muted mb-3">Get help via email</p>
-                        <a href="#" class="btn btn-primary">dinleader@gmail.com</a>
+    <!-- Email Card with Carousel (No Auto Move) -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
+            <div class="card-body p-4 text-center">
+                <div class="mb-3">
+                    <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block">
+                        <i class="fas fa-envelope text-primary fa-2x"></i>
                     </div>
                 </div>
-            </div>
-
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
-                    <div class="card-body p-4 text-center">
-                        <div class="mb-3">
-                            <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block">
-                                <i class="fas fa-phone-alt text-primary fa-2x"></i>
-                            </div>
+                <h4 class="card-title">Email Support</h4>
+                <p class="card-text text-muted mb-3">Get help via email</p>
+                <div id="emailCarousel" class="carousel slide">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <a href="mailto:dinleader@gmail.com" class="btn btn-primary">dinleader@gmail.com</a>
                         </div>
-                        <h4 class="card-title">Phone Support</h4>
-                        <p class="card-text text-muted mb-3">Talk to our team directly</p>
-                        <a href="tel:+15551234567" class="btn btn-primary">+855 69505726</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
-                    <div class="card-body p-4 text-center">
-                        <div class="mb-3">
-                            <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block">
-                                <i class="fas fa-clock text-primary fa-2x"></i>
-                            </div>
+                        <div class="carousel-item">
+                            <a href="mailto:support1@example.com" class="btn btn-primary">senghin@gmail.com</a>
                         </div>
-                        <h4 class="card-title">Support Hours</h4>
-                        <p class="card-text text-muted mb-3">When we're available</p>
-                        <p class="mb-0">Monday - Friday<br>9:00 AM - 5:00 PM (EST)</p>
+                        <div class="carousel-item">
+                            <a href="mailto:support2@example.com" class="btn btn-primary">bunny@gmail.com</a>
+                        </div>
+                        <div class="carousel-item">
+                            <a href="mailto:support3@example.com" class="btn btn-primary">ya@gmail.com</a>
+                        </div>
+                        <div class="carousel-item">
+                            <a href="mailto:support4@example.com" class="btn btn-primary">sreynich@gmail.com</a>
+                        </div>
                     </div>
+                    <button class="carousel-control-prev custom-carousel-control" type="button" data-bs-target="#emailCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon custom-blue-arrow" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next custom-carousel-control" type="button" data-bs-target="#emailCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon custom-blue-arrow" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Phone Card with Carousel (No Auto Move) -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
+            <div class="card-body p-4 text-center">
+                <div class="mb-3">
+                    <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block">
+                        <i class="fas fa-phone-alt text-primary fa-2x"></i>
+                    </div>
+                </div>
+                <h4 class="card-title">Phone Support</h4>
+                <p class="card-text text-muted mb-3">Talk to our team directly</p>
+                <div id="phoneCarousel" class="carousel slide">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <a href="tel:+85569505726" class="btn btn-primary">+855 69505726</a>
+                        </div>
+                        <div class="carousel-item">
+                            <a href="tel:+85512345678" class="btn btn-primary">+855 12345678</a>
+                        </div>
+                        <div class="carousel-item">
+                            <a href="tel:+85587654321" class="btn btn-primary">+855 87654321</a>
+                        </div>
+                        <div class="carousel-item">
+                            <a href="tel:+85598765432" class="btn btn-primary">+855 98765432</a>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev custom-carousel-control" type="button" data-bs-target="#phoneCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon custom-blue-arrow" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next custom-carousel-control" type="button" data-bs-target="#phoneCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon custom-blue-arrow" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Support Hours Card with Carousel (No Auto Move) -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
+            <div class="card-body p-4 text-center">
+                <div class="mb-3">
+                    <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block">
+                        <i class="fas fa-clock text-primary fa-2x"></i>
+                    </div>
+                </div>
+                <h4 class="card-title">Support Hours</h4>
+                <p class="card-text text-muted mb-3">When we're available</p>
+                <div id="hoursCarousel" class="carousel slide">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <p class="mb-0">Monday - Friday<br>5:00 pM - 9:00 PM (EST)</p>
+                        </div>
+                        <div class="carousel-item">
+                            <p class="mb-0">Saturday - Sunday<br>7:00 AM - 6:00 PM (EST)</p>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev custom-carousel-control" type="button" data-bs-target="#hoursCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon custom-blue-arrow" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next custom-carousel-control" type="button" data-bs-target="#hoursCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon custom-blue-arrow" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
         <div class="row mb-4">
             <div class="col-12">
