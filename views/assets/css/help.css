@@ -53,21 +53,47 @@
     margin-right: 5px;
 }
 
-.custom-blue-arrow {
-    width: 10px;  
-    height: 10px; 
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%230000FF' d='M5.25 0l-4 4 4 4 1.5-1.5L4.25 4l2.5-2.5L5.25 0z'/%3E%3C/svg%3E"); /* Blue left arrow */
-}
+ /* top of help page */
 
-.carousel-control-next-icon.custom-blue-arrow {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%230000FF' d='M2.75 0l-1.5 1.5L3.75 4l-2.5 2.5L2.75 8l4-4-4-4z'/%3E%3C/svg%3E"); /* Blue right arrow */
-}
 
-.custom-carousel-control {
-    width: 10%; 
-    opacity: 0.7;  
+.hover-lift:hover {
+    transform: translateY(-10px);
+    transition: transform 0.3s ease-in-out;
 }
-
-.custom-carousel-control:hover {
-    opacity: 1; 
+.carousel-inner .card {
+    margin: 0 10px;
+}
+/* Custom styles for carousel controls */
+.carousel-control-prev,
+.carousel-control-next {
+    width: 50px; /* Adjust size of the control area */
+    height: 50px;
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%);
+    opacity: 0.7; /* Slightly transparent by default */
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth transitions */
+}
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+    opacity: 1; /* Fully opaque on hover */
+    transform: translateY(-50%) scale(1.2); /* Slight scale-up on hover */
+}
+/* Change icon color to blue */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-image: none; /* Remove default Bootstrap icon */
+    font-family: "Font Awesome 5 Free"; /* Use Font Awesome */
+    font-weight: 900; /* Solid icon weight */
+    font-size: 24px; /* Larger icon */
+    color: #007bff; /* Blue color */
+}
+.carousel-control-prev-icon::before {
+    content: "\f053"; /* Font Awesome chevron-left */
+}
+.carousel-control-next-icon::before {
+    content: "\f054"; /* Font Awesome chevron-right */
+}
+.carousel-control-prev:hover .carousel-control-prev-icon,
+.carousel-control-next:hover .carousel-control-next-icon {
+    color: #0056b3; /* Darker blue on hover */
 }
