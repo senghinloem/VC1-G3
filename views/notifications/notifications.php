@@ -25,7 +25,7 @@ if (!isset($data['notifications']) || !is_array($data['notifications'])) {
             <div class="card-body">
                 <?php if (empty($data['notifications'])): ?>
                     <div class="alert alert-info text-center">
-                        No notifications found.
+                        Don't have notifications found.
                     </div>
                 <?php else: ?>
                     <div class="list-group">
