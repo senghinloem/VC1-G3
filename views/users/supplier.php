@@ -22,7 +22,7 @@ if (!isset($_SESSION['user_id'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
-        /* Table container styling (matching Product List) */
+        /* Table container styling */
         .table-container {
             transition: opacity 0.3s ease;
             max-height: 500px;
@@ -31,6 +31,7 @@ if (!isset($_SESSION['user_id'])) {
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             position: relative;
+            background-color: #ffffff;
         }
 
         .table-container.loading {
@@ -38,7 +39,7 @@ if (!isset($_SESSION['user_id'])) {
             pointer-events: none;
         }
 
-        /* Table styling (matching Product List) */
+        /* Table styling */
         .supplier-table {
             margin-bottom: 0;
             width: 100%;
@@ -64,7 +65,7 @@ if (!isset($_SESSION['user_id'])) {
             position: sticky;
             top: 0;
             z-index: 1;
-            background-color: #f8f9fa;
+            
             text-align: center;
         }
 
@@ -95,11 +96,7 @@ if (!isset($_SESSION['user_id'])) {
             border-bottom: none;
         }
 
-        .supplier-table tbody tr td[colspan="6"] {
-            background-color: transparent;
-        }
-
-        /* Action buttons (matching Product List) */
+        /* Action buttons */
         .action-btn {
             background: transparent;
             border: none;
@@ -114,7 +111,7 @@ if (!isset($_SESSION['user_id'])) {
             color: #0d6efd;
         }
 
-        /* Ensure the dropdown menu is visible and styled consistently */
+        /* Dropdown menu */
         .dropdown-menu {
             z-index: 1000;
             min-width: 150px;
@@ -131,7 +128,7 @@ if (!isset($_SESSION['user_id'])) {
             margin-right: 8px;
         }
 
-        /* Card styling (matching Product List) */
+        /* Card styling */
         .card {
             border-radius: 8px;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
@@ -144,7 +141,7 @@ if (!isset($_SESSION['user_id'])) {
             padding: 1rem 1.5rem;
         }
 
-        /* Modal styling (already matching, but ensuring consistency) */
+        /* Modal styling */
         .modal-content {
             border: none;
             border-radius: 12px;
@@ -158,7 +155,7 @@ if (!isset($_SESSION['user_id'])) {
             border-top: 1px solid rgba(0, 0, 0, 0.08);
         }
 
-        /* Empty state (matching Product List) */
+        /* Empty state */
         .empty-state {
             text-align: center;
             padding: 40px 0;
@@ -175,7 +172,7 @@ if (!isset($_SESSION['user_id'])) {
             max-width: 300px;
         }
 
-        /* Style the input field */
+
         .search-container .form-control {
             border: 1px solid #ced4da;
             border-right: none;
@@ -185,7 +182,7 @@ if (!isset($_SESSION['user_id'])) {
             box-shadow: none;
         }
 
-        /* Style the button */
+
         .search-container .btn-primary {
             border: 1px solid #0d6efd;
             border-left: none;
@@ -198,21 +195,130 @@ if (!isset($_SESSION['user_id'])) {
             justify-content: center;
         }
 
-        /* Style the icon inside the button */
+
         .search-container .btn-primary i {
             font-size: 1rem;
         }
 
-        /* Remove focus outline for better aesthetics */
+
         .search-container .form-control:focus {
             box-shadow: none;
             border-color: #ced4da;
         }
 
-        /* Optional: Hover effect for the button */
+
         .search-container .btn-primary:hover {
             background-color: #0b5ed7;
             border-color: #0b5ed7;
+        }
+
+        /* Success Message Styling - Centered over table */
+        .success-message-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            pointer-events: none; /* Allows clicks to pass through to the table */
+        }
+
+        .success-message {
+            background: #ffffff;
+            color: #333;
+            padding: 2rem 3rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            animation: popIn 0.5s ease-out;
+            min-width: 400px;
+            max-width: 90%;
+            border-left: 5px solid #4caf50;
+            pointer-events: auto; /* Allows interaction with the message */
+        }
+
+        .success-message .icon {
+            font-size: 3rem;
+            color: #4caf50;
+            margin-bottom: 1rem;
+            animation: bounce 0.6s ease;
+        }
+
+        .success-message .text {
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 600;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .success-message .btn-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: #666;
+            opacity: 0.8;
+            font-size: 1rem;
+            padding: 0.5rem;
+        }
+
+        .success-message .btn-close:hover {
+            opacity: 1;
+            color: #333;
+        }
+
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .success-message {
+                padding: 1.5rem;
+                min-width: 300px;
+            }
+            
+            .success-message .icon {
+                font-size: 2rem;
+            }
+            
+            .success-message .text {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .success-message {
+                padding: 1rem;
+                min-width: 250px;
+            }
+            
+            .success-message .icon {
+                font-size: 1.8rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            .success-message .text {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
@@ -258,6 +364,17 @@ if (!isset($_SESSION['user_id'])) {
                 <div class="card">
                     <div class="card-body p-0">
                         <div class="table-container">
+                            <?php if (isset($_SESSION['success_message'])): ?>
+                            <div class="success-message-overlay">
+                                <div class="success-message alert alert-dismissible fade show" role="alert">
+                                    <i class="fas fa-check-circle icon"></i>
+                                    <p class="text"><?= htmlspecialchars($_SESSION['success_message']) ?></p>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            </div>
+                            <?php unset($_SESSION['success_message']); ?>
+                            <?php endif; ?>
+                            
                             <table class="supplier-table table-borderless">
                                 <thead>
                                     <tr>
@@ -331,17 +448,6 @@ if (!isset($_SESSION['user_id'])) {
         </div>
     </div>
 
-    <!-- Success Alert -->
-    <div class="col-12">
-        <?php if (isset($_SESSION['success_message'])): ?>
-            <div class="alert alert-success alert-dismissible fade show alert-slide" role="alert">
-                <i class="fas fa-check-circle me-2"></i>
-                <?= htmlspecialchars($_SESSION['success_message']) ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            <?php unset($_SESSION['success_message']); ?>
-        <?php endif; ?>
-    </div>
 
     <!-- Delete Confirmation Modal -->
     <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
@@ -477,7 +583,7 @@ if (!isset($_SESSION['user_id'])) {
                 }
             });
 
-            // If no rows are visible, show empty state
+
             if (!hasVisibleRows && rows.length > 0) {
                 tbody.innerHTML = `
                     <tr>
@@ -501,20 +607,14 @@ if (!isset($_SESSION['user_id'])) {
             }, debounceDelay);
         });
 
-        searchInput.addEventListener('change', function() {
-            if (this.value.trim() === '') {
-                updateTable('');
-            }
-        });
-
-        // Auto-dismiss alerts after 5 seconds
-        const alerts = document.querySelectorAll('.alert');
-        alerts.forEach(alert => {
+        // Auto-dismiss success message after 5 seconds
+        const successMessage = document.querySelector('.success-message');
+        if (successMessage) {
             setTimeout(() => {
-                const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+                const bsAlert = bootstrap.Alert.getOrCreateInstance(successMessage);
                 if (bsAlert) bsAlert.close();
             }, 5000);
-        });
+        }
     });
     </script>
 

@@ -354,3 +354,8 @@
   font-size: 0.875rem;
 }
 
+
+.d-flex justify-content-center{
+  display: flex;
+  align-self: flex-end;
+}

@@ -3,7 +3,6 @@
 class Database
 {
     private $pdo;
-
     /**
      * Constructor to initialize the database connection.
      *
