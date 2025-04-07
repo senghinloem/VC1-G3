@@ -80,7 +80,7 @@ $route->get("/supplier/detail/{supplier_id}", [SupplierController::class, 'detai
 
 // login and register
 $route->get("/login", [LoginRegisterController::class, 'login']);
-// $route->get("/register", [LoginRegisterController::class, 'register']);
+$route->get("/register", [LoginRegisterController::class, 'register']);
 $route->get("/error", [LoginRegisterController::class, 'error']);
 
 // help
