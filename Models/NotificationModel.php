@@ -23,7 +23,6 @@ class NotificationModel {
     public function getUserNotifications($user_id) {
         $query = "SELECT * FROM notifications 
                  WHERE user_id = :user_id 
-                 AND is_read = 0 
                  ORDER BY created_at DESC 
                  LIMIT 10";
         try {
@@ -48,7 +47,7 @@ class NotificationModel {
 
     public function getNotificationCount($user_id) {
         $query = "SELECT COUNT(*) as count FROM notifications 
-                 WHERE user_id = :user_id AND is_read = 0";
+                 WHERE user_id = :user_id";
         try {
             $result = $this->db->query($query, [':user_id' => $user_id])->fetch(PDO::FETCH_ASSOC);
             return $result['count'] ?? 0;
@@ -58,26 +57,8 @@ class NotificationModel {
         }
     }
 
-    public function markAsRead($notification_id) {
-        $query = "UPDATE notifications SET is_read = 1 WHERE notification_id = :notification_id"; // Changed 'id' to 'notification_id'
-        try {
-            $this->db->query($query, [':notification_id' => $notification_id]);
-        } catch (Exception $e) {
-            error_log("Error marking notification as read: " . $e->getMessage());
-        }
-    }
-
-    public function markAllAsRead($user_id) {
-        $query = "UPDATE notifications SET is_read = 1 WHERE user_id = :user_id AND is_read = 0";
-        try {
-            $this->db->query($query, [':user_id' => $user_id]);
-        } catch (Exception $e) {
-            error_log("Error marking all notifications as read: " . $e->getMessage());
-        }
-    }
-
     public function deleteNotification($notification_id) {
-        $query = "DELETE FROM notifications WHERE notification_id = :notification_id"; // Changed 'id' to 'notification_id'
+        $query = "DELETE FROM notifications WHERE notification_id = :notification_id";
         try {
             $stmt = $this->db->query($query, [':notification_id' => $notification_id]);
             $rowCount = $stmt->rowCount();
