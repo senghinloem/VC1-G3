@@ -13,6 +13,7 @@ require_once "Controllers/UserController.php";
 require_once "Controllers/HelpController.php";
 require_once "Controllers/SettingController.php";
 require_once "Controllers/ReportController.php";
+require_once "Controllers/NotificationController.php";
 
 $route = new Router();
 
@@ -24,7 +25,7 @@ $route->get("/users/edit/{user_id}", [UserController::class, 'edit']);
 $route->put("/users/update/{user_id}", [UserController::class, 'update']);
 $route->delete("/users/destroy/{user_id}", [UserController::class, 'destroy']);
 $route->post("/users/authenticate", [UserController::class, 'authenticate']);
-$route->get ("/users/logout", [UserController::class, 'logout']);
+$route->get("/users/logout", [UserController::class, 'logout']);
 $route->get("/users/search", [UserController::class, 'search']);
 $route->get("/users/detail/{user_id}", [UserController::class, 'userDetail']);
 $route->get("/users/profile", [UserController::class, 'profile']);
@@ -40,31 +41,22 @@ $route->post("/products/store", [ProductController::class, 'store']);
 $route->post("/products/destroy/multiple", [ProductController::class, 'deleteMultiple']);
 $route->post("/products/import", [ProductController::class, 'import']);
 
-
-// stock routes
-// $route->get("/stock", [StockController::class, 'stock']);
-// $route->get("/stock/create", [StockController::class, 'create_stock']);
-// $route->post("/stock/store", [StockController::class, 'store']);
-// $route->get("/stock/edit/{stock_id}", [StockController::class, 'edit']);
-// $route->post("/stock/update/{stock_id}", [StockController::class, 'update']);
-// $route->post("/stock/destroy/{stock_id}", [StockController::class, 'destroy']);
-
-// Stock Management (Fixed and Enhanced)
+// Stock Management
 $route->get("/stock", [StockController::class, 'stock']);
 $route->get("/stock/create", [StockController::class, 'create_stock']);
 $route->post("/stock/store", [StockController::class, 'store']);
-$route->get("/stock/view/{stock_id}", [StockController::class, 'view_detail']);  // Added view detail route
+$route->get("/stock/view/{stock_id}", [StockController::class, 'view_detail']);
 $route->get("/stock/edit/{stock_id}", [StockController::class, 'edit']);
 $route->post("/stock/update/{stock_id}", [StockController::class, 'update']);
-$route->delete("/stock/delete/{stock_id}", [StockController::class, 'destroy']); // Changed to DELETE method
-$route->get("/stock/search", [StockController::class, 'search']); // Added search route
+$route->delete("/stock/delete/{stock_id}", [StockController::class, 'destroy']);
+$route->get("/stock/search", [StockController::class, 'search']);
 
 // product list
 $route->get("/product_list", [ProductListController::class, 'product_list']);
 $route->get("/product_list/create_list", [ProductListController::class, 'create_list']);
 $route->post("/product_list/store", [ProductListController::class, 'store']);
 $route->get("/product_list/edit/{id}", [ProductListController::class, 'edit']);
-$route->post("/product_list/update/{id}", [ProductListController::class, 'update']); // Changed to POST and added {id}
+$route->post("/product_list/update/{id}", [ProductListController::class, 'update']);
 $route->delete("/product_list/destroy/{id}", [ProductListController::class, 'destroy']);
 $route->get('/product_list/search', [ProductListController::class, 'search']);
 $route->post("/products/assign-stock", [ProductController::class, 'assignStock']);
@@ -80,18 +72,23 @@ $route->get("/supplier/detail/{supplier_id}", [SupplierController::class, 'detai
 
 // login and register
 $route->get("/login", [LoginRegisterController::class, 'login']);
-// $route->get("/register", [LoginRegisterController::class, 'register']);
+$route->get("/register", [LoginRegisterController::class, 'register']);
 $route->get("/error", [LoginRegisterController::class, 'error']);
 
 // help
 $route->get("/help", [HelpController::class, 'help']);
 
-// setting the route
-
+// setting
 $route->get("/setting", [SettingController::class, 'setting']);
 
 // report
-
 $route->get("/report", [ReportController::class, "report"]);
 
+// notifications
+$route->get("/notifications", [NotificationController::class, 'index']);
+$route->post("/notifications/mark-all-read", [NotificationController::class, 'markAllAsRead']);
+$route->post("/notifications/mark-read/{notification_id}", [NotificationController::class, 'markAsRead']);
+$route->post("/notifications/delete/{notification_id}", [NotificationController::class, 'delete']);
+    
 $route->route();
+?>
