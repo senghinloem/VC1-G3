@@ -1,7 +1,5 @@
 <?php
 require_once __DIR__ . '/../../views/layouts/navbar.php';
-
-// Check if $data['notifications'] is set and is an array
 if (!isset($data['notifications']) || !is_array($data['notifications'])) {
     $data['notifications'] = [];
 }
