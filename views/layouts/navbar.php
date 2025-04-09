@@ -57,7 +57,8 @@ $notificationCount = isset($_SESSION['user_id']) ? $notificationModel->getNotifi
                                                     <i class="bi bi-<?php echo $notification['type'] === 'success' ? 'check-circle' : ($notification['type'] === 'error' ? 'x-circle' : 'info-circle'); ?> fs-5"></i>
                                                 </div>
                                                 <div class="flex-grow-1">
-                                                    <p class="mb-0 fw-medium text-dark"><?php echo htmlspecialchars($notification['message']); ?></p>
+
+                                                <p class="mb-0 fw-medium text-dark"><?php echo htmlspecialchars($notification['message']); ?></p>
                                                     <small class="text-muted"><?php echo date('H:i d M', strtotime($notification['created_at'])); ?></small>
                                                 </div>
                                             </a>
@@ -114,7 +115,8 @@ $notificationCount = isset($_SESSION['user_id']) ? $notificationModel->getNotifi
                                     </a>
                                     <a href="#" class="dropdown-item d-flex align-items-center">
                                         <i class="bi bi-gear me-2"></i> Settings
-                                    </a>
+
+                                        </a>
                                     <div class="dropdown-divider"></div>
                                     <a href="/users/logout" class="dropdown-item d-flex align-items-center text-danger">
                                         <i class="bi bi-box-arrow-right me-2"></i> Log out
@@ -187,6 +189,7 @@ $notificationCount = isset($_SESSION['user_id']) ? $notificationModel->getNotifi
                                 </a>
                             </li>
                         </ul>
+
                         <div class="mt-4 border-top pt-3">
                             <ul class="nav sidebar-menu flex-column">
                                 <li class="nav-item">

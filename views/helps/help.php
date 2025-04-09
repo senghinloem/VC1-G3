@@ -12,7 +12,7 @@ $selectedEmail = isset($_GET['email']) ? htmlspecialchars($_GET['email']) : '';
     <title>Help & Support - PNN Shop</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">   
     <link rel="stylesheet" href="../../views/assets/css/help.css">
 
 </head>
@@ -21,70 +21,7 @@ $selectedEmail = isset($_GET['email']) ? htmlspecialchars($_GET['email']) : '';
     <div class="container-fluid px-4 py-3">
         <h1 class="mb-4">How can we help?</h1>
 
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <div class="input-group">
-                    <input type="text" id="searchInput" class="form-control" placeholder="Search for help..." onkeyup="searchFAQs()">
-                    <button class="btn btn-primary" type="button">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- <div class="row mb-5">
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
-                    <div class="card-body p-4">
-                        <div class="text-center mb-3">
-                            <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block">
-                                <i class="fas fa-shopping-cart text-primary fa-2x"></i>
-                            </div>
-                        </div>
-                        <h4 class="card-title text-center"> Stock Management </h4>
-                        <p class="card-text text-muted text-center">Track orders, shipping info, and returns</p>
-                        <div class="text-center mt-3">
-                            <a href="#" class="btn btn-outline-primary">Learn More</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
-                    <div class="card-body p-4">
-                        <div class="text-center mb-3">
-                            <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block">
-                                <i class="fas fa-box-open text-primary fa-2x"></i>
-                            </div>
-                        </div>
-                        <h4 class="card-title text-center">Products Management </h4>
-                        <p class="card-text text-muted text-center">Manage products and stock levels</p>
-                        <div class="text-center mt-3">
-                            <a href="#" class="btn btn-outline-primary">Learn More</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
-                    <div class="card-body p-4">
-                        <div class="text-center mb-3">
-                            <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block">
-                                <i class="fas fa-user-cog text-primary fa-2x"></i>
-                            </div>
-                        </div>
-                        <h4 class="card-title text-center"> Settings</h4>
-                        <p class="card-text text-muted text-center">Manage your system and preferences</p>
-                        <div class="text-center mt-3">
-                            <a href="#" class="btn btn-outline-primary">Learn More</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> -->
-
+    
         <div class="container my-5">
             <div id="cardCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
                 <div class="carousel-inner">

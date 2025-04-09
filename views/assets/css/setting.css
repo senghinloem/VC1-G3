@@ -1,0 +1,171 @@
+:root {
+    /* Default Theme (matches your current dark UI) */
+    --background-color: #1a2526;
+    --text-color: #ffffff;
+    --card-bg: #2a3b3d;
+    --card-border: rgba(255, 255, 255, 0.1);
+    --nav-bg: #1a2526;
+    --nav-link-color: #ffffff;
+    --nav-link-active-bg: #2a3b3d;
+    --input-bg: #2a3b3d;
+    --input-text: #ffffff;
+    --button-primary-bg: #007bff;
+    --button-primary-text: #ffffff;
+}
+
+[data-theme="light"] {
+    /* Light Theme */
+    --background-color: #f8f9fa;
+    --text-color: #212529;
+    --card-bg: #ffffff;
+    --card-border: rgba(0, 0, 0, 0.125);
+    --nav-bg: #ffffff;
+    --nav-link-color: #495057;
+    --nav-link-active-bg: #e9ecef;
+    --input-bg: #ffffff;
+    --input-text: #212529;
+    --button-primary-bg: #007bff;
+    --button-primary-text: #ffffff;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+.container-fluid {
+    background-color: var(--background-color);
+}
+
+.card {
+    background-color: var(--card-bg);
+    border-color: var(--card-border);
+}
+
+.nav-tabs {
+    background-color: var(--nav-bg);
+    border-bottom: 1px solid var(--card-border);
+}
+
+.nav-link {
+    color: var(--nav-link-color);
+}
+
+.nav-link.active {
+    background-color: var(--nav-link-active-bg);
+    color: var(--text-color);
+    border-color: var(--card-border);
+}
+
+.form-control,
+.form-select {
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    border-color: var(--card-border);
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+}
+
+.form-check-label {
+    color: var(--text-color);
+}
+
+.btn-primary {
+    background-color: var(--button-primary-bg);
+    color: var(--button-primary-text);
+    border-color: var(--button-primary-bg);
+}
+
+.position-sticky {
+    background-color: var(--card-bg) !important;
+    border-color: var(--card-border);
+}
+
+.modal-content {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+.form-text {
+    color: var(--text-color);
+    opacity: 0.7;
+}
+
+.theme-icon {
+    font-size: 1.2rem;
+    vertical-align: middle;
+}
+
+[data-theme="light"] .theme-icon {
+    color: #212529;
+    /* Darker color for light theme */
+}
+
+.theme-icon {
+    color: #ffffff;
+    /* White color for default (dark) theme */
+}
+
+#themeToggle {
+    padding: 0.375rem 0.75rem;
+    /* Match the padding of btn-primary */
+    line-height: 1.5;
+    /* Align with other buttons */
+}
+
+#themeToggle .theme-icon {
+    font-size: 1.2rem;
+}
+
+[data-theme="light"] #themeToggle {
+    color: #212529;
+    border-color: #212529;
+}
+
+[data-theme="light"] #themeToggle:hover {
+    background-color: #e9ecef;
+}
+
+#themeToggle {
+    color: #ffffff;
+    border-color: #ffffff;
+}
+
+#themeToggle:hover {
+    background-color: #2a3b3d;
+}
+
+.app-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 1030;
+}
+
+.main-content {
+    margin-left: 250px;
+    /* Match this with the sidebar width */
+    min-height: 100vh;
+}
+
+.sidebar-open .app-sidebar {
+    transform: translateX(0);
+}
+
+.sidebar-closed .app-sidebar {
+    transform: translateX(-100%);
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+    }
+}

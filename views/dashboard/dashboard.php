@@ -10,30 +10,6 @@
     <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
     <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
     <link href="views/assets/css/dashboard.css" rel="stylesheet" />
-
-    <style>
-        .card {
-            border-radius: 10px;
-        }
-
-        .stat-number {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        .selection {
-            display: flex;
-            justify-content: flex-end;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .selection .form-select {
-            width: auto;
-            min-width: 150px;
-            margin-bottom: 15px;
-        }
-    </style>
 </head>
 
 <body>
@@ -171,7 +147,7 @@
         <!-- Filter product section remains largely unchanged -->
         <?php
         // Example pagination setup
-        $productsPerPage = 15;
+        $productsPerPage = 10;
         $totalProducts = count($products);
         $totalPages = ceil($totalProducts / $productsPerPage);
         $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
