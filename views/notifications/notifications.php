@@ -1,7 +1,5 @@
 <?php
 require_once __DIR__ . '/../../views/layouts/navbar.php';
-
-// Check if $data['notifications'] is set and is an array
 if (!isset($data['notifications']) || !is_array($data['notifications'])) {
     $data['notifications'] = [];
 }
@@ -25,7 +23,7 @@ if (!isset($data['notifications']) || !is_array($data['notifications'])) {
             <div class="card-body">
                 <?php if (empty($data['notifications'])): ?>
                     <div class="alert alert-info text-center">
-                        No notifications found.
+                        Don't have notifications found.
                     </div>
                 <?php else: ?>
                     <div class="list-group">
