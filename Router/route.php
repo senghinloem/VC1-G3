@@ -87,7 +87,7 @@ $route->get("/report", [ReportController::class, "report"]);
 // notifications
 $route->get("/notifications", [NotificationController::class, 'index']);
 $route->post("/notifications/mark-all-read", [NotificationController::class, 'markAllAsRead']);
-$route->post("/notifications/mark-read/{notification_id}", [NotificationController::class, 'markAsRead']);
+// $route->post("/notifications/mark-read/{notification_id}", [NotificationController::class, 'markAsRead']);
 $route->post("/notifications/delete/{notification_id}", [NotificationController::class, 'delete']);
     
 $route->route();

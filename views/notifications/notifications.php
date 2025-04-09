@@ -4,7 +4,6 @@ if (!isset($data['notifications']) || !is_array($data['notifications'])) {
     $data['notifications'] = [];
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
