@@ -7,6 +7,9 @@ class NotificationModel {
     }
 
     public function addNotification($user_id, $message, $type = 'info') {
+        $validTypes = ['info', 'success', 'error', 'warning'];
+        $type = in_array($type, $validTypes) ? $type : 'info';
+        
         $query = "INSERT INTO notifications (user_id, message, type, created_at) 
                  VALUES (:user_id, :message, :type, NOW())";
         try {
@@ -15,8 +18,10 @@ class NotificationModel {
                 ':message' => $message,
                 ':type' => $type
             ]);
+            return true;
         } catch (Exception $e) {
             error_log("Error adding notification: " . $e->getMessage());
+            return false;
         }
     }
 
@@ -70,4 +75,3 @@ class NotificationModel {
         }
     }
 }
-?>

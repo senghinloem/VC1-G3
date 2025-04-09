@@ -34,7 +34,6 @@ class NotificationController extends BaseController {
                 header("Location: /login");
                 exit();
             }
-            // Verify the notification exists and belongs to the user
             $notifications = $this->notificationModel->getAllUserNotifications($_SESSION['user_id']);
             $notificationExists = false;
             foreach ($notifications as $notif) {
@@ -58,4 +57,3 @@ class NotificationController extends BaseController {
         }
     }
 }
-?>

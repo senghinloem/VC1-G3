@@ -30,8 +30,17 @@ if (!isset($data['notifications']) || !is_array($data['notifications'])) {
                         <?php foreach ($data['notifications'] as $notification): ?>
                             <div class="list-group-item d-flex justify-content-between align-items-center">
                                 <div class="d-flex align-items-center">
-                                    <div class="bg-<?php echo isset($notification['type']) && $notification['type'] === 'success' ? 'success' : (isset($notification['type']) && $notification['type'] === 'error' ? 'danger' : 'info'); ?> text-white d-flex align-items-center justify-content-center rounded-circle me-3" style="width: 40px; height: 40px;">
-                                        <i class="bi bi-<?php echo isset($notification['type']) && $notification['type'] === 'success' ? 'check-circle' : (isset($notification['type']) && $notification['type'] === 'error' ? 'x-circle' : 'info-circle'); ?> fs-5"></i>
+                                    <div class="bg-<?php 
+                                        echo isset($notification['type']) && $notification['type'] === 'success' ? 'success' : 
+                                            (isset($notification['type']) && $notification['type'] === 'error' ? 'danger' : 
+                                            (isset($notification['type']) && $notification['type'] === 'warning' ? 'warning' : 'info')); 
+                                        ?> text-white d-flex align-items-center justify-content-center rounded-circle me-3" 
+                                        style="width: 40px; height: 40px;">
+                                        <i class="bi bi-<?php 
+                                            echo isset($notification['type']) && $notification['type'] === 'success' ? 'check-circle' : 
+                                                (isset($notification['type']) && $notification['type'] === 'error' ? 'x-circle' : 
+                                                (isset($notification['type']) && $notification['type'] === 'warning' ? 'exclamation-triangle' : 'info-circle')); 
+                                            ?> fs-5"></i>
                                     </div>
                                     <div>
                                         <p class="mb-0 fw-medium">
