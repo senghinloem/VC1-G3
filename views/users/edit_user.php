@@ -254,6 +254,7 @@ if (!isset($_SESSION['user_id'])) {
                                value="<?php echo htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8'); ?>" 
                                required>
                     </div>
+                    <?php if ($_SESSION['user_role'] === 'admin'): ?>     
                     <div class="form-group">
                         <label for="password">New Password (optional)</label>
                         <input type="password" 
@@ -263,6 +264,8 @@ if (!isset($_SESSION['user_id'])) {
                                placeholder="Enter new password to change (min 6 characters)">
                         <div id="password-error" class="error-message"></div>
                     </div>
+                    <?php endif; ?>
+                    <?php if ($_SESSION['user_role'] === 'admin'): ?>                  
                     <div class="form-group">
                         <label for="role">Role</label>
                         <select class="form-control" id="role" name="role" required>
@@ -270,6 +273,7 @@ if (!isset($_SESSION['user_id'])) {
                             <option value="user" <?php echo $user['role'] === 'user' ? 'selected' : ''; ?>>User</option>
                         </select>
                     </div>
+                    <?php endif; ?>
                     <div class="form-group">
                         <label for="phone">Phone</label>
                         <input type="tel" 

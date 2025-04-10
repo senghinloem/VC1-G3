@@ -2,6 +2,12 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+// Use an absolute path from the project root
+require_once __DIR__ . "/../../Models/NotificationModel.php";
+
+$notificationModel = new NotificationModel();
+$notifications = isset($_SESSION['user_id']) ? $notificationModel->getUserNotifications($_SESSION['user_id']) : [];
+$notificationCount = isset($_SESSION['user_id']) ? $notificationModel->getNotificationCount($_SESSION['user_id']) : 0;
 ?>
 
 <?php if (isset($_SESSION['user_id'])): ?>
@@ -28,38 +34,40 @@ if (session_status() === PHP_SESSION_NONE) {
                         <li class="nav-item dropdown">
                             <a class="nav-link position-relative" data-bs-toggle="dropdown" href="#" aria-expanded="false">
                                 <i class="bi bi-bell-fill fs-5 text-dark"></i>
-                                <span class="badge bg-warning position-absolute notification-badge">15</span>
+                                <?php if ($notificationCount > 0): ?>
+                                    <span class="badge bg-warning position-absolute notification-badge"><?php echo $notificationCount; ?></span>
+                                <?php endif; ?>
                             </a>
                             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end shadow-lg border-0 rounded-3 p-2" style="min-width: 350px;">
                                 <!-- Header -->
                                 <div class="dropdown-header d-flex align-items-center justify-content-between p-3 bg-primary text-white rounded-top">
                                     <span class="fw-semibold fs-6">Notifications</span>
-                                    <span class="badge bg-light text-primary rounded-pill">15</span>
+                                    <span class="badge bg-light text-primary rounded-pill"><?php echo $notificationCount; ?></span>
                                 </div>
                                 <!-- Notification Items -->
                                 <div class="dropdown-body" style="max-height: 300px; overflow-y: auto;">
-                                    <a href="#" class="dropdown-item d-flex align-items-center p-3 rounded-2 my-1">
-                                        <div class="bg-orange text-white d-flex align-items-center justify-content-center rounded-circle me-3" style="width: 40px; height: 40px;">
-                                            <i class="bi bi-envelope fs-5"></i>
+                                    <?php if (empty($notifications)): ?>
+                                        <div class="dropdown-item text-center p-3">
+                                            <p class="mb-0 text-muted">No new notifications</p>
                                         </div>
-                                        <div class="flex-grow-1">
-                                            <p class="mb-0 fw-medium text-dark">4 new messages</p>
-                                            <small class="text-muted">3 mins ago</small>
-                                        </div>
-                                    </a>
-                                    <a href="#" class="dropdown-item d-flex align-items-center p-3 rounded-2 my-1">
-                                        <div class="bg-success text-white d-flex align-items-center justify-content-center rounded-circle me-3" style="width: 40px; height: 40px;">
-                                            <i class="bi bi-check-circle fs-5"></i>
-                                        </div>
-                                        <div class="flex-grow-1">
-                                            <p class="mb-0 fw-medium text-dark">Stock updated</p>
-                                            <small class="text-muted">10 mins ago</small>
-                                        </div>
-                                    </a>
+                                    <?php else: ?>
+                                        <?php foreach ($notifications as $notification): ?>
+                                            <a href="#" class="dropdown-item d-flex align-items-center p-3 rounded-2 my-1">
+                                                <div class="bg-<?php echo $notification['type'] === 'success' ? 'success' : ($notification['type'] === 'error' ? 'danger' : 'info'); ?> text-white d-flex align-items-center justify-content-center rounded-circle me-3" style="width: 40px; height: 40px;">
+                                                    <i class="bi bi-<?php echo $notification['type'] === 'success' ? 'check-circle' : ($notification['type'] === 'error' ? 'x-circle' : 'info-circle'); ?> fs-5"></i>
+                                                </div>
+                                                <div class="flex-grow-1">
+
+                                                <p class="mb-0 fw-medium text-dark"><?php echo htmlspecialchars($notification['message']); ?></p>
+                                                    <small class="text-muted"><?php echo date('H:i d M', strtotime($notification['created_at'])); ?></small>
+                                                </div>
+                                            </a>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
                                 </div>
                                 <!-- Footer -->
                                 <div class="dropdown-footer p-2 bg-light rounded-bottom">
-                                    <a href="#" class="d-block text-center text-primary fw-semibold py-2 rounded-2">
+                                    <a href="/notifications" class="d-block text-center text-primary fw-semibold py-2 rounded-2">
                                         See All Notifications
                                     </a>
                                 </div>
@@ -70,13 +78,12 @@ if (session_status() === PHP_SESSION_NONE) {
                         <li class="nav-item dropdown user-menu">
                             <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
                                 <?php
-                                // Use session image directly, with fallback
                                 $userImage = isset($_SESSION['image']) && !empty($_SESSION['image']) 
                                     ? '/uploads/' . htmlspecialchars($_SESSION['image'], ENT_QUOTES, 'UTF-8') 
                                     : '/views/assets/img/user2-160x160.jpg';
                                 $imagePath = $_SERVER['DOCUMENT_ROOT'] . $userImage;
                                 if (!file_exists($imagePath)) {
-                                    $userImage = '/views/assets/img/user2-160x160.jpg'; // Final fallback
+                                    $userImage = '/views/assets/img/user2-160x160.jpg';
                                 }
                                 $userFirstName = $_SESSION['first_name'] ?? 'Unknown';
                                 $userLastName = $_SESSION['last_name'] ?? '';
@@ -87,9 +94,6 @@ if (session_status() === PHP_SESSION_NONE) {
                                      alt="User Image"
                                      width="40"
                                      height="40">
-                                <span class="d-none d-md-inline text-dark fw-semibold">
-                                    <?= htmlspecialchars($fullName ?: 'Unknown') ?>
-                                </span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end shadow border-0 rounded-3">
                                 <li class="user-header text-center p-3 bg-light border-bottom">
@@ -111,7 +115,8 @@ if (session_status() === PHP_SESSION_NONE) {
                                     </a>
                                     <a href="#" class="dropdown-item d-flex align-items-center">
                                         <i class="bi bi-gear me-2"></i> Settings
-                                    </a>
+
+                                        </a>
                                     <div class="dropdown-divider"></div>
                                     <a href="/users/logout" class="dropdown-item d-flex align-items-center text-danger">
                                         <i class="bi bi-box-arrow-right me-2"></i> Log out
@@ -177,7 +182,14 @@ if (session_status() === PHP_SESSION_NONE) {
                                     <span class="ms-2">User Management</span>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="/notifications" class="nav-link text-white">
+                                    <i class="bi bi-bell-fill"></i>
+                                    <span class="ms-2">Notifications</span>
+                                </a>
+                            </li>
                         </ul>
+
                         <div class="mt-4 border-top pt-3">
                             <ul class="nav sidebar-menu flex-column">
                                 <li class="nav-item">
@@ -206,7 +218,6 @@ if (session_status() === PHP_SESSION_NONE) {
             <!-- Sidebar Toggle and Active Link Script -->
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
-                    // Sidebar Toggle
                     const sidebarToggle = document.getElementById('sidebarToggle');
                     const sidebar = document.getElementById('sidebar');
                     const mainContent = document.querySelector('.main-content');
@@ -217,7 +228,6 @@ if (session_status() === PHP_SESSION_NONE) {
                         mainContent.classList.toggle('full-width');
                     });
 
-                    // Highlight Active Sidebar Link
                     const currentPath = window.location.pathname;
                     const sidebarLinks = document.querySelectorAll('.sidebar-menu .nav-link');
                     sidebarLinks.forEach(link => {

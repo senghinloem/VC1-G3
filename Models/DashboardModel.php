@@ -1,11 +1,9 @@
-<?php 
-
+<?php
 class DashboardModel 
 {
-    
     private $db;
+    
     public function __construct() {
-
         $this->db = new Database("localhost", "vc1_db", "root", "");
     }
 
@@ -13,7 +11,6 @@ class DashboardModel
         $result = $this->db->query("SELECT * FROM products");
         return $result->fetchAll(PDO::FETCH_ASSOC);
     }
-
 
     public function getTotalProducts()
     {
@@ -29,23 +26,27 @@ class DashboardModel
     }
 
     public function getTotalPrice(){
-        $result = $this -> db -> query ("SELECT SUM(price * quantity) AS total_price FROM products");
-        $row = $result -> fetch(PDO::FETCH_ASSOC);
+        $result = $this->db->query("SELECT SUM(price * quantity) AS total_price FROM products");
+        $row = $result->fetch(PDO::FETCH_ASSOC);
         return $row['total_price'] ?? 0;
-
     }
 
-    public function getLowStockCount ()
+    public function getLowStockCount()
     {
-        $result = $this -> db -> query("SELECT COUNT(*) AS low_stock_count FROM products WHERE quantity < 10");
-        $row = $result -> fetch(PDO::FETCH_ASSOC);
-        return $row['low_stock_count'] ??0;
+        $result = $this->db->query("SELECT COUNT(*) AS low_stock_count FROM products WHERE quantity < 10");
+        $row = $result->fetch(PDO::FETCH_ASSOC);
+        return $row['low_stock_count'] ?? 0;
     }
 
-    // culculate percent product
+    public function getLowStockProducts() {
+        $query = "SELECT * FROM products WHERE quantity < 10 ORDER BY quantity ASC";
+        $result = $this->db->query($query);
+        return $result->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getTotalProductsPercentage()
     {
-        $totalProducts = $this -> getTotalProducts();
+        $totalProducts = $this->getTotalProducts();
         $maxProducts = 650;
         if ($maxProducts == 0){
             return 0;
@@ -54,7 +55,6 @@ class DashboardModel
         return round($percentage, 2);
     }
 
-    // culculate low product
     public function getLowStockPercentage() {
         $lowStockCount = $this->getLowStockCount();  
         $maxProducts = 600;  
@@ -64,5 +64,4 @@ class DashboardModel
         $percentage = ($lowStockCount / $maxProducts) * 100; 
         return round($percentage, 2);  
     }
-    
 }

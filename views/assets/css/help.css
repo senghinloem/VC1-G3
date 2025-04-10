@@ -1,0 +1,99 @@
+.hover-lift {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+} */
+
+.hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: rgba(var(--bs-primary-rgb), 0.1);
+    color: var(--bs-primary);
+} 
+
+.accordion-button:focus {
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+}
+
+
+ /* not problem */
+
+.nav-link {
+    color: #333;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.tab-content {
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 10px;
+}
+.tab-pane h4 {
+    color: #0d6efd;
+    font-size: 1.1rem;
+    margin-top: 15px;
+}
+.tab-pane p {
+    margin-bottom: 10px;
+    color: #555;
+}
+.tab-pane ul {
+    padding-left: 20px;
+}
+.tab-pane li {
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.icon {
+    margin-right: 5px;
+}
+
+ /* top of help page */
+
+
+.hover-lift:hover {
+    transform: translateY(-10px);
+    transition: transform 0.3s ease-in-out;
+}
+.carousel-inner .card {
+    margin: 0 10px;
+}
+/* Custom styles for carousel controls */
+.carousel-control-prev,
+.carousel-control-next {
+    width: 50px; /* Adjust size of the control area */
+    height: 50px;
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%);
+    opacity: 0.7; /* Slightly transparent by default */
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth transitions */
+}
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+    opacity: 1; /* Fully opaque on hover */
+    transform: translateY(-50%) scale(1.2); /* Slight scale-up on hover */
+}
+/* Change icon color to blue */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-image: none; /* Remove default Bootstrap icon */
+    font-family: "Font Awesome 5 Free"; /* Use Font Awesome */
+    font-weight: 900; /* Solid icon weight */
+    font-size: 24px; /* Larger icon */
+    color: #007bff; /* Blue color */
+}
+.carousel-control-prev-icon::before {
+    content: "\f053"; /* Font Awesome chevron-left */
+}
+.carousel-control-next-icon::before {
+    content: "\f054"; /* Font Awesome chevron-right */
+}
+.carousel-control-prev:hover .carousel-control-prev-icon,
+.carousel-control-next:hover .carousel-control-next-icon {
+    color: #0056b3; /* Darker blue on hover */
+}

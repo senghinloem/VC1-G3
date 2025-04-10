@@ -1,15 +1,17 @@
 <?php
-
 require_once "Models/SupplierModel.php";
+require_once "Models/NotificationModel.php";
 
-class SupplierController extends BaseController
-{
+class SupplierController extends BaseController {
     private $supply;
+    private $notification;
 
     public function __construct() {
         $this->supply = new SupplierModel();
-
-        
+        $this->notification = new NotificationModel();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
     }
 
     public function supplier() {
@@ -29,9 +31,23 @@ class SupplierController extends BaseController
 
         try {
             $this->supply->addSupplier($supplier_name, $email, $phone, $address);
+            $this->notification->addNotification(
+                $_SESSION['user_id'],
+                "New supplier '$supplier_name' added",
+                'success'
+            );
+            $_SESSION['success_message'] = "Supplier '$supplier_name' successfully created!";
             header("Location: /supplier");
+            exit();
         } catch(PDOException $e) {
-            echo "error";
+            $this->notification->addNotification(
+                $_SESSION['user_id'],
+                "Failed to add supplier: " . $e->getMessage(),
+                'error'
+            );
+            $_SESSION['error_message'] = "Error creating supplier: " . $e->getMessage();
+            header("Location: /supplier/create");
+            exit();
         }
     }
 
@@ -46,26 +62,67 @@ class SupplierController extends BaseController
             $email = $_POST['email'];
             $phone = $_POST['phone'];
             $address = $_POST['address'];
-            $this->supply->updateSupplier($supplier_id, $supplier_name, $email, $phone, $address);
-            header("Location: /supplier");
+
+            try {
+                $this->supply->updateSupplier($supplier_id, $supplier_name, $email, $phone, $address);
+                $this->notification->addNotification(
+                    $_SESSION['user_id'],
+                    "Supplier '$supplier_name' updated",
+                    'success'
+                );
+                $_SESSION['success_message'] = "Supplier '$supplier_name' successfully updated!";
+                header("Location: /supplier");
+                exit();
+            } catch(PDOException $e) {
+                $this->notification->addNotification(
+                    $_SESSION['user_id'],
+                    "Failed to update supplier: " . $e->getMessage(),
+                    'error'
+                );
+                $_SESSION['error_message'] = "Error updating supplier: " . $e->getMessage();
+                header("Location: /supplier/edit/$supplier_id");
+                exit();
+            }
         } else {
-            echo "Invalid method for updating supplier.";
+            $this->notification->addNotification(
+                $_SESSION['user_id'],
+                "Invalid method for updating supplier",
+                'error'
+            );
+            $_SESSION['error_message'] = "Invalid method for updating supplier.";
+            header("Location: /supplier");
+            exit();
         }
     }
 
     public function detail($supplier_id) {
-        $supplier = $this->supply->getSupplierById($supplier_id);  // Corrected line
-        $this->view('users/supplier_detail', ['supplier' => $supplier]);  // Pass the supplier to the view
+        $supplier = $this->supply->getSupplierById($supplier_id);
+        $this->view('users/supplier_detail', ['supplier' => $supplier]);
     }
 
     public function destroy($supplier_id) {
-        $this->supply->deleteSupplier($supplier_id);
-        header('Location: /supplier');
+        try {
+            $supplier = $this->supply->getSupplierById($supplier_id);
+            $supplier_name = $supplier['supplier_name'];
+            $this->supply->deleteSupplier($supplier_id);
+            $this->notification->addNotification(
+                $_SESSION['user_id'],
+                "Supplier '$supplier_name' deleted",
+                'success'
+            );
+            $_SESSION['success_message'] = "Supplier '$supplier_name' successfully deleted!";
+            header('Location: /supplier');
+            exit();
+        } catch(PDOException $e) {
+            $this->notification->addNotification(
+                $_SESSION['user_id'],
+                "Failed to delete supplier: " . $e->getMessage(),
+                'error'
+            );
+            $_SESSION['error_message'] = "Error deleting supplier: " . $e->getMessage();
+            header('Location: /supplier');
+            exit();
+        }
     }
-
-
-    
-
-
 }
 ?>
