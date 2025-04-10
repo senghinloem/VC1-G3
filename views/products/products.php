@@ -22,6 +22,7 @@ if (!isset($_SESSION['user_id'])) {
         /* Container styling */
         .container {
             padding: 2rem;
+            margin-top: -1.5rem;
         }
 
         /* Header section styling */
@@ -33,10 +34,38 @@ if (!isset($_SESSION['user_id'])) {
             border: none; 
             border-radius: 6px 6px 0 0; 
             background: #ffffff; 
-            padding: 1rem 1.5rem 1rem 1.5rem; 
+            padding: 1rem 1.5rem; 
             margin-top: -3.5rem;
             box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 0px 8px;
         }
+
+        /* Ensure header stays fixed */
+        .header-section {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: white;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Maintain table structure */
+        .table-responsive {
+            min-height: 300px;
+            position: relative;
+        }
+
+        /* Empty states positioning */
+        .empty-state, .search-empty-state {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            transform: translateY(-50%);
+            text-align: center;
+            background: transparent !important;
+        }
+
         .header-section h4 {
             margin: 0;
             font-size: 1.5rem;
@@ -174,6 +203,7 @@ if (!isset($_SESSION['user_id'])) {
         .table-responsive {
             overflow-x: auto;
             background: #fff;
+            min-height: 200px;
         }
 
         /* Table styling */
@@ -376,8 +406,21 @@ if (!isset($_SESSION['user_id'])) {
             text-align: center !important;
             border: none !important;
             background: transparent !important;
+            text-align: center !important;
+            vertical-align: middle !important; 
+            position: relative;
+            left: 160%;
         }
 
+        .empty-state td:hover,
+        .search-empty-state td:hover {
+            background: transparent !important;
+            color: inherit !important;
+            cursor: default !important;
+            box-shadow: none !important;
+            text-decoration: none !important;
+        }
+                
         .empty-state i,
         .search-empty-state i {
             opacity: 0.5;
@@ -389,7 +432,7 @@ if (!isset($_SESSION['user_id'])) {
             font-size: 1.1rem;
         }
         
-
+        
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .product-cell .product-name-box {
@@ -462,7 +505,7 @@ if (!isset($_SESSION['user_id'])) {
         <div class="row">
             <div class="col-md-3 col-sm-6 mb-3">
                 <div class="stat-card total-users">
-                    <h3><?= number_format($totalUsers ?? 0) ?></h3>
+                    <h3><?= number_format($totalProducts ?? 0) ?></h3>
                     <p>Total Products</p>
                 </div>
             </div>
@@ -529,7 +572,7 @@ if (!isset($_SESSION['user_id'])) {
                         <tr>
                             <td><input type="checkbox" class="productCheckbox" value="<?= $product['product_id'] ?>"></td>
                             <td>
-                                <img class="default-product-image" src="<?= htmlspecialchars($product['image']) ?>" alt="no image<?= htmlspecialchars($product['name']) ?>" style="width: 80px; height: 80px;">
+                                <img class="default-product-image" src="<?= htmlspecialchars($product['image']) ?>" alt="no image" style="width: 80px; height: 80px;">
                             </td>
                             <td>
                                 <span class="product-name-box"><?= htmlspecialchars($product['name']) ?></span>
@@ -704,7 +747,7 @@ document.getElementById('clearStockSelection').addEventListener('click', functio
 });
 
 // Pagination variables
-const itemsPerPage = 6;
+const itemsPerPage = 10;
 let currentPage = 1;
 const totalItems = <?= count($products) ?>;
 const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -829,48 +872,143 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('excelFileInput').click();
     });
 
-    document.getElementById('excelFileInput').addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        if (!file) return;
+document.getElementById('excelFileInput').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (!file) {
+        alert("No file selected. Please select an Excel or CSV file to import.");
+        return;
+    }
 
-        const reader = new FileReader();
+    const validExtensions = ['.xlsx', '.xls', '.csv'];
+    const fileExtension = file.name.slice(file.name.lastIndexOf('.')).toLowerCase();
+    if (!validExtensions.includes(fileExtension)) {
+        alert("Invalid file type. Please upload a valid Excel or CSV file (.xlsx, .xls, or .csv).");
+        return;
+    }
+
+    if (typeof XLSX === 'undefined') {
+        alert("Failed to load the Excel/CSV processing library. Please check your internet connection and try again.");
+        return;
+    }
+
+    // Show loading state
+    const importButton = document.getElementById('importProductsButton');
+    const originalButtonText = importButton.innerHTML;
+    importButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Importing...';
+    importButton.disabled = true;
+
+    const reader = new FileReader();
+
+    // Handle CSV
+    if (fileExtension === '.csv') {
         reader.onload = function(e) {
-            const data = new Uint8Array(e.target.result);
-            const workbook = XLSX.read(data, { type: 'array' });
-
-            const sheetName = workbook.SheetNames[0];
-            const sheet = workbook.Sheets[sheetName];
-            const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-            const formattedData = jsonData.slice(1).map(row => ({
-                image: row[0] || "", 
-                name: row[1] || "",
-                description: row[2] || "",
-                price: parseFloat(row[3]) || 0,
-                unit: row[4] || "",
-                quantity: parseInt(row[5]) || 0
-            }));
-
-            fetch('/products/import', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ products: formattedData })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert("Products imported successfully!");
-                    location.reload();
-                } else {
-                    alert("Failed to import products.");
+            try {
+                const text = e.target.result;
+                // Parse CSV using XLSX library
+                const workbook = XLSX.read(text, { type: 'string', raw: true });
+                
+                if (!workbook.SheetNames.length) {
+                    alert("The CSV file is empty or invalid. Please upload a valid file with product data.");
+                    return;
                 }
-            })
-            .catch(error => console.error('Error:', error));
+
+                const sheetName = workbook.SheetNames[0];
+                const sheet = workbook.Sheets[sheetName];
+                const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+                if (jsonData.length < 2) {
+                    alert("The CSV file is empty or does not contain product data (at least one row of data is required after the header).");
+                    return;
+                }
+
+                const expectedHeaders = ['Image', 'Name', 'Description', 'Price', 'Unit', 'Quantity'];
+                const headers = jsonData[0];
+                const missingHeaders = expectedHeaders.filter((header, index) => !headers[index] || headers[index].toLowerCase() !== header.toLowerCase());
+                if (missingHeaders.length > 0) {
+                    alert(`The CSV file header is incorrect. Expected columns: ${expectedHeaders.join(', ')}. Please fix the header and try again.`);
+                    return;
+                }
+
+                const formattedData = jsonData.slice(1).map((row, index) => {
+                    const product = {
+                        image: row[0] || "",
+                        name: row[1] || "",
+                        description: row[2] || "",
+                        price: parseFloat(row[3]) || 0,
+                        unit: row[4] || "",
+                        quantity: parseInt(row[5]) || 0
+                    };
+
+                    if (!product.name) {
+                        throw new Error(`Row ${index + 2}: Product name is required.`);
+                    }
+                    if (isNaN(product.price) || product.price < 0) {
+                        throw new Error(`Row ${index + 2}: Price must be a valid non-negative number.`);
+                    }
+                    if (isNaN(product.quantity) || product.quantity < 0) {
+                        throw new Error(`Row ${index + 2}: Quantity must be a valid non-negative integer.`);
+                    }
+
+                    return product;
+                });
+
+                if (formattedData.length === 0) {
+                    alert("No valid products found in the CSV file to import.");
+                    return;
+                }
+
+                console.log("Formatted Data (CSV):", formattedData);
+
+                fetch('/products/import', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ products: formattedData })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Server responded with status ${response.status}: ${response.statusText}`);
+                    }
+                    const contentType = response.headers.get('Content-Type');
+                    if (!contentType || !contentType.includes('application/json')) {
+                        return response.text().then(text => {
+                            throw new Error(`Expected JSON, but received: ${text}`);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message || "Products imported successfully!");
+                        location.reload();
+                    } else {
+                        alert(`Failed to import products: ${data.message || "Unknown error"}\n${data.errors ? data.errors.join('\n') : ''}`);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during CSV import:', error);
+                    alert(`An error occurred while importing products: ${error.message}`);
+                })
+                .finally(() => {
+                    importButton.innerHTML = originalButtonText;
+                    importButton.disabled = false;
+                });
+            } catch (error) {
+                console.error('Error reading CSV file:', error);
+                alert(`Failed to process the CSV file: ${error.message}`);
+                importButton.innerHTML = originalButtonText;
+                importButton.disabled = false;
+            }
         };
-        reader.readAsArrayBuffer(file);
-    });
+        reader.onerror = function() {
+            alert("Failed to read the CSV file. Please ensure the file is not corrupted and try again.");
+            importButton.innerHTML = originalButtonText;
+            importButton.disabled = false;
+        };
+        reader.readAsText(file); // Read as text for CSV
+    }
+});
 
     // Select all checkboxes
     document.getElementById('selectAll').addEventListener('change', function() {
@@ -918,83 +1056,135 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     });
 
-    // search
-    document.getElementById('searchInput').addEventListener('input', function() {
+// Search functionality with proper field matching
+document.getElementById('searchInput').addEventListener('input', function() {
     const searchValue = this.value.trim().toLowerCase();
-    const rows = document.querySelectorAll('#productTableBody tr');
+    const allRows = document.querySelectorAll('#productTableBody tr');
+    const productRows = Array.from(allRows).filter(row => 
+        !row.classList.contains('empty-state') && 
+        !row.classList.contains('search-empty-state')
+    );
     let hasMatches = false;
-
-    // Remove any existing search empty state
-    const existingSearchEmpty = document.querySelector('.search-empty-state');
-    if (existingSearchEmpty) existingSearchEmpty.remove();
-
-    // Hide the default empty state if visible
+    const previousPage = currentPage;
     const defaultEmptyState = document.querySelector('.empty-state');
+
+    // Clear previous empty states
+    const existingEmpty = document.querySelector('.search-empty-state');
+    if (existingEmpty) existingEmpty.remove();
+
+    // Hide default empty state if visible
     if (defaultEmptyState) defaultEmptyState.style.display = 'none';
 
-    rows.forEach(row => {
-        // Skip empty state rows
-        if (row.classList.contains('empty-state') || row.classList.contains('search-empty-state')) {
-            return;
-        }
+    // Search through products
+    productRows.forEach(row => {
+        const cells = row.cells;
+        const rowData = [
+            cells[2]?.textContent.toLowerCase() || '', // Name
+            cells[3]?.textContent.toLowerCase() || '', // Description
+            cells[4]?.textContent.toLowerCase() || '', // Barcode
+            cells[5]?.textContent.toLowerCase() || '', // Price
+            cells[6]?.textContent.toLowerCase() || '', // Unit
+            cells[7]?.textContent.toLowerCase() || ''  // Quantity
+        ].join(' ');
 
-        // Get all searchable columns (adjust indices as needed)
-        const productId = row.cells[0].textContent.toLowerCase();
-        const productName = row.cells[1].textContent.toLowerCase();
-        const price = row.cells[2].textContent.toLowerCase();
-        const unit = row.cells[3].textContent.toLowerCase();
-        const stockId = row.cells[4]?.textContent.toLowerCase() || '';
-        const stockName = row.cells[5]?.textContent.toLowerCase() || '';
-
-        // Check if any field matches search
-        const isMatch = searchValue === '' || 
-                        productId.includes(searchValue) ||
-                        productName.includes(searchValue) ||
-                        price.includes(searchValue) ||
-                        unit.includes(searchValue) ||
-                        stockId.includes(searchValue) ||
-                        stockName.includes(searchValue);
-
-        // Toggle row visibility
+        const isMatch = searchValue === '' || rowData.includes(searchValue);
         row.style.display = isMatch ? '' : 'none';
-        
-        // Track if we have any matches
         if (isMatch) hasMatches = true;
     });
 
-    // Show appropriate empty state
+    // Handle empty states without affecting layout
     if (searchValue === '') {
-        // If search is empty, show default empty state if no products
-        if (defaultEmptyState && rows.length === 1) {
+        if (productRows.length === 0 && defaultEmptyState) {
             defaultEmptyState.style.display = '';
         }
+        currentPage = previousPage;
     } else if (!hasMatches) {
-        // Show search-specific empty state
         const emptyRow = document.createElement('tr');
         emptyRow.className = 'search-empty-state';
         emptyRow.innerHTML = `
-            <td colspan="${rows[0]?.cells.length || 7}" class="text-center">
+            <td colspan="8" class="text-center" ">
                 <i class="bi bi-search" style="font-size: 3rem; color: #adb5bd;"></i>
-                <p class="mt-2 mb-0">No products match your search criteria</p>
+                <p class="mt-2 mb-0">No products match your search</p>
             </td>
         `;
         document.getElementById('productTableBody').appendChild(emptyRow);
     }
 
-    // Update pagination/showing text
-    updateShowingText(hasMatches ? document.querySelectorAll('#productTableBody tr:not([style*="display: none"]):not(.empty-state):not(.search-empty-state)').length : 0);
+    // Maintain layout consistency (critical for single product case)
+    const tableResponsive = document.querySelector('.table-responsive');
+    tableResponsive.style.minHeight = '300px';
+    
+    // Ensure header stays at top (add this to your CSS if not present)
+    const headerSection = document.querySelector('.header-section');
+    headerSection.style.position = 'sticky';
+    headerSection.style.top = '0';
+    headerSection.style.zIndex = '1000';
+    headerSection.style.background = 'white';
+
+    // Update pagination (existing functionality)
+    updatePaginationAfterSearch(hasMatches, searchValue);
+
+    // Special case: When only one product matches
+    if (hasMatches && document.querySelectorAll('#productTableBody tr[style=""]').length === 1) {
+        // Keep the same layout as normal
+        tableResponsive.style.minHeight = '300px';
+    }
 });
 
-function updateShowingText(visibleCount) {
-    document.getElementById('showingFrom').textContent = visibleCount > 0 ? '1' : '0';
-    document.getElementById('showingTo').textContent = visibleCount;
-    document.getElementById('totalItems').textContent = visibleCount;
+
+// Update pagination after search
+function updatePaginationAfterSearch(hasMatches, searchValue) {
+    // Count visible rows (excluding empty states)
+    const visibleRows = document.querySelectorAll('#productTableBody tr:not([style*="display: none"]):not(.empty-state):not(.search-empty-state)');
+    const visibleCount = visibleRows.length;
+    const totalFilteredPages = Math.ceil(visibleCount / itemsPerPage);
+
+    // Adjust current page if it's now invalid
+    if (currentPage > totalFilteredPages && totalFilteredPages > 0) {
+        currentPage = totalFilteredPages;
+    } else if (totalFilteredPages === 0) {
+        currentPage = 1;
+    }
+
+    // Update showing text
+    const startIndex = (currentPage - 1) * itemsPerPage + 1;
+    const endIndex = Math.min(currentPage * itemsPerPage, visibleCount);
     
-    // Hide pagination when searching (optional)
-    if (document.getElementById('searchInput').value.trim() !== '') {
-        document.querySelector('.pagination').style.display = 'none';
-    } else {
-        document.querySelector('.pagination').style.display = '';
+    document.getElementById('showingFrom').textContent = visibleCount > 0 ? startIndex : '0';
+    document.getElementById('showingTo').textContent = visibleCount > 0 ? endIndex : '0';
+    document.getElementById('totalItems').textContent = visibleCount;
+
+    // Reinitialize pagination controls
+    initPagination();
+    
+    // Show the appropriate rows for the current page
+    if (searchValue === '') {
+        // If no search, show all products with normal pagination
+        goToPage(currentPage);
+    } else if (hasMatches) {
+        // If search has matches, show filtered results with pagination
+        renderFilteredProducts();
+    }
+}
+
+// Render filtered products with pagination
+function renderFilteredProducts() {
+    const visibleRows = Array.from(document.querySelectorAll('#productTableBody tr:not([style*="display: none"]):not(.empty-state):not(.search-empty-state)'));
+    
+    // Hide all products first
+    document.querySelectorAll('#productTableBody tr').forEach(row => {
+        row.style.display = 'none';
+    });
+    
+    // Calculate range for current page
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, visibleRows.length);
+    
+    // Show products for current page
+    for (let i = startIndex; i < endIndex; i++) {
+        if (visibleRows[i]) {
+            visibleRows[i].style.display = '';
+        }
     }
 }
     

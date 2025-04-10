@@ -10,20 +10,22 @@ class ProductModel
 
     }
 
-    public function getAllProducts(){
-        $result = $this->db->query("SELECT * FROM products");
-        return $result->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-
-    // public function getAllProducts() {
-    //     $result = $this->db->query("
-    //         SELECT p.*, s.stock_name 
-    //         FROM products p
-    //         LEFT JOIN stock_management s ON p.stock_id = s.stock_id
-    //     ");
+    // public function getAllProducts(){
+    //     $result = $this->db->query("SELECT * FROM products");
     //     return $result->fetchAll(PDO::FETCH_ASSOC);
     // }
+
+
+    public function getAllProducts() {
+        $result = $this->db->query("
+            SELECT p.*, s.stock_name, c.category_name 
+            FROM products p
+            LEFT JOIN stock_management s ON p.stock_id = s.stock_id
+            LEFT JOIN categories c ON p.category_id = c.category_id
+
+        ");
+        return $result->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     public function getProductById($product_id)
 
@@ -32,19 +34,33 @@ class ProductModel
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function addProduct($image, $name, $description, $price, $unit, $quantity)
+    public function addProduct($image, $name, $description, $price, $unit, $quantity, $category_id)
     {
         try {
-            $this->db->query("INSERT INTO products(image,name, description, price, unit, quantity) VALUES (:image, :name, :description, :price, :unit, :quantity)", [
+            $this->db->query("INSERT INTO products (image, name, description, price, unit, quantity, category_id) VALUES (:image, :name, :description, :price, :unit, :quantity, :category_id)", [
                 ':image' => $image,
                 ':name' => $name,
                 ':description' => $description,
                 ':price' => $price,
                 ':unit' => $unit,
                 ':quantity' => $quantity,
+                ':category_id' => $category_id 
             ]);
         } catch (PDOException $e) {
-            echo "Error adding product: " . $e->getMessage();
+            throw new Exception("Error adding product: " . $e->getMessage());
+        }
+    }
+
+    public function getDefaultCategory() {
+        $result = $this->db->query("SELECT category_id, category_name FROM categories WHERE category_name = 'Default' LIMIT 1");
+        return $result->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function createDefaultCategory() {
+        try {
+            $this->db->query("INSERT INTO categories (category_name) VALUES ('Default')");
+        } catch (PDOException $e) {
+            throw new Exception("Error creating default category: " . $e->getMessage());
         }
     }
 
@@ -85,6 +101,15 @@ class ProductModel
         );
         return $result->rowCount() > 0;
     }
+
+
+    public function getAllCategories() {
+        $result = $this->db->query("SELECT category_id, category_name FROM categories");
+        return $result->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+
     
 }
 
