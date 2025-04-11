@@ -25,13 +25,11 @@ class StockController extends BaseController
     {
         $stock = $this->stockModel->getStockById($stock_id);
         if ($stock) {
-            $this->view('stocks/view_stock', ['stock' => $stock]); // Changed from 'stocks/view_detail' to 'stocks/detail'
+            $this->view('stocks/view_stock', ['stock' => $stock]);
         } else {
             $this->redirect('/stock?error=Stock not found');
         }
     }
-
-
 
     public function store()
     {
@@ -47,10 +45,9 @@ class StockController extends BaseController
 
         $stock_name = trim($_POST['stock_name']);
         $quantity = (int)$_POST['quantity'];
-        $status = $quantity > 0 ? 'in_stock' : 'out_of_stock';
 
         try {
-            $this->stockModel->addStock($stock_name, $quantity, $status);
+            $this->stockModel->addStock($stock_name, $quantity);
             $this->redirect('/stock?success=Stock added successfully');
         } catch (PDOException $e) {
             if ($e->getCode() == '23000') { // Duplicate entry error
@@ -78,18 +75,10 @@ class StockController extends BaseController
 
     public function search()
     {
-        // Get search term, status, and quantity from the URL
         $search_term = $_GET['search'] ?? '';
-        $status = $_GET['status'] ?? '';  // 'in_stock' or 'out_of_stock'
-        $quantity = $_GET['quantity'] ?? null;  // Quantity for stock search (optional)
-
-        // Pass search term, status, and quantity to the model
-        $stock_management = $this->stockModel->searchStock($search_term, $status, $quantity);
+        $stock_management = $this->stockModel->searchStock($search_term);
         $this->view("stocks/stock", ["stock_management" => $stock_management]);
     }
-
-
-
 
     public function edit($stock_id)
     {
@@ -105,7 +94,6 @@ class StockController extends BaseController
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect('/stock/edit/' . $stock_id);
-            $quantity = $_POST['quantity'] ?? 0;
             return;
         }
 
@@ -129,7 +117,6 @@ class StockController extends BaseController
 
         $stock_name = trim($_POST['stock_name']);
         $quantity = (int)$_POST['quantity'];
-        $status = $quantity > 0 ? 'in_stock' : 'out_of_stock';
 
         try {
             $success = $this->stockModel->updateStock($stock_id, $stock_name, $quantity);
@@ -147,6 +134,28 @@ class StockController extends BaseController
                     'quantity' => $quantity
                 ]
             ]);
+        }
+    }
+
+    public function adjust($stock_id)
+    {
+        $stock = $this->stockModel->getStockById($stock_id);
+        if (!$stock) {
+            $this->redirect("/stock?error=Stock not found.");
+            return;
+        }
+
+        $add = isset($_POST['add_quantity']) ? (int) $_POST['add_quantity'] : 0;
+        $subtract = isset($_POST['subtract_quantity']) ? (int) $_POST['subtract_quantity'] : 0;
+
+        $new_quantity = max(0, $stock['quantity'] + $add - $subtract); // Avoid negative values
+
+        try {
+            $this->stockModel->updateStock($stock_id, $stock['stock_name'], $new_quantity);
+            $this->redirect("/stock/view/{$stock_id}?success=Stock updated successfully.");
+        } catch (Exception $e) {
+            error_log("Adjustment error: " . $e->getMessage());
+            $this->redirect("/stock/view/{$stock_id}?error=Failed to adjust stock.");
         }
     }
 }

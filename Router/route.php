@@ -58,6 +58,8 @@ $route->get("/stock/edit/{stock_id}", [StockController::class, 'edit']);
 $route->post("/stock/update/{stock_id}", [StockController::class, 'update']);
 $route->delete("/stock/delete/{stock_id}", [StockController::class, 'destroy']); // Changed to DELETE method
 $route->get("/stock/search", [StockController::class, 'search']); // Added search route
+// $router->post('/stock/adjust/{stock_id}', 'StockController@adjust');
+
 
 // product list
 $route->get("/product_list", [ProductListController::class, 'product_list']);

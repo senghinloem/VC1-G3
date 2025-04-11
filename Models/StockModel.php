@@ -27,10 +27,11 @@ class StockModel
     public function getStockById($stock_id)
     {
         try {
-            $result = $this->db->query(
-                "SELECT * FROM stock_management WHERE stock_id = :stock_id",
-                ["stock_id" => $stock_id]
-            );
+            $sql = "SELECT sm.*, p.product_id, p.image, p.name, p.description, p.price, p.unit, sm.quantity AS stock_quantity 
+                    FROM stock_management sm 
+                    LEFT JOIN products p ON sm.product_id = p.product_id 
+                    WHERE sm.stock_id = :stock_id";
+            $result = $this->db->query($sql, ["stock_id" => $stock_id]);
             return $result->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             error_log("Error fetching stock by ID: " . $e->getMessage());
@@ -41,11 +42,13 @@ class StockModel
     public function addStock($stock_name, $quantity)
     {
         try {
-            $sql = "INSERT INTO stock_management (stock_name, quantity) 
-                    VALUES (:stock_name, :quantity)";
+            $sql = "INSERT INTO stock_management (stock_name, quantity, stock_type, status) 
+                    VALUES (:stock_name, :quantity, 'IN', :status)";
+            $status = $quantity > 0 ? 'in_stock' : 'out_of_stock';
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':stock_name', $stock_name, PDO::PARAM_STR);
             $stmt->bindParam(':quantity', $quantity, PDO::PARAM_INT);
+            $stmt->bindParam(':status', $status, PDO::PARAM_STR);
             return $stmt->execute();
         } catch (PDOException $e) {
             error_log("Error adding stock: " . $e->getMessage());
@@ -58,11 +61,14 @@ class StockModel
         try {
             $sql = "UPDATE stock_management 
                     SET stock_name = :stock_name, 
-                        quantity = :quantity
+                        quantity = :quantity,
+                        status = :status
                     WHERE stock_id = :stock_id";
+            $status = $quantity > 0 ? 'in_stock' : 'out_of_stock';
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':stock_name', $stock_name, PDO::PARAM_STR);
             $stmt->bindParam(':quantity', $quantity, PDO::PARAM_INT);
+            $stmt->bindParam(':status', $status, PDO::PARAM_STR);
             $stmt->bindParam(':stock_id', $stock_id, PDO::PARAM_INT);
             return $stmt->execute();
         } catch (PDOException $e) {
