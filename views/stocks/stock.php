@@ -1,4 +1,3 @@
-
 <div class="container mt-4 px-4">
     <div class="col-12 mb-4">
         <div class="card">
@@ -27,16 +26,7 @@
         </div>
     </div>
 
-    <!-- Feedback Messages -->
-    <?php
-    if (isset($_GET['success']) && $_GET['success'] === 'stock_deleted') {
-        echo '<div class="alert alert-success">Stock deleted successfully!</div>';
-    } elseif (isset($_GET['error'])) {
-        echo '<div class="alert alert-danger">Error: ' . htmlspecialchars($_GET['error']) . '</div>';
-    }
-    ?>
-
-    <!-- Stock Has No Product -->
+    <!-- Stock Has No Product (Quantity < 500) -->
     <h4 class="text-danger mt-5" style="margin-left: 2cm;">Stock has no product</h4>
     <div class="col-12 mt-5">
         <div class="card">
@@ -47,22 +37,26 @@
                             <tr>
                                 <th style="font-weight: bold; text-transform: uppercase; color: #6c757d;">ID</th>
                                 <th style="font-weight: bold; text-transform: uppercase; color: #6c757d;">Stock Name</th>
-                                <th style="font-weight: bold; text-transform: uppercase; color: #6c757d;">Quantity</th>
+                                <th style="font-weight: bold; text-transform: uppercase; color: #6c757d;">Product</th>
+                                <th style="font-weight: bold; text-transform: uppercase; color: #6c757d;">Quantity Product</th>
                                 <th style="font-weight: bold; text-transform: uppercase; color: #6c757d;">Status</th>
                                 <th style="font-weight: bold; text-transform: uppercase; color: #6c757d;" class="text-end">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php if (!empty($stock_management)): ?>
+                                <?php $displayIndex = 0; // Initialize a counter for displayed rows 
+                                ?>
                                 <?php foreach ($stock_management as $index => $item): ?>
-                                    <?php if ((int)$item['quantity'] <= 0): ?>
-                                        <tr style="background-color: <?= $index % 2 === 0 ? '#f5f6f5' : '#ffffff'; ?>;">
-                                            <td style="color: #6c757d;"><?= htmlspecialchars($item['stock_id']) ?></td>
+                                    <?php if ((int)$item['quantity'] < 500): ?>
+                                        <tr style="background-color: <?= $displayIndex % 2 === 0 ? '#f5f6f5' : '#ffffff'; ?>;">
+                                            <td style="color: #6c757d;"><?= $displayIndex + 1 ?></td>
                                             <td style="color: #6c757d;"><?= htmlspecialchars($item['stock_name']) ?></td>
+                                            <td style="color: #6c757d;"><?= htmlspecialchars($item['product']) ?></td>
                                             <td style="color: #6c757d;"><?= htmlspecialchars($item['quantity']) ?></td>
                                             <td>
-                                                <span class="badge" style="background-color: #dc3545; color: white; padding: 5px 10px; border-radius: 12px;">
-                                                    Out of Stock
+                                                <span class="badge" style="background-color: #28a745; color: white; padding: 5px 10px; border-radius: 12px;">
+                                                    Aviable
                                                 </span>
                                             </td>
                                             <td class="text-end">
@@ -80,10 +74,14 @@
                                                 </ul>
                                             </td>
                                         </tr>
+                                        <?php $displayIndex++; // Increment the counter for each displayed row 
+                                        ?>
                                     <?php endif; ?>
                                 <?php endforeach; ?>
                             <?php else: ?>
-                                <tr><td colspan="5" class="text-center" style="color: #6c757d;">No stock data available.</td></tr>
+                                <tr>
+                                    <td colspan="5" class="text-center" style="color: #6c757d;">No stock data available.</td>
+                                </tr>
                             <?php endif; ?>
                         </tbody>
                     </table>
@@ -92,7 +90,7 @@
         </div>
     </div>
 
-    <!-- Stock Has Product -->
+    <!-- Stock Has Product (Quantity >= 500) -->
     <h4 class="text-primary mt-5" style="margin-left: 2cm;">Stock has product</h4>
     <div class="col-12 mt-5">
         <div class="card">
@@ -103,22 +101,26 @@
                             <tr>
                                 <th style="font-weight: bold; text-transform: uppercase; color: #6c757d;">ID</th>
                                 <th style="font-weight: bold; text-transform: uppercase; color: #6c757d;">Stock Name</th>
-                                <th style="font-weight: bold; text-transform: uppercase; color: #6c757d;">Quantity</th>
+                                <th style="font-weight: bold; text-transform: uppercase; color: #6c757d;">Product</th>
+                                <th style="font-weight: bold; text-transform: uppercase; color: #6c757d;">Quantity Product</th>
                                 <th style="font-weight: bold; text-transform: uppercase; color: #6c757d;">Status</th>
                                 <th style="font-weight: bold; text-transform: uppercase; color: #6c757d;" class="text-end">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php if (!empty($stock_management)): ?>
+                                <?php $displayIndex = 0; // Reset the counter for the second table 
+                                ?>
                                 <?php foreach ($stock_management as $index => $item): ?>
-                                    <?php if ((int)$item['quantity'] > 0): ?>
-                                        <tr style="background-color: <?= $index % 2 === 0 ? '#f5f6f5' : '#ffffff'; ?>;">
-                                            <td style="color: #6c757d;"><?= htmlspecialchars($item['stock_id']) ?></td>
+                                    <?php if ((int)$item['quantity'] >= 500): ?>
+                                        <tr style="background-color: <?= $displayIndex % 2 === 0 ? '#f5f6f5' : '#ffffff'; ?>;">
+                                            <td style="color: #6c757d;"><?= $displayIndex + 1 ?></td>
                                             <td style="color: #6c757d;"><?= htmlspecialchars($item['stock_name']) ?></td>
+                                            <td style="color: #6c757d;"><?= htmlspecialchars($item['product']) ?></td>
                                             <td style="color: #6c757d;"><?= htmlspecialchars($item['quantity']) ?></td>
                                             <td>
-                                                <span class="badge" style="background-color: #28a745; color: white; padding: 5px 10px; border-radius: 12px;">
-                                                    In Stock
+                                                <span class="badge" style="background-color: #dc3545; color: white; padding: 5px 10px; border-radius: 12px;">
+                                                    Unaviable
                                                 </span>
                                             </td>
                                             <td class="text-end">
@@ -136,10 +138,14 @@
                                                 </ul>
                                             </td>
                                         </tr>
+                                        <?php $displayIndex++; // Increment the counter for each displayed row 
+                                        ?>
                                     <?php endif; ?>
                                 <?php endforeach; ?>
                             <?php else: ?>
-                                <tr><td colspan="5" class="text-center" style="color: #6c757d;">No stock data available.</td></tr>
+                                <tr>
+                                    <td colspan="5" class="text-center" style="color: #6c757d;">No stock data available.</td>
+                                </tr>
                             <?php endif; ?>
                         </tbody>
                     </table>
@@ -177,139 +183,29 @@
     </div>
 </div>
 
-<!-- Add this JavaScript at the bottom of your existing stock.php file -->
 <script>
-// Initialize the delete modal with the correct stock data
-document.addEventListener('DOMContentLoaded', function() {
-    const deleteModal = document.getElementById('confirmDeleteModal');
-    if (deleteModal) {
-        deleteModal.addEventListener('show.bs.modal', function(event) {
-            const button = event.relatedTarget;
-            const stockId = button.getAttribute('data-stockid');
-            const stockName = button.getAttribute('data-stockname');
-            
-            document.getElementById('deleteStockName').textContent = stockName;
-            document.getElementById('deleteForm').action = `/stock/delete/${stockId}`;
-        });
-    }
-    
-    // Search functionality
-    const searchInput = document.getElementById('searchInput');
-    const searchForm = document.getElementById('searchForm');
-    
-    if (searchInput && searchForm) {
-        searchInput.addEventListener('keyup', function(event) {
-            if (event.key === 'Enter') {
-                searchForm.submit();
-            }
-        });
-    }
-});
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteModal = document.getElementById('confirmDeleteModal');
+        if (deleteModal) {
+            deleteModal.addEventListener('show.bs.modal', function(event) {
+                const button = event.relatedTarget;
+                const stockId = button.getAttribute('data-stockid');
+                const stockName = button.getAttribute('data-stockname');
 
-// Go to specific page
-function goToPage(page) {
-    if (page < 1 || page > totalPages) return;
-    
-    currentPage = page;
-    const rows = document.querySelectorAll('#productTableBody tr');
-    
-    // Hide all rows
-    rows.forEach(row => row.style.display = 'none');
-    
-    // Show rows for current page
-    const startIndex = (page - 1) * itemsPerPage;
-    const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
-    
-    for (let i = startIndex; i < endIndex; i++) {
-        if (rows[i]) {
-            rows[i].style.display = '';
+                document.getElementById('deleteStockName').textContent = stockName;
+                document.getElementById('deleteForm').action = `/stock/delete/${stockId}`;
+            });
         }
-    }
-    
-    // Update pagination controls
-    document.querySelectorAll('.page-item').forEach(item => {
-        item.classList.remove('active');
-        if (item.textContent === page.toString()) {
-            item.classList.add('active');
+
+        const searchInput = document.getElementById('searchInput');
+        const searchForm = document.getElementById('searchForm');
+
+        if (searchInput && searchForm) {
+            searchInput.addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    searchForm.submit();
+                }
+            });
         }
     });
-    
-    document.getElementById('prevPage').classList.toggle('disabled', page === 1);
-    document.getElementById('nextPage').classList.toggle('disabled', page === totalPages);
-    
-    // Update showing text
-    document.getElementById('showingFrom').textContent = startIndex + 1;
-    document.getElementById('showingTo').textContent = endIndex;
-}
-
-// Initialize on page load
-function goToPage(page) {
-    if (page < 1 || page > totalPages) return;
-    
-    currentPage = page;
-    const rows = document.querySelectorAll('#productTableBody tr');
-    
-    // Hide all rows
-    rows.forEach(row => row.style.display = 'none');
-    
-    // Show rows for current page
-    const startIndex = (page - 1) * itemsPerPage;
-    const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
-    
-    for (let i = startIndex; i < endIndex; i++) {
-        if (rows[i]) {
-            rows[i].style.display = '';
-        }
-    }
-    
-    // Update pagination controls
-    document.querySelectorAll('.page-item').forEach(item => {
-        item.classList.remove('active');
-        if (item.textContent === page.toString()) {
-            item.classList.add('active');
-        }
-    });
-    
-    document.getElementById('prevPage').classList.toggle('disabled', page === 1);
-    document.getElementById('nextPage').classList.toggle('disabled', page === totalPages);
-    
-    // Update showing text
-    document.getElementById('showingFrom').textContent = startIndex + 1;
-    document.getElementById('showingTo').textContent = endIndex;
-}
-
-// Initialize on page load
-// document.addEventListener('DOMContentLoaded', function() {
-//     initPagination();
-//     goToPage(1);
-    
-//     // Existing search functionality
-//     document.getElementById('searchInput').addEventListener('input', function() {
-//         const searchValue = this.value.toLowerCase();
-//         const rows = document.querySelectorAll('#productTableBody tr');
-
-//         rows.forEach(row => {
-//             const name = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
-//             const description = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
-//             const price = row.querySelector('td:nth-child(6)').textContent; 
-//             const unit = row.querySelector('td:nth-child(7)').textContent; 
-//             const quantity = row.querySelector('td:nth-child(8)').textContent; 
-//             const stock = row.querySelector('td:nth-child(9)').textContent; 
-
-//             if (
-//                 name.includes(searchValue) || 
-//                 description.includes(searchValue) ||
-//                 price.includes(this.value) || 
-//                 unit.includes(this.value) || 
-//                 quantity.includes(this.value) ||
-//                 stock.includes(searchValue)
-//             ) {
-//                 row.style.display = '';
-//             } else {
-//                 row.style.display = 'none';
-//             }
-//         });
-//     });
-
 </script>
-
