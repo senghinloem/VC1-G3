@@ -58,7 +58,7 @@ $isOnline = $lastActivity && (strtotime($lastActivity) >= strtotime('-15 minutes
 
         .profile-container {
             width: 100%;
-            max-width: 700px;
+            max-width: 1500px;
             background: var(--card-bg);
             border-radius: 20px;
             box-shadow: var(--shadow-md);
@@ -72,6 +72,7 @@ $isOnline = $lastActivity && (strtotime($lastActivity) >= strtotime('-15 minutes
             text-align: center;
             position: relative;
             overflow: hidden;
+
         }
 
         .profile-header::before {
@@ -262,10 +263,11 @@ $isOnline = $lastActivity && (strtotime($lastActivity) >= strtotime('-15 minutes
 
             .profile-header {
                 padding: 2rem 1rem;
+
             }
 
             .profile-avatar {
-                width: 110px;
+                width: 10px;
                 height: 110px;
             }
 
