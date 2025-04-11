@@ -12,7 +12,7 @@ $selectedEmail = isset($_GET['email']) ? htmlspecialchars($_GET['email']) : '';
     <title>Help & Support - PNN Shop</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">   
     <link rel="stylesheet" href="../../views/assets/css/help.css">
 
 </head>
@@ -21,67 +21,190 @@ $selectedEmail = isset($_GET['email']) ? htmlspecialchars($_GET['email']) : '';
     <div class="container-fluid px-4 py-3">
         <h1 class="mb-4">How can we help?</h1>
 
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <div class="input-group">
-                    <input type="text" id="searchInput" class="form-control" placeholder="Search for help..." onkeyup="searchFAQs()">
-                    <button class="btn btn-primary" type="button">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div class="row mb-5">
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
-                    <div class="card-body p-4">
-                        <div class="text-center mb-3">
-                            <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block">
-                                <i class="fas fa-shopping-cart text-primary fa-2x"></i>
+    
+        <div class="container my-5">
+            <div id="cardCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
+                <div class="carousel-inner">
+                    <!-- First Set of Cards -->
+                    <div class="carousel-item active">
+                        <div class="row">
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
+                                    <div class="card-body p-4">
+                                        <div class="text-center mb-3">
+                                            <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block">
+                                                <i class="fas fa-shopping-cart text-primary fa-2x"></i>
+                                            </div>
+                                        </div>
+                                        <h4 class="card-title text-center">Stock Management</h4>
+                                        <p class="card-text text-muted text-center">Track orders, shipping info, and returns</p>
+                                        <div class="text-center mt-3">
+                                            <a href="#" class="btn btn-outline-primary">Learn More</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
+                                    <div class="card-body p-4">
+                                        <div class="text-center mb-3">
+                                            <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block">
+                                                <i class="fas fa-box-open text-primary fa-2x"></i>
+                                            </div>
+                                        </div>
+                                        <h4 class="card-title text-center">Products Management</h4>
+                                        <p class="card-text text-muted text-center">Manage products and stock levels</p>
+                                        <div class="text-center mt-3">
+                                            <a href="#" class="btn btn-outline-primary">Learn More</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
+                                    <div class="card-body p-4">
+                                        <div class="text-center mb-3">
+                                            <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block">
+                                                <i class="fas fa-user-cog text-primary fa-2x"></i>
+                                            </div>
+                                        </div>
+                                        <h4 class="card-title text-center">Settings</h4>
+                                        <p class="card-text text-muted text-center">Manage your system and preferences</p>
+                                        <div class="text-center mt-3">
+                                            <a href="#" class="btn btn-outline-primary">Learn More</a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <h4 class="card-title text-center">Orders & Shipping</h4>
-                        <p class="card-text text-muted text-center">Track orders, shipping info, and returns</p>
-                        <div class="text-center mt-3">
-                            <a href="#" class="btn btn-outline-primary">Learn More</a>
+                    </div>
+
+                    <!-- Second Set of Cards -->
+                    <div class="carousel-item">
+                        <div class="row">
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
+                                    <div class="card-body p-4">
+                                        <div class="text-center mb-3">
+                                            <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block">
+                                                <i class="fas fa-users text-primary fa-2x"></i>
+                                            </div>
+                                        </div>
+                                        <h4 class="card-title text-center">User Management</h4>
+                                        <p class="card-text text-muted text-center">Manage user accounts and permissions</p>
+                                        <div class="text-center mt-3">
+                                            <a href="#" class="btn btn-outline-primary">Learn More</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
+                                    <div class="card-body p-4">
+                                        <div class="text-center mb-3">
+                                            <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block">
+                                                <i class="fas fa-truck text-primary fa-2x"></i>
+                                            </div>
+                                        </div>
+                                        <h4 class="card-title text-center">Supplier Management</h4>
+                                        <p class="card-text text-muted text-center">Track suppliers and their details</p>
+                                        <div class="text-center mt-3">
+                                            <a href="#" class="btn btn-outline-primary">Learn More</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
+                                    <div class="card-body p-4">
+                                        <div class="text-center mb-3">
+                                            <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block">
+                                                <i class="fas fa-list text-primary fa-2x"></i>
+                                            </div>
+                                        </div>
+                                        <h4 class="card-title text-center">Product List</h4>
+                                        <p class="card-text text-muted text-center">View and edit product catalog</p>
+                                        <div class="text-center mt-3">
+                                            <a href="#" class="btn btn-outline-primary">Learn More</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Third Set of Cards -->
+                    <div class="carousel-item">
+                        <div class="row">
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
+                                    <div class="card-body p-4">
+                                        <div class="text-center mb-3">
+                                            <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block">
+                                                <i class="fas fa-bell text-primary fa-2x"></i>
+                                            </div>
+                                        </div>
+                                        <h4 class="card-title text-center">Notification</h4>
+                                        <p class="card-text text-muted text-center">Stay updated with alerts</p>
+                                        <div class="text-center mt-3">
+                                            <a href="#" class="btn btn-outline-primary">Learn More</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
+                                    <div class="card-body p-4">
+                                        <div class="text-center mb-3">
+                                            <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block">
+                                                <i class="fas fa-question-circle text-primary fa-2x"></i>
+                                            </div>
+                                        </div>
+                                        <h4 class="card-title text-center">Help Page</h4>
+                                        <p class="card-text text-muted text-center">Get support and documentation</p>
+                                        <div class="text-center mt-3">
+                                            <a href="#" class="btn btn-outline-primary">Learn More</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
+                                    <div class="card-body p-4">
+                                        <div class="text-center mb-3">
+                                            <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block">
+                                                <i class="fas fa-chart-bar text-primary fa-2x"></i>
+                                            </div>
+                                        </div>
+                                        <h4 class="card-title text-center">Report Page</h4>
+                                        <p class="card-text text-muted text-center">Generate and view reports</p>
+                                        <div class="text-center mt-3">
+                                            <a href="#" class="btn btn-outline-primary">Learn More</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
-                    <div class="card-body p-4">
-                        <div class="text-center mb-3">
-                            <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block">
-                                <i class="fas fa-box-open text-primary fa-2x"></i>
-                            </div>
-                        </div>
-                        <h4 class="card-title text-center">Products & Inventory</h4>
-                        <p class="card-text text-muted text-center">Manage products and stock levels</p>
-                        <div class="text-center mt-3">
-                            <a href="#" class="btn btn-outline-primary">Learn More</a>
-                        </div>
-                    </div>
+                <!-- Carousel Indicators -->
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#cardCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#cardCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#cardCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
                 </div>
-            </div>
 
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
-                    <div class="card-body p-4">
-                        <div class="text-center mb-3">
-                            <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block">
-                                <i class="fas fa-user-cog text-primary fa-2x"></i>
-                            </div>
-                        </div>
-                        <h4 class="card-title text-center">Account Settings</h4>
-                        <p class="card-text text-muted text-center">Manage your account and preferences</p>
-                        <div class="text-center mt-3">
-                            <a href="#" class="btn btn-outline-primary">Learn More</a>
-                        </div>
-                    </div>
-                </div>
+                <!-- Carousel Controls -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#cardCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#cardCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+               
             </div>
         </div>
 
@@ -322,124 +445,124 @@ $selectedEmail = isset($_GET['email']) ? htmlspecialchars($_GET['email']) : '';
         </div>
 
         <div class="row mb-5">
-    <div class="col-12">
-        <h2 class="mb-4">Contact Support</h2>
-    </div>
+            <div class="col-12">
+                <h2 class="mb-4">Contact Support</h2>
+            </div>
 
-    <!-- Email Card with Carousel (No Auto Move) -->
-    <div class="col-md-4 mb-4">
-        <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
-            <div class="card-body p-4 text-center">
-                <div class="mb-3">
-                    <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block">
-                        <i class="fas fa-envelope text-primary fa-2x"></i>
+            <!-- Email Card with Carousel (No Auto Move) -->
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
+                    <div class="card-body p-4 text-center">
+                        <div class="mb-3">
+                            <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block">
+                                <i class="fas fa-envelope text-primary fa-2x"></i>
+                            </div>
+                        </div>
+                        <h4 class="card-title">Email Support</h4>
+                        <p class="card-text text-muted mb-3">Get help via email</p>
+                        <div id="emailCarousel" class="carousel slide">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <a href="mailto:dinleader@gmail.com" class="btn btn-primary">dinleader@gmail.com</a>
+                                </div>
+                                <div class="carousel-item">
+                                    <a href="mailto:support1@example.com" class="btn btn-primary">senghin@gmail.com</a>
+                                </div>
+                                <div class="carousel-item">
+                                    <a href="mailto:support2@example.com" class="btn btn-primary">bunny@gmail.com</a>
+                                </div>
+                                <div class="carousel-item">
+                                    <a href="mailto:support3@example.com" class="btn btn-primary">ya@gmail.com</a>
+                                </div>
+                                <div class="carousel-item">
+                                    <a href="mailto:support4@example.com" class="btn btn-primary">sreynich@gmail.com</a>
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev custom-carousel-control" type="button" data-bs-target="#emailCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon custom-blue-arrow" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next custom-carousel-control" type="button" data-bs-target="#emailCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon custom-blue-arrow" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <h4 class="card-title">Email Support</h4>
-                <p class="card-text text-muted mb-3">Get help via email</p>
-                <div id="emailCarousel" class="carousel slide">
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <a href="mailto:dinleader@gmail.com" class="btn btn-primary">dinleader@gmail.com</a>
+            </div>
+
+            <!-- Phone Card with Carousel (No Auto Move) -->
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
+                    <div class="card-body p-4 text-center">
+                        <div class="mb-3">
+                            <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block">
+                                <i class="fas fa-phone-alt text-primary fa-2x"></i>
+                            </div>
                         </div>
-                        <div class="carousel-item">
-                            <a href="mailto:support1@example.com" class="btn btn-primary">senghin@gmail.com</a>
-                        </div>
-                        <div class="carousel-item">
-                            <a href="mailto:support2@example.com" class="btn btn-primary">bunny@gmail.com</a>
-                        </div>
-                        <div class="carousel-item">
-                            <a href="mailto:support3@example.com" class="btn btn-primary">ya@gmail.com</a>
-                        </div>
-                        <div class="carousel-item">
-                            <a href="mailto:support4@example.com" class="btn btn-primary">sreynich@gmail.com</a>
+                        <h4 class="card-title">Phone Support</h4>
+                        <p class="card-text text-muted mb-3">Talk to our team directly</p>
+                        <div id="phoneCarousel" class="carousel slide">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <a href="tel:+85569505726" class="btn btn-primary">+855 69505726</a>
+                                </div>
+                                <div class="carousel-item">
+                                    <a href="tel:+85512345678" class="btn btn-primary">+855 12345678</a>
+                                </div>
+                                <div class="carousel-item">
+                                    <a href="tel:+85587654321" class="btn btn-primary">+855 87654321</a>
+                                </div>
+                                <div class="carousel-item">
+                                    <a href="tel:+85598765432" class="btn btn-primary">+855 98765432</a>
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev custom-carousel-control" type="button" data-bs-target="#phoneCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon custom-blue-arrow" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next custom-carousel-control" type="button" data-bs-target="#phoneCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon custom-blue-arrow" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
                         </div>
                     </div>
-                    <button class="carousel-control-prev custom-carousel-control" type="button" data-bs-target="#emailCarousel" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon custom-blue-arrow" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next custom-carousel-control" type="button" data-bs-target="#emailCarousel" data-bs-slide="next">
-                        <span class="carousel-control-next-icon custom-blue-arrow" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
+                </div>
+            </div>
+
+            <!-- Support Hours Card with Carousel (No Auto Move) -->
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
+                    <div class="card-body p-4 text-center">
+                        <div class="mb-3">
+                            <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block">
+                                <i class="fas fa-clock text-primary fa-2x"></i>
+                            </div>
+                        </div>
+                        <h4 class="card-title">Support Hours</h4>
+                        <p class="card-text text-muted mb-3">When we're available</p>
+                        <div id="hoursCarousel" class="carousel slide">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <p class="mb-0">Monday - Friday<br>5:00 pM - 9:00 PM (EST)</p>
+                                </div>
+                                <div class="carousel-item">
+                                    <p class="mb-0">Saturday - Sunday<br>7:00 AM - 6:00 PM (EST)</p>
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev custom-carousel-control" type="button" data-bs-target="#hoursCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon custom-blue-arrow" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next custom-carousel-control" type="button" data-bs-target="#hoursCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon custom-blue-arrow" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Phone Card with Carousel (No Auto Move) -->
-    <div class="col-md-4 mb-4">
-        <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
-            <div class="card-body p-4 text-center">
-                <div class="mb-3">
-                    <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block">
-                        <i class="fas fa-phone-alt text-primary fa-2x"></i>
-                    </div>
-                </div>
-                <h4 class="card-title">Phone Support</h4>
-                <p class="card-text text-muted mb-3">Talk to our team directly</p>
-                <div id="phoneCarousel" class="carousel slide">
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <a href="tel:+85569505726" class="btn btn-primary">+855 69505726</a>
-                        </div>
-                        <div class="carousel-item">
-                            <a href="tel:+85512345678" class="btn btn-primary">+855 12345678</a>
-                        </div>
-                        <div class="carousel-item">
-                            <a href="tel:+85587654321" class="btn btn-primary">+855 87654321</a>
-                        </div>
-                        <div class="carousel-item">
-                            <a href="tel:+85598765432" class="btn btn-primary">+855 98765432</a>
-                        </div>
-                    </div>
-                    <button class="carousel-control-prev custom-carousel-control" type="button" data-bs-target="#phoneCarousel" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon custom-blue-arrow" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next custom-carousel-control" type="button" data-bs-target="#phoneCarousel" data-bs-slide="next">
-                        <span class="carousel-control-next-icon custom-blue-arrow" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Support Hours Card with Carousel (No Auto Move) -->
-    <div class="col-md-4 mb-4">
-        <div class="card h-100 shadow-sm border-0 rounded-3 hover-lift">
-            <div class="card-body p-4 text-center">
-                <div class="mb-3">
-                    <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block">
-                        <i class="fas fa-clock text-primary fa-2x"></i>
-                    </div>
-                </div>
-                <h4 class="card-title">Support Hours</h4>
-                <p class="card-text text-muted mb-3">When we're available</p>
-                <div id="hoursCarousel" class="carousel slide">
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <p class="mb-0">Monday - Friday<br>5:00 pM - 9:00 PM (EST)</p>
-                        </div>
-                        <div class="carousel-item">
-                            <p class="mb-0">Saturday - Sunday<br>7:00 AM - 6:00 PM (EST)</p>
-                        </div>
-                    </div>
-                    <button class="carousel-control-prev custom-carousel-control" type="button" data-bs-target="#hoursCarousel" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon custom-blue-arrow" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next custom-carousel-control" type="button" data-bs-target="#hoursCarousel" data-bs-slide="next">
-                        <span class="carousel-control-next-icon custom-blue-arrow" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 
         <div class="row mb-4">

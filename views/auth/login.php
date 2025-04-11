@@ -198,9 +198,7 @@ if (!isset($_SESSION['csrf_token'])) {
             <div class="row align-items-center">
                 <div class="col-md-6">
                     <div class="login-card">
-                        <h2>Welcome Back</h2>
-                        <div class="subtitle">Sign in to continue</div>
-
+                        <h2>Sign in</h2>
                         <?php if (isset($_SESSION['user_id'])): ?>
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                 You are already logged in! Redirecting to dashboard...

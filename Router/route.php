@@ -51,6 +51,7 @@ $route->post("/stock/update/{stock_id}", [StockController::class, 'update']);
 $route->delete("/stock/delete/{stock_id}", [StockController::class, 'destroy']);
 $route->get("/stock/search", [StockController::class, 'search']);
 
+
 // product list
 $route->get("/product_list", [ProductListController::class, 'product_list']);
 $route->get("/product_list/create_list", [ProductListController::class, 'create_list']);
@@ -87,7 +88,7 @@ $route->get("/report", [ReportController::class, "report"]);
 // notifications
 $route->get("/notifications", [NotificationController::class, 'index']);
 $route->post("/notifications/mark-all-read", [NotificationController::class, 'markAllAsRead']);
-$route->post("/notifications/mark-read/{notification_id}", [NotificationController::class, 'markAsRead']);
+// $route->post("/notifications/mark-read/{notification_id}", [NotificationController::class, 'markAsRead']);
 $route->post("/notifications/delete/{notification_id}", [NotificationController::class, 'delete']);
     
 $route->route();

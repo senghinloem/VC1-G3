@@ -12,9 +12,16 @@
     </div>
 
     <div class="form-group mt-4">
-        <label for="quantity" style="font-size: 18px;">Quantity</label>
+        <label for="product" style="font-size: 18px;">Product</label>
+        <input type="text" id="product" name="product" class="form-control"
+            value="<?= htmlspecialchars($stock['product']) ?>" required min="0" max="500"
+            style="width: 100%; padding: 12px; font-size: 16px; border-radius: 4px; border: 1px solid #ccc;">
+    </div>
+
+    <div class="form-group mt-4">
+        <label for="quantity" style="font-size: 18px;">Quantity Product</label>
         <input type="number" id="quantity" name="quantity" class="form-control"
-            value="<?= htmlspecialchars($stock['quantity']) ?>" required min="0"
+            value="<?= htmlspecialchars($stock['quantity']) ?>" required min="0" max="500"
             style="width: 100%; padding: 12px; font-size: 16px; border-radius: 4px; border: 1px solid #ccc;">
     </div>
 
@@ -30,7 +37,12 @@
     function setStatus() {
         const quantity = document.getElementById('quantity').value;
         const statusField = document.getElementById('status');
+        if (quantity > 500) {
+            quantity = 500; 
+            quantityInput.value = 500; 
+            alert('Maximum stock limit is 100. Quantity has been adjusted.');
+        }
         statusField.value = quantity > 0 ? 'in_stock' : 'out_of_stock';
-        console.log('Status set to:', statusField.value); // For debugging
+        console.log('Status set to:', statusField.value); 
     }
 </script>

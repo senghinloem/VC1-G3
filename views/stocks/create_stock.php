@@ -8,6 +8,12 @@
         <input type="text" id="stock_name" name="stock_name" class="form-control" required 
                placeholder="Enter Stock Name" style="width: 100%; padding: 12px; font-size: 16px; border-radius: 4px; border: 1px solid #ccc;">
     </div>
+
+    <div class="form-group">
+        <label for="stock_name" style="font-size: 18px;" class="mt-4">Product Name</label>
+        <input type="text" id="stock_name" name="stock_name" class="form-control" required 
+               placeholder="Enter Product Name" style="width: 100%; padding: 12px; font-size: 16px; border-radius: 4px; border: 1px solid #ccc;">
+    </div>
     
     <div class="form-group">
         <label for="quantity" style="font-size: 18px;" class="mt-4">Quantity</label>
