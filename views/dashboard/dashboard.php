@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,14 +10,8 @@
     <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
     <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
     <link href="views/assets/css/dashboard.css" rel="stylesheet" />
-
-    <style>
-        .card { border-radius: 10px; }
-        .stat-number { font-size: 1.5rem; font-weight: bold; }
-        .selection { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1rem; }
-        .selection .form-select { width: auto; min-width: 150px; margin-bottom: 15px; }
-    </style>
 </head>
+
 <body>
     <div class="container mt-4">
         <h2>Dashboard</h2>
@@ -150,11 +145,24 @@
         </div>
 
         <!-- Filter product section remains largely unchanged -->
+        <?php
+        // Example pagination setup
+        $productsPerPage = 10;
+        $totalProducts = count($products);
+        $totalPages = ceil($totalProducts / $productsPerPage);
+        $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $startIndex = ($currentPage - 1) * $productsPerPage;
+
+        // Slice the products array for pagination
+        $paginatedProducts = array_slice($products, $startIndex, $productsPerPage);
+        ?>
+
         <div class="card p-3 mt-4">
             <h4>Filter product</h4>
             <div class="selection">
                 <form method="GET" action="#">
-                    <input type="text" id="form-control" name="query" class="form-control" placeholder="Search...." aria-label="Search" value="<?= htmlspecialchars($_GET['query'] ?? '') ?>">
+                    <input type="text" id="form-control" name="query" class="form-control" placeholder="Search...."
+                        aria-label="Search" value="<?= htmlspecialchars($_GET['query'] ?? '') ?>">
                 </form>
                 <select id="form-select" class="form-select" aria-label="Default select example">
                     <option selected value="">Select by unit</option>
@@ -169,6 +177,7 @@
                     ?>
                 </select>
             </div>
+
             <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
                 <table id="productTable" class="table table-striped">
                     <thead>
@@ -179,15 +188,16 @@
                             <th>Description</th>
                             <th>Price</th>
                             <th>Unit</th>
-                            <th>Quanlity</th>
+                            <th>Quantity</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (!empty($products) && is_array($products)): ?>
-                            <?php foreach ($products as $product): ?>
+                        <?php if (!empty($paginatedProducts) && is_array($paginatedProducts)): ?>
+                            <?php foreach ($paginatedProducts as $product): ?>
                                 <tr>
                                     <td><?= htmlspecialchars($product['product_id']) ?></td>
-                                    <td><img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" style="width: 50px; height: 50px; border-radius: 50px; object-fit: cover"></td>
+                                    <td><img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>"
+                                            style="width: 50px; height: 50px; border-radius: 50px; object-fit: cover"></td>
                                     <td><?= htmlspecialchars($product['name']) ?></td>
                                     <td><?= htmlspecialchars($product['description']) ?></td>
                                     <td><?= htmlspecialchars($product['price']) ?></td>
@@ -197,16 +207,47 @@
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="6" class="text-center">There Are No Products.</td>
+                                <td colspan="7" class="text-center">There Are No Products.</td>
                             </tr>
                         <?php endif; ?>
                         <tr id="no-products-message" style="display: none;">
-                            <td colspan="6" class="text-center text-danger">Not Porduct Found !!</td>
+                            <td colspan="7" class="text-center text-danger">Not Product Found !!</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+
+            <!-- Pagination UI -->
+            <?php if ($totalPages > 1): ?>
+                <div class="d-flex justify-content-end mt-3">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination mb-0">
+                            <li class="page-item <?= ($currentPage == 1) ? 'disabled' : '' ?>">
+                                <a class="page-link" href="?page=1<?= isset($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '' ?>" aria-label="First">
+                                    &laquo;
+                                </a>
+                            </li>
+
+                            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                <li class="page-item <?= ($i == $currentPage) ? 'active' : '' ?>">
+                                    <a class="page-link" href="?page=<?= $i ?><?= isset($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '' ?>">
+                                        <?= $i ?>
+                                    </a>
+                                </li>
+                            <?php endfor; ?>
+
+                            <li class="page-item <?= ($currentPage == $totalPages) ? 'disabled' : '' ?>">
+                                <a class="page-link" href="?page=<?= $totalPages ?><?= isset($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '' ?>" aria-label="Last">
+                                    &raquo;
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            <?php endif; ?>
+
         </div>
+
     </div>
 
     <script>
@@ -235,7 +276,9 @@
             options: {
                 responsive: true,
                 plugins: {
-                    legend: { position: 'top' },
+                    legend: {
+                        position: 'top'
+                    },
                 },
             },
         });
@@ -243,7 +286,7 @@
         // Dynamic Pie Chart for Units
         document.addEventListener('DOMContentLoaded', function() {
             const pieCtx = document.getElementById('pie-chart').getContext('2d');
-            
+
             // Calculate unit distribution
             const unitCounts = {};
             products.forEach(product => {
@@ -255,7 +298,7 @@
             const unitLabels = Object.keys(unitCounts);
             const unitData = Object.values(unitCounts);
             const colors = [
-                '#4e73df', '#1cc88a', '#f6c23e', '#e83e8c', 
+                '#4e73df', '#1cc88a', '#f6c23e', '#e83e8c',
                 '#6f42c1', '#858796', '#36b9cc', '#f8f9fc'
             ].slice(0, unitLabels.length);
 
@@ -333,4 +376,5 @@
         });
     </script>
 </body>
+
 </html>

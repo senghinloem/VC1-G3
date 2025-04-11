@@ -1,10 +1,8 @@
 <?php
-class StockModel
-{
+class StockModel {
     private $db;
 
-    public function __construct()
-    {
+    public function __construct() {
         try {
             $this->db = new Database("localhost", "vc1_db", "root", "");
         } catch (PDOException $e) {
@@ -13,8 +11,7 @@ class StockModel
         }
     }
 
-    public function getStock()
-    {
+    public function getStock() {
         try {
             $result = $this->db->query("SELECT * FROM stock_management");
             return $result->fetchAll(PDO::FETCH_ASSOC);
@@ -24,8 +21,7 @@ class StockModel
         }
     }
 
-    public function getStockById($stock_id)
-    {
+    public function getStockById($stock_id) {
         try {
             $sql = "SELECT sm.*, p.product_id, p.image, p.name, p.description, p.price, p.unit, sm.quantity AS stock_quantity 
                     FROM stock_management sm 
@@ -39,8 +35,7 @@ class StockModel
         }
     }
 
-    public function addStock($stock_name, $quantity)
-    {
+    public function addStock($stock_name, $quantity) {
         try {
             $sql = "INSERT INTO stock_management (stock_name, quantity, stock_type, status) 
                     VALUES (:stock_name, :quantity, 'IN', :status)";
@@ -56,8 +51,7 @@ class StockModel
         }
     }
 
-    public function updateStock($stock_id, $stock_name, $quantity)
-    {
+    public function updateStock($stock_id, $stock_name, $quantity) {
         try {
             $sql = "UPDATE stock_management 
                     SET stock_name = :stock_name, 
@@ -77,8 +71,7 @@ class StockModel
         }
     }
 
-    public function deleteStock($stock_id)
-    {
+    public function deleteStock($stock_id) {
         try {
             $sql = "DELETE FROM stock_management WHERE stock_id = :stock_id";
             $stmt = $this->db->prepare($sql);
@@ -96,8 +89,7 @@ class StockModel
         }
     }
 
-    public function searchStock($search_term)
-    {
+    public function searchStock($search_term) {
         try {
             $sql = "SELECT * FROM stock_management WHERE stock_name LIKE :search_term";
             $stmt = $this->db->prepare($sql);
@@ -110,3 +102,4 @@ class StockModel
         }
     }
 }
+?>
