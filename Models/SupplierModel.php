@@ -12,12 +12,30 @@ class SupplierModel {
     }
 
     public function getSupplierById($supplier_id) {
-        $result = $this->db->query("SELECT * FROM suppliers WHERE supplier_id = :supplier_id", [':supplier_id' => $supplier_id]);
-        return $result->fetch(PDO::FETCH_ASSOC);
+        $supplierQuery = "SELECT * FROM suppliers WHERE supplier_id = :supplier_id";
+        $supplierResult = $this->db->query($supplierQuery, [':supplier_id' => $supplier_id]);
+        $supplier = $supplierResult->fetch(PDO::FETCH_ASSOC);
+
+        if ($supplier) {
+            $productsQuery = "
+                SELECT p.product_id, p.name AS product_name, p.price, p.quantity AS stock
+                FROM products p
+                INNER JOIN supplier_provide_product spp ON p.product_id = spp.product_id
+                WHERE spp.supplier_id = :supplier_id
+            ";
+            $productsResult = $this->db->query($productsQuery, [':supplier_id' => $supplier_id]);
+            $products = $productsResult->fetchAll(PDO::FETCH_ASSOC);
+            $supplier['products'] = $products;
+        }
+
+        return $supplier ?: [];
     }
 
-    public function addSupplier($supplier_name, $email, $phone, $address) {
+    public function addSupplier($supplier_name, $email, $phone, $address, $products = []) {
         try {
+            $this->db->beginTransaction();
+
+            // Insert the supplier
             $this->db->query(
                 "INSERT INTO suppliers (supplier_name, email, phone, address, created_at) 
                  VALUES (:supplier_name, :email, :phone, :address, NOW())",
@@ -28,8 +46,34 @@ class SupplierModel {
                     ':address' => $address
                 ]
             );
+
+            // Get the last inserted supplier_id
+            $supplier_id = $this->db->lastInsertId();
+            
+            if (!$supplier_id) {
+                throw new PDOException("Failed to get the supplier ID after insertion");
+            }
+
+            // Insert product relationships if any
+            if (!empty($products)) {
+                foreach ($products as $product_id) {
+                    $this->db->query(
+                        "INSERT INTO supplier_provide_product (supplier_id, product_id) 
+                         VALUES (:supplier_id, :product_id)",
+                        [
+                            ':supplier_id' => $supplier_id,
+                            ':product_id' => $product_id
+                        ]
+                    );
+                }
+            }
+
+            $this->db->commit();
+            return $supplier_id;
         } catch (PDOException $e) {
-            echo "Error adding supplier: " . $e->getMessage();
+            $this->db->rollBack();
+            error_log("SupplierModel::addSupplier error: " . $e->getMessage());
+            throw $e;
         }
     }
 
@@ -46,17 +90,35 @@ class SupplierModel {
                 ':address' => $address
             ];
             $this->db->query($query, $params);
+            return true;
         } catch (PDOException $e) {
-            echo "Error updating supplier: " . $e->getMessage();
+            error_log("SupplierModel::updateSupplier error: " . $e->getMessage());
+            throw $e;
         }
     }
 
     public function deleteSupplier($supplier_id) {
         try {
-            $this->db->query("DELETE FROM suppliers WHERE supplier_id = :supplier_id", [':supplier_id' => $supplier_id]);
+            $this->db->beginTransaction();
+            
+            // First delete the product relationships
+            $this->db->query(
+                "DELETE FROM supplier_provide_product WHERE supplier_id = :supplier_id",
+                [':supplier_id' => $supplier_id]
+            );
+            
+            // Then delete the supplier
+            $this->db->query(
+                "DELETE FROM suppliers WHERE supplier_id = :supplier_id",
+                [':supplier_id' => $supplier_id]
+            );
+            
+            $this->db->commit();
+            return true;
         } catch (PDOException $e) {
-            echo "Error deleting supplier: " . $e->getMessage();
+            $this->db->rollBack();
+            error_log("SupplierModel::deleteSupplier error: " . $e->getMessage());
+            throw $e;
         }
     }
 }
-?>

@@ -49,28 +49,24 @@ switch ($report_period) {
     default:
         $start_date = date('Y-m-d', strtotime('-30 days'));
         break;
-   
-        
-
 }
 
 // Apply filters if submitted
 $where = [];
-if (!empty($filters['locations']) && !in_array('all', $filters['locations'])) {
-    $where[] = "p.location IN ('" . implode("','", $filters['locations']) . "')";
-}
 if (!empty($filters['categories']) && !in_array('all', $filters['categories'])) {
-    $where[] = "p.category IN ('" . implode("','", $filters['categories']) . "')";
+    $where[] = "p.category_id IN (" . implode(",", array_map('intval', $filters['categories'])) . ")";
 }
+// Handle stock status filtering for the query
+$status_conditions = [];
+$selected_statuses = !empty($filters['stock_status']) ? $filters['stock_status'] : ['inStock', 'lowStock', 'outOfStock', 'overstock'];
 if (!empty($filters['stock_status'])) {
-    $status_conditions = [];
-    if (in_array('inStock', $filters['stock_status'])) $status_conditions[] = "p.quantity > 0 AND p.quantity <= 50";
+    if (in_array('inStock', $filters['stock_status'])) $status_conditions[] = "(p.quantity > 0 AND p.quantity <= 50)";
     if (in_array('lowStock', $filters['stock_status'])) $status_conditions[] = "p.quantity < 10";
     if (in_array('outOfStock', $filters['stock_status'])) $status_conditions[] = "p.quantity = 0";
     if (in_array('overstock', $filters['stock_status'])) $status_conditions[] = "p.quantity > 50";
-    if (!empty($status_conditions)) {
-        $where[] = "(" . implode(" OR ", $status_conditions) . ")";
-    }
+}
+if (!empty($status_conditions)) {
+    $where[] = "(" . implode(" OR ", $status_conditions) . ")";
 }
 $whereClause = !empty($where) ? " WHERE " . implode(" AND ", $where) : "";
 
@@ -97,9 +93,7 @@ try {
     $total_stock = $stmt->fetch(PDO::FETCH_ASSOC)['total_stock'] ?? 1;
     $data['monthly_turnover'] = ($total_out / $total_stock) * 100;
 
-    
-
-
+    // Modified top_products query to respect selected stock statuses
     $stmt = $pdo->query("
         SELECT 
             p.product_id,
@@ -118,7 +112,17 @@ try {
         ORDER BY (p.price * p.quantity) DESC
         LIMIT 10
     ");
-    $data['top_products'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Filter top_products to only include selected statuses
+    $top_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $data['top_products'] = array_filter($top_products, function($product) use ($selected_statuses) {
+        $status_map = [
+            'In Stock' => 'inStock',
+            'Low Stock' => 'lowStock',
+            'Out of Stock' => 'outOfStock',
+            'Overstock' => 'overstock'
+        ];
+        return in_array($status_map[$product['status']], $selected_statuses);
+    });
 
     $stmt = $pdo->query("
         SELECT 
@@ -136,6 +140,56 @@ try {
 
     $stmt = $pdo->query("SELECT name FROM products p $whereClause ORDER BY quantity DESC LIMIT 1");
     $data['top_recommendation'] = $stmt->fetch(PDO::FETCH_ASSOC) ?? ['name' => 'N/A'];
+
+    // Fetch historical sales/provision data
+    $stmt = $pdo->query("
+        SELECT 
+            DATE(last_updated) as period_date,
+            SUM(quantity) as total_quantity,
+            SUM(quantity * (SELECT price FROM products WHERE product_id = stock_management.product_id)) as total_value
+        FROM stock_management
+        WHERE stock_type = 'OUT' AND last_updated >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+        GROUP BY DATE(last_updated)
+        ORDER BY period_date DESC
+    ");
+    $data['daily_history'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $stmt = $pdo->query("
+        SELECT 
+            YEAR(last_updated) as year,
+            WEEK(last_updated, 1) as week,
+            SUM(quantity) as total_quantity,
+            SUM(quantity * (SELECT price FROM products WHERE product_id = stock_management.product_id)) as total_value
+        FROM stock_management
+        WHERE stock_type = 'OUT' AND last_updated >= DATE_SUB(CURDATE(), INTERVAL 4 WEEK)
+        GROUP BY YEAR(last_updated), WEEK(last_updated, 1)
+        ORDER BY year DESC, week DESC
+    ");
+    $data['weekly_history'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $stmt = $pdo->query("
+        SELECT 
+            DATE_FORMAT(last_updated, '%Y-%m') as period_date,
+            SUM(quantity) as total_quantity,
+            SUM(quantity * (SELECT price FROM products WHERE product_id = stock_management.product_id)) as total_value
+        FROM stock_management
+        WHERE stock_type = 'OUT' AND last_updated >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
+        GROUP BY DATE_FORMAT(last_updated, '%Y-%m')
+        ORDER BY period_date DESC
+    ");
+    $data['monthly_history'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $stmt = $pdo->query("
+        SELECT 
+            YEAR(last_updated) as period_date,
+            SUM(quantity) as total_quantity,
+            SUM(quantity * (SELECT price FROM products WHERE product_id = stock_management.product_id)) as total_value
+        FROM stock_management
+        WHERE stock_type = 'OUT' AND last_updated >= DATE_SUB(CURDATE(), INTERVAL 5 YEAR)
+        GROUP BY YEAR(last_updated)
+        ORDER BY period_date DESC
+    ");
+    $data['yearly_history'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
     error_log("Data fetch error: " . $e->getMessage());
     die("Error fetching data: " . $e->getMessage());
@@ -146,6 +200,10 @@ if (isset($_GET['export'])) {
     if (ob_get_length()) {
         ob_end_clean();
     }
+
+    // Determine which history data to export
+    $history_period = $_GET['history_period'] ?? 'monthly';
+    $history_data = $data[$history_period . '_history'] ?? [];
 
     switch ($_GET['export']) {
         case 'pdf':
@@ -163,10 +221,6 @@ if (isset($_GET['export'])) {
                 $pdf->Cell(0, 10, "Inventory Value: $" . number_format($data['inventory_value'] ?? 0, 2), 0, 1);
                 $pdf->Cell(0, 10, "Low Stock Items: " . ($data['low_stock_items'] ?? 0), 0, 1);
                 $pdf->Cell(0, 10, "Turnover: " . number_format($data['monthly_turnover'] ?? 0, 1) . "%", 0, 1);
-            
-                
-
-
                 $pdf->Ln(10);
 
                 $pdf->SetFont('Arial', 'B', 12);
@@ -186,8 +240,8 @@ if (isset($_GET['export'])) {
                     $pdf->Cell(30, 10, $product['status'] ?? 'Unknown', 1);
                     $pdf->Ln();
                 }
-
                 $pdf->Ln(10);
+
                 $pdf->SetFont('Arial', 'B', 12);
                 $pdf->Cell(0, 10, 'Top Suppliers by Value', 0, 1);
                 $pdf->SetFont('Arial', '', 10);
@@ -199,6 +253,27 @@ if (isset($_GET['export'])) {
                     $pdf->Cell(60, 10, $supplier['supplier_name'] ?? 'N/A', 1);
                     $pdf->Cell(40, 10, $supplier['product_count'] ?? 0, 1);
                     $pdf->Cell(40, 10, '$' . number_format($supplier['total_value'] ?? 0, 2), 1);
+                    $pdf->Ln();
+                }
+                $pdf->Ln(10);
+
+                $pdf->SetFont('Arial', 'B', 12);
+                $pdf->Cell(0, 10, 'Sales/Provision History (' . ucfirst($history_period) . ')', 0, 1);
+                $pdf->SetFont('Arial', '', 10);
+                $pdf->Cell(60, 10, 'Period', 1);
+                $pdf->Cell(40, 10, 'Total Quantity', 1);
+                $pdf->Cell(40, 10, 'Total Value', 1);
+                $pdf->Ln();
+                if (!empty($history_data)) {
+                    foreach ($history_data as $entry) {
+                        $period = $history_period === 'weekly' ? "Week {$entry['week']}, {$entry['year']}" : ($entry['period_date'] ?? 'N/A');
+                        $pdf->Cell(60, 10, $period, 1);
+                        $pdf->Cell(40, 10, $entry['total_quantity'] ?? 0, 1);
+                        $pdf->Cell(40, 10, '$' . number_format($entry['total_value'] ?? 0, 2), 1);
+                        $pdf->Ln();
+                    }
+                } else {
+                    $pdf->Cell(140, 10, 'No history found', 1);
                     $pdf->Ln();
                 }
 
@@ -224,8 +299,6 @@ if (isset($_GET['export'])) {
                 ['Low Stock Items', $data['low_stock_items'] ?? 0],
                 ['Turnover', number_format($data['monthly_turnover'] ?? 0, 1) . '%'],
             ];
-            
-            
             $sheet->fromArray($stats, NULL, 'A4');
 
             $sheet->setCellValue('A9', 'Top Products by Value');
@@ -261,6 +334,23 @@ if (isset($_GET['export'])) {
                 "A" . ($startRow + 2)
             );
 
+            $historyRow = $startRow + count($data['top_suppliers']) + 3;
+            $sheet->setCellValue("A$historyRow", 'Sales/Provision History (' . ucfirst($history_period) . ')');
+            $sheet->getStyle("A$historyRow")->getFont()->setBold(true);
+            $sheet->fromArray(['Period', 'Total Quantity', 'Total Value'], NULL, "A" . ($historyRow + 1));
+            $sheet->fromArray(
+                $history_data ? array_map(function ($entry) use ($history_period) {
+                    $period = $history_period === 'weekly' ? "Week {$entry['week']}, {$entry['year']}" : ($entry['period_date'] ?? 'N/A');
+                    return [
+                        $period,
+                        $entry['total_quantity'] ?? 0,
+                        '$' . number_format($entry['total_value'] ?? 0, 2)
+                    ];
+                }, $history_data) : [['No history found']],
+                NULL,
+                "A" . ($historyRow + 2)
+            );
+
             $writer = new Xlsx($spreadsheet);
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
             header('Content-Disposition: attachment;filename="Inventory_Report_' . $report_period . '.xlsx"');
@@ -281,9 +371,6 @@ if (isset($_GET['export'])) {
             fputcsv($output, ['Inventory Value', '$' . number_format($data['inventory_value'] ?? 0, 2)]);
             fputcsv($output, ['Low Stock Items', $data['low_stock_items'] ?? 0]);
             fputcsv($output, ['Turnover', number_format($data['monthly_turnover'] ?? 0, 1) . '%']);
-            
-            
-
             fputcsv($output, []);
 
             fputcsv($output, ['Top Products by Value']);
@@ -316,6 +403,22 @@ if (isset($_GET['export'])) {
             } else {
                 fputcsv($output, ['No suppliers found']);
             }
+            fputcsv($output, []);
+
+            fputcsv($output, ['Sales/Provision History (' . ucfirst($history_period) . ')']);
+            fputcsv($output, ['Period', 'Total Quantity', 'Total Value']);
+            if (!empty($history_data)) {
+                foreach ($history_data as $entry) {
+                    $period = $history_period === 'weekly' ? "Week {$entry['week']}, {$entry['year']}" : ($entry['period_date'] ?? 'N/A');
+                    fputcsv($output, [
+                        $period,
+                        $entry['total_quantity'] ?? 0,
+                        '$' . number_format($entry['total_value'] ?? 0, 2)
+                    ]);
+                }
+            } else {
+                fputcsv($output, ['No history found']);
+            }
 
             fclose($output);
             exit;
@@ -342,6 +445,9 @@ if (isset($_GET['export'])) {
             .table-responsive { page-break-inside: avoid; }
             .alert { background: none !important; border: none !important; padding: 5px !important; }
             .alert i, .card-body i { display: none !important; }
+            #history-table { width: 100% !important; border-collapse: collapse; }
+            #history-table th, #history-table td { border: 1px solid #000 !important; padding: 8px !important; }
+            #history-table tbody:not(:first-child) { display: none; }
         }
     </style>
 </head>
@@ -415,10 +521,6 @@ if (isset($_GET['export'])) {
                 </div>
             </div>
         </div>
-        
-        
-
-
     </div>
 
     <div class="row mb-4">
@@ -432,8 +534,6 @@ if (isset($_GET['export'])) {
                         <a href="?period=monthly" class="list-group-item list-group-item-action <?php echo $report_period == 'monthly' ? 'active' : ''; ?> d-flex align-items-center">
                             <i class="fas fa-chart-line me-3"></i><span>Overview Dashboard</span>
                         </a>
-                       
-                        
                     </div>
                 </div>
             </div>
@@ -463,27 +563,17 @@ if (isset($_GET['export'])) {
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Locations</label>
-                            <select class="form-select" name="locations[]" multiple size="3">
-                                <option value="all" <?php echo empty($filters['locations']) || in_array('all', $filters['locations']) ? 'selected' : ''; ?>>All Locations</option>
-                                <option value="main" <?php echo !empty($filters['locations']) && in_array('main', $filters['locations']) ? 'selected' : ''; ?>>Main Warehouse</option>
-                                <option value="east" <?php echo !empty($filters['locations']) && in_array('east', $filters['locations']) ? 'selected' : ''; ?>>East Coast</option>
-                                <option value="west" <?php echo !empty($filters['locations']) && in_array('west', $filters['locations']) ? 'selected' : ''; ?>>West Storage</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
                             <label class="form-label">Product Categories</label>
                             <select class="form-select" name="categories[]" multiple size="3">
                                 <option value="all" <?php echo empty($filters['categories']) || in_array('all', $filters['categories']) ? 'selected' : ''; ?>>All Categories</option>
-                                <option value="electronics" <?php echo !empty($filters['categories']) && in_array('electronics', $filters['categories']) ? 'selected' : ''; ?>>Electronics</option>
-                                <option value="clothing" <?php echo !empty($filters['categories']) && in_array('clothing', $filters['categories']) ? 'selected' : ''; ?>>Clothing</option>
-                                <option value="home" <?php echo !empty($filters['categories']) && in_array('home', $filters['categories']) ? 'selected' : ''; ?>>Home Goods</option>
+                                <option value="1" <?php echo !empty($filters['categories']) && in_array('1', $filters['categories']) ? 'selected' : ''; ?>>Electronics</option>
+                                <option value="2" <?php echo !empty($filters['categories']) && in_array('2', $filters['categories']) ? 'selected' : ''; ?>>Books</option>
+                                <option value="3" <?php echo !empty($filters['categories']) && in_array('3', $filters['categories']) ? 'selected' : ''; ?>>Furniture</option>
                             </select>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Stock Status</label>
+                            <label class="form-label">Stock Status (Uncheck to hide)</label>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="stock_status[]" value="inStock" id="inStock" <?php echo empty($filters['stock_status']) || in_array('inStock', $filters['stock_status']) ? 'checked' : ''; ?>>
                                 <label class="form-check-label" for="inStock">In Stock</label>
@@ -529,16 +619,32 @@ if (isset($_GET['export'])) {
                                 <i class="fas fa-download me-1"></i> Export
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="?export=pdf&period=<?php echo $report_period; ?>"><i class="far fa-file-pdf me-2"></i>PDF</a></li>
-                                <li><a class="dropdown-item" href="?export=excel&period=<?php echo $report_period; ?>"><i class="far fa-file-excel me-2"></i>Excel</a></li>
-                                <li><a class="dropdown-item" href="?export=csv&period=<?php echo $report_period; ?>"><i class="far fa-file-csv me-2"></i>CSV</a></li>
+                                <li><h6 class="dropdown-header">Export with History</h6></li>
+                                <li><a class="dropdown-item" href="?export=pdf&period=<?php echo $report_period; ?>&history_period=daily"><i class="far fa-file-pdf me-2"></i>PDF (Daily History)</a></li>
+                                <li><a class="dropdown-item" href="?export=pdf&period=<?php echo $report_period; ?>&history_period=weekly"><i class="far fa-file-pdf me-2"></i>PDF (Weekly History)</a></li>
+                                <li><a class="dropdown-item" href="?export=pdf&period=<?php echo $report_period; ?>&history_period=monthly"><i class="far fa-file-pdf me-2"></i>PDF (Monthly History)</a></li>
+                                <li><a class="dropdown-item" href="?export=pdf&period=<?php echo $report_period; ?>&history_period=yearly"><i class="far fa-file-pdf me-2"></i>PDF (Yearly History)</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="?export=excel&period=<?php echo $report_period; ?>&history_period=daily"><i class="far fa-file-excel me-2"></i>Excel (Daily History)</a></li>
+                                <li><a class="dropdown-item" href="?export=excel&period=<?php echo $report_period; ?>&history_period=weekly"><i class="far fa-file-excel me-2"></i>Excel (Weekly History)</a></li>
+                                <li><a class="dropdown-item" href="?export=excel&period=<?php echo $report_period; ?>&history_period=monthly"><i class="far fa-file-excel me-2"></i>Excel (Monthly History)</a></li>
+                                <li><a class="dropdown-item" href="?export=excel&period=<?php echo $report_period; ?>&history_period=yearly"><i class="far fa-file-excel me-2"></i>Excel (Yearly History)</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="?export=csv&period=<?php echo $report_period; ?>&history_period=daily"><i class="far fa-file-csv me-2"></i>CSV (Daily History)</a></li>
+                                <li><a class="dropdown-item" href="?export=csv&period=<?php echo $report_period; ?>&history_period=weekly"><i class="far fa-file-csv me-2"></i>CSV (Weekly History)</a></li>
+                                <li><a class="dropdown-item" href="?export=csv&period=<?php echo $report_period; ?>&history_period=monthly"><i class="far fa-file-csv me-2"></i>CSV (Monthly History)</a></li>
+                                <li><a class="dropdown-item" href="?export=csv&period=<?php echo $report_period; ?>&history_period=yearly"><i class="far fa-file-csv me-2"></i>CSV (Yearly History)</a></li>
                             </ul>
                         </div>
                     </div>
                     <p class="text-muted">
                         Showing data for <strong><?php echo ucfirst($report_period); ?></strong> (<?php echo $start_date . ' - ' . $end_date; ?>) • 
-                        <?php echo !empty($filters['locations']) && !in_array('all', $filters['locations']) ? implode(', ', $filters['locations']) : 'All Locations'; ?> • 
-                        <?php echo !empty($filters['categories']) && !in_array('all', $filters['categories']) ? implode(', ', $filters['categories']) : 'All Categories'; ?>
+                        <?php echo !empty($filters['categories']) && !in_array('all', $filters['categories']) ? implode(', ', array_map(function($id) use ($pdo) {
+                            $stmt = $pdo->prepare("SELECT category_name FROM categories WHERE category_id = ?");
+                            $stmt->execute([$id]);
+                            return $stmt->fetchColumn();
+                        }, $filters['categories'])) : 'All Categories'; ?>
+                        • Status: <?php echo !empty($filters['stock_status']) ? implode(', ', array_map('ucfirst', str_replace('Stock', ' Stock', $filters['stock_status']))) : 'All'; ?>
                     </p>
                     <div class="alert alert-info d-flex align-items-center">
                         <i class="fas fa-box me-3 fa-lg"></i>
@@ -649,28 +755,111 @@ if (isset($_GET['export'])) {
             </div>
 
             <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Sales/Provision History</h5>
+                    <select class="form-select form-select-sm" onchange="toggleHistoryView(this.value)">
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly" selected>Monthly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0" id="history-table">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Period</th>
+                                    <th class="text-center">Total Quantity</th>
+                                    <th class="text-end">Total Value</th>
+                                </tr>
+                            </thead>
+                            <tbody id="daily-history" style="display: none;">
+                                <?php if (!empty($data['daily_history'])): ?>
+                                    <?php foreach ($data['daily_history'] as $entry): ?>
+                                        <tr>
+                                            <td><?php echo htmlspecialchars($entry['period_date']); ?></td>
+                                            <td class="text-center"><?php echo (int)($entry['total_quantity'] ?? 0); ?></td>
+                                            <td class="text-end"><?php echo '$' . number_format($entry['total_value'] ?? 0, 2); ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <tr><td colspan="3" class="text-center">No daily history found</td></tr>
+                                <?php endif; ?>
+                            </tbody>
+                            <tbody id="weekly-history" style="display: none;">
+                                <?php if (!empty($data['weekly_history'])): ?>
+                                    <?php foreach ($data['weekly_history'] as $entry): ?>
+                                        <tr>
+                                            <td>Week <?php echo htmlspecialchars($entry['week']) . ', ' . $entry['year']; ?></td>
+                                            <td class="text-center"><?php echo (int)($entry['total_quantity'] ?? 0); ?></td>
+                                            <td class="text-end"><?php echo '$' . number_format($entry['total_value'] ?? 0, 2); ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <tr><td colspan="3" class="text-center">No weekly history found</td></tr>
+                                <?php endif; ?>
+                            </tbody>
+                            <tbody id="monthly-history">
+                                <?php if (!empty($data['monthly_history'])): ?>
+                                    <?php foreach ($data['monthly_history'] as $entry): ?>
+                                        <tr>
+                                            <td><?php echo htmlspecialchars($entry['period_date']); ?></td>
+                                            <td class="text-center"><?php echo (int)($entry['total_quantity'] ?? 0); ?></td>
+                                            <td class="text-end"><?php echo '$' . number_format($entry['total_value'] ?? 0, 2); ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <tr><td colspan="3" class="text-center">No monthly history found</td></tr>
+                                <?php endif; ?>
+                            </tbody>
+                            <tbody id="yearly-history" style="display: none;">
+                                <?php if (!empty($data['yearly_history'])): ?>
+                                    <?php foreach ($data['yearly_history'] as $entry): ?>
+                                        <tr>
+                                            <td><?php echo htmlspecialchars($entry['period_date']); ?></td>
+                                            <td class="text-center"><?php echo (int)($entry['total_quantity'] ?? 0); ?></td>
+                                            <td class="text-end"><?php echo '$' . number_format($entry['total_value'] ?? 0, 2); ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <tr><td colspan="3" class="text-center">No yearly history found</td></tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header bg-white py-3">
                     <h5 class="card-title mb-0">Alerts & Recommendations</h5>
                 </div>
                 <div class="card-body">
+                    <?php if (in_array('lowStock', $selected_statuses)): ?>
                     <div class="alert alert-warning d-flex align-items-center mb-3" role="alert">
                         <i class="fas fa-exclamation-triangle me-3 fa-lg"></i>
                         <div>
                             <strong><?php echo (int)($data['low_stock_items'] ?? 0); ?> products</strong> are currently at low stock levels.
                         </div>
                     </div>
+                    <?php endif; ?>
+                    <?php if (in_array('outOfStock', $selected_statuses)): ?>
                     <div class="alert alert-danger d-flex align-items-center mb-3" role="alert">
                         <i class="fas fa-times-circle me-3 fa-lg"></i>
                         <div>
                             <strong><?php echo (int)($data['not_in_stock'] ?? 0); ?> products</strong> are out of stock.
                         </div>
                     </div>
+                    <?php endif; ?>
+                    <?php if (in_array('overstock', $selected_statuses)): ?>
                     <div class="alert alert-info d-flex align-items-center mb-3" role="alert">
                         <i class="fas fa-info-circle me-3 fa-lg"></i>
                         <div>
                             <strong><?php echo (int)($data['overstocked_items'] ?? 0); ?> products</strong> have been overstocked.
                         </div>
                     </div>
+                    <?php endif; ?>
                     <div class="alert alert-success d-flex align-items-center mb-0" role="alert">
                         <i class="fas fa-lightbulb me-3 fa-lg"></i>
                         <div>
@@ -754,5 +943,12 @@ if (isset($_GET['export'])) {
         </div>
     </div>
 </div>
+
+<script>
+function toggleHistoryView(period) {
+    document.querySelectorAll('#history-table tbody').forEach(tbody => tbody.style.display = 'none');
+    document.getElementById(period + '-history').style.display = 'table-row-group';
+}
+</script>
 </body>
 </html>
