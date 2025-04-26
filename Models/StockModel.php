@@ -1,6 +1,4 @@
 <?php
-
-
 class StockModel {
     private $db;
 

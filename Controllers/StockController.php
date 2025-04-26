@@ -64,7 +64,7 @@ class StockController extends BaseController
         $stock_name = trim($_POST['stock_name']);
         $product_id = (int)$_POST['product_id'];
         $quantity = (int)$_POST['quantity'];
-        $user_id = 1; // Replace with session-based user ID
+        $user_id = $this->getCurrentUserId(); // Get current user ID from session
 
         if (!$this->stockModel->validateProductId($product_id)) {
             $products = $this->stockModel->getProducts();
@@ -224,35 +224,72 @@ class StockController extends BaseController
     }
 
     public function adjust($stock_id)
+{
+    if (!$this->stockModel->validateStockId($stock_id)) {
+        $this->redirect('/stock?error=Stock item does not exist');
+        return;
+    }
+    
+    $stock = $this->stockModel->getStockById($stock_id);
+    if (!$stock) {
+        $this->redirect("/stock?error=Stock not found.");
+        return;
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        // Show the adjustment form
+        $this->view('stocks/adjust_stock', ['stock' => $stock]);
+        return;
+    }
+
+    // Process the form submission
+    $add = isset($_POST['add_quantity']) ? (int)$_POST['add_quantity'] : 0;
+    $subtract = isset($_POST['subtract_quantity']) ? (int)$_POST['subtract_quantity'] : 0;
+
+    // Validate quantities
+    if ($add < 0 || $subtract < 0) {
+        $this->redirect("/stock/view/{$stock_id}?error=Quantities cannot be negative");
+        return;
+    }
+
+    if ($add === 0 && $subtract === 0) {
+        $this->redirect("/stock/view/{$stock_id}?error=No adjustment made");
+        return;
+    }
+
+    if ($subtract > ($stock['stock_quantity'] + $add)) {
+        $this->redirect("/stock/view/{$stock_id}?error=Subtract quantity exceeds available stock");
+        return;
+    }
+
+    $new_quantity = max(0, $stock['stock_quantity'] + $add - $subtract);
+    if ($new_quantity > 500) {
+        $new_quantity = 500;
+    }
+
+    try {
+        $success = $this->stockModel->updateStock(
+            $stock_id, 
+            $stock['stock_name'], 
+            $stock['product_id'], 
+            $new_quantity
+        );
+        
+        if ($success) {
+            // Redirect to stock listing page after successful adjustment
+            $this->redirect("/stock?success=Stock adjusted successfully");
+        } else {
+            $this->redirect("/stock?error=Failed to adjust stock");
+        }
+    } catch (Exception $e) {
+        error_log("Adjustment error for stock_id $stock_id: " . $e->getMessage());
+        $this->redirect("/stock?error=Failed to adjust stock: " . $e->getMessage());
+    }
+}
+
+    private function getCurrentUserId()
     {
-        if (!$this->stockModel->validateStockId($stock_id)) {
-            $this->redirect('/stock?error=Stock item does not exist');
-            return;
-        }
-        $stock = $this->stockModel->getStockById($stock_id);
-        if (!$stock) {
-            $this->redirect("/stock?error=Stock not found.");
-            return;
-        }
-
-        $add = isset($_POST['add_quantity']) ? (int)$_POST['add_quantity'] : 0;
-        $subtract = isset($_POST['subtract_quantity']) ? (int)$_POST['subtract_quantity'] : 0;
-
-        $new_quantity = max(0, $stock['stock_quantity'] + $add - $subtract);
-        if ($new_quantity > 500) {
-            $new_quantity = 500;
-        }
-
-        try {
-            $success = $this->stockModel->updateStock($stock_id, $stock['stock_name'], $stock['product_id'], $new_quantity);
-            if ($success) {
-                $this->redirect("/stock/view/{$stock_id}?success=Stock updated successfully.");
-            } else {
-                $this->redirect("/stock/view/{$stock_id}?error=Failed to adjust stock.");
-            }
-        } catch (Exception $e) {
-            error_log("Adjustment error for stock_id $stock_id: " . $e->getMessage());
-            $this->redirect("/stock/view/{$stock_id}?error=Failed to adjust stock: " . $e->getMessage());
-        }
+        // Implement your own logic to get the current user ID from session
+        return $_SESSION['user_id'] ?? 1; // Default to 1 if not set
     }
 }
