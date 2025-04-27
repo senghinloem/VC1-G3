@@ -32,7 +32,7 @@ if ($_SESSION['user_role'] !== 'admin') {
 </head>
 <body>
 
-
+<div class="container mt-5 mb3">
         <!-- Create User Form -->
         <div class="create-user-container">
             <h5><i class="fas fa-user-plus me-2"></i>Create New User</h5>
@@ -76,3 +76,7 @@ if ($_SESSION['user_role'] !== 'admin') {
         </div>
     </div>
 </div>
+</div>
+
+
+
