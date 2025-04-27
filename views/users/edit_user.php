@@ -17,6 +17,177 @@ if (!isset($_SESSION['user_id'])) {
     <title>Edit User Profile</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-content {
+            margin-left: 10px;
+            padding: 70px 20px;
+        }
+
+        .profile-container {
+            display: flex;
+            max-width: 900px;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        .profile-card {
+            width: 40%;
+            padding: 30px;
+            text-align: center;
+            border-right: 1px solid #e0e0e0;
+        }
+
+        .profile-card img {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            margin-top: 110px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .profile-card h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #00c4cc;
+            margin-bottom: 5px;
+        }
+
+        .profile-card .username {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .profile-card .form-group {
+            margin-bottom: 15px;
+        }
+
+        .profile-card .form-control {
+            font-size: 14px;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .form-container {
+            width: 60%;
+            padding: 30px;
+        }
+
+        .form-container h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .form-control:focus {
+            border-color: #00c4cc;
+            box-shadow: 0 0 5px rgba(0, 196, 204, 0.3);
+            outline: none;
+        }
+
+        label {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        select.form-control {
+            appearance: none;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="gray" viewBox="0 0 16 16"><path d="M8 12l-4-4h8l-4 4z"/></svg>') no-repeat right 10px center;
+            background-size: 12px;
+        }
+
+        .row .col-md-6 {
+            padding-right: 10px;
+            padding-left: 10px;
+        }
+
+        .btn-primary {
+            background-color: #00c4cc;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            color: #fff;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #00a8b0;
+        }
+
+        .btn-secondary {
+            background-color: #e0e0e0;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            color: #333;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: #d0d0d0;
+        }
+
+        .btn i {
+            margin-right: 5px;
+        }
+
+        .d-flex {
+            gap: 10px;
+        }
+
+        .btn {
+            cursor: pointer;
+        }
+
+        .d-none {
+            display: none;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .image-preview-label {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+    </style>
 </head>
 <body>
     <!-- Main Content -->

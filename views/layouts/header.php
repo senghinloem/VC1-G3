@@ -26,7 +26,6 @@
     <link rel="stylesheet" href="views/assets/css/animate.css">
     <link rel="stylesheet" href="views/assets/plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="views/assets/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="views/assets/css/inventory.css">
     <link rel="shortcut icon" type="image/x-icon" href="views/assets/img/favicon.jpg">
     
     <!-- Bootstrap -->
