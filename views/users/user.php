@@ -16,7 +16,293 @@ if (!isset($_SESSION['user_id'])) {
     <title>User Management Dashboard</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Table container for horizontal and vertical scrolling */
+        .table-container {
+            transition: opacity 0.3s ease;
+            max-height: 500px;
+            /* Set a maximum height for the table */
+            overflow-y: auto;
+            /* Enable vertical scrolling */
+            overflow-x: auto;
+            /* Enable horizontal scrolling */
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            position: relative;
+            /* For sticky header positioning */
+        }
+
+        .table-container.loading {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* Table styling */
+        .user-table {
+            margin-bottom: 0;
+            width: 100%;
+            min-width: 800px;
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* Table headers with sticky positioning */
+        .user-table th {
+            background: linear-gradient(180deg, #f8f9fa, #f1f3f5);
+            font-weight: 700;
+            color: #2c3e50;
+            padding: 18px 24px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #dee2e6;
+            vertical-align: middle;
+            white-space: nowrap;
+            position: sticky;
+            /* Sticky header */
+            top: 0;
+            /* Stick to the top of the container */
+            z-index: 1;
+            /* Ensure header stays above body content */
+            background-color: #f8f9fa;
+            /* Solid background to prevent overlap visibility */
+        }
+
+        /* Table cells */
+        .user-table td {
+            vertical-align: middle;
+            padding: 5px 5px;
+            color: #495057;
+            border-bottom: 1px solid #eceff1;
+            white-space: nowrap;
+            transition: background-color 0.2s ease;
+        }
+
+        /* Alternating row colors with increased specificity */
+        table.user-table tbody tr:nth-child(odd) {
+            background-color: #e9ecef;
+            /* Gray for odd rows */
+        }
+
+        table.user-table tbody tr:nth-child(even) {
+            background-color: #fff;
+            /* White for even rows */
+        }
+
+        /* Hover effect */
+        table.user-table tbody tr:hover {
+            background-color: #f5f7fa !important;
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Ensure empty state doesn’t inherit odd/even styling */
+        table.user-table tbody tr td[colspan="6"] {
+            background-color: transparent;
+        }
+
+        /* User avatar alignment */
+        .user-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #6c757d;
+            overflow: hidden;
+            color: #fff;
+            margin-right: 12px;
+            border: 2px solid #ffffff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* User name and email */
+        .user-name {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1rem;
+        }
+
+        .user-email {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        /* Status badges */
+        .user-status {
+            padding: 5px 8px;
+            border-radius: 50px;
+            display: inline-block;
+            min-width: 50px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: capitalize;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-status.online {
+            background-color: #10b981;
+            color: #ffffff;
+        }
+
+        .user-status.offline {
+            background-color: #ff0000;
+            color: #ffffff;
+        }
+
+        /* Action buttons */
+        .action-btn {
+            background: transparent;
+            border: none;
+            color: #6c757d;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            font-size: 1.1rem;
+            transition: color 0.2s ease;
+        }
+
+        .action-btn:hover {
+            color: #0d6efd;
+        }
+
+        /* Remove bottom border on last row */
+        .user-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+
+            .user-table th,
+            .user-table td {
+                padding: 14px 12px;
+            }
+
+            .user-status {
+                min-width: 70px;
+                font-size: 0.85rem;
+                padding: 6px 12px;
+            }
+
+            .user-avatar {
+                width: 36px;
+                height: 36px;
+                margin-right: 8px;
+            }
+
+            .action-btn {
+                padding: 0.3rem 0.7rem;
+                font-size: 1rem;
+            }
+
+            .user-name {
+                font-size: 0.95rem;
+            }
+
+            .user-email {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Search loading state */
+        .search-container .spinner {
+            display: none;
+            margin-left: 10px;
+            color: #0d6efd;
+        }
+
+        .search-container.loading .spinner {
+            display: inline-block;
+        }
+
+        /* Stat cards */
+        .stat-card {
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            height: 100%;
+        }
+
+        .stat-card h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .stat-card p {
+            margin-bottom: 0;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .stat-card.total-users {
+            background-color: #e3f2fd;
+        }
+
+        .stat-card.online-users {
+            background-color: #e8f5e9;
+        }
+
+        .stat-card.offline-users {
+            background-color: #ffebee;
+        }
+
+        .stat-card.online-rate {
+            background-color: #fff8e1;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        /* Card styling */
+        .card {
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            border: none;
+        }
+
+        .card-header {
+            background-color: #fff;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            padding: 1rem 1.5rem;
+        }
+
+        /* Modal styling */
+        .modal-content {
+            border: none;
+            border-radius: 12px;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .modal-footer {
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+        }
+    </style>
 </head>
+
 <body class="bg-light">
     <div class="container-fluid py-4">
         <div class="row mb-4 mx-2">

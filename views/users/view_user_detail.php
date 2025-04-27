@@ -16,6 +16,184 @@ if (!isset($_SESSION['user_id'])) {
     <title>User Details - <?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?></title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .user-detail-card {
+            max-width: 800px;
+            margin: 2rem auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            border: none;
+            background-color: #fff;
+        }
+
+        .user-header {
+            background: linear-gradient(180deg, #f8f9fa, #f1f3f5);
+            padding: 2rem;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .user-avatar-large {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin-right: 2rem;
+            border: 4px solid #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .user-avatar-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .detail-item {
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #eceff1;
+            display: flex;
+            align-items: center;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #2c3e50;
+            min-width: 150px;
+            margin-right: 1rem;
+        }
+
+        .detail-value {
+            color: #495057;
+            word-break: break-word;
+            flex: 1;
+        }
+
+        .user-status {
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: capitalize;
+            display: inline-block;
+            min-width: 70px;
+            text-align: center;
+        }
+
+        .user-status.online {
+            background-color: #10b981;
+            color: #ffffff;
+        }
+
+        .user-status.offline {
+            background-color: #ff0000;
+            color: #ffffff;
+        }
+
+        .card-footer {
+            border-top: 1px solid rgba(0,0,0,0.08);
+        }
+
+        /* Button Styling */
+        .btn-custom {
+            padding: 0.5rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 5px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-back {
+            background-color: #6c757d;
+            color: #fff;
+            border: none;
+            margin-left: 20px; /* Added margin-left for Back button */
+        }
+
+        .btn-back:hover {
+            background-color: #5a6268;
+            color: #fff;
+        }
+
+        .btn-edit {
+            background-color: #0d6efd;
+            color: #fff;
+            border: none;
+        }
+
+        .btn-edit:hover {
+            background-color: #0b5ed7;
+            color: #fff;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            margin-right: 20px; /* Added margin-right for Delete button */
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333;
+            color: #fff;
+        }
+
+        .btn i {
+            font-size: 0.9rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 576px) {
+            .user-header {
+                flex-direction: column;
+                text-align: center;
+                padding: 1.5rem;
+            }
+
+            .user-avatar-large {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+
+            .detail-item {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1rem;
+            }
+
+            .detail-label {
+                min-width: auto;
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+            }
+
+            .card-footer .d-flex {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .card-footer .d-flex > * {
+                width: 100%;
+                justify-content: center;
+            }
+
+            /* Reset margins for buttons on small screens to avoid excessive spacing */
+            .btn-back {
+                margin-left: 0;
+            }
+
+            .btn-delete {
+                margin-right: 0;
+            }
+        }
+    </style>
 </head>
 <body class="bg-light">
     <div class="container-fluid py-4">
