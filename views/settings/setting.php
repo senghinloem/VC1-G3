@@ -1,45 +1,4 @@
-<!-- <link rel="stylesheet" href="../../views/assets/css/setting.css">
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="mb-0">Inventory Settings</h1>
-    <div class="d-flex align-items-center">
-        <button class="btn btn-outline-secondary me-3" id="themeToggle" title="Toggle Theme">
-            <i class="fas fa-sun theme-icon"></i>
-        </button>
-        <button class="btn btn-primary" id="saveSettings">
-            <i class="fas fa-save me-2"></i>Save Changes
-        </button>
-    </div>
-</div>
-<script>
-const themeToggle = document.getElementById('themeToggle');
-const themeIcon = themeToggle.querySelector('.theme-icon');
-themeToggle.addEventListener('click', function() {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    if (currentTheme === 'light') {
-        document.documentElement.removeAttribute('data-theme');
-        themeIcon.classList.remove('fa-moon');
-        themeIcon.classList.add('fa-sun');
-        localStorage.setItem('theme', 'default');
-    } else {
-        document.documentElement.setAttribute('data-theme', 'light');
-        themeIcon.classList.remove('fa-sun');
-        themeIcon.classList.add('fa-moon');
-        localStorage.setItem('theme', 'light');
-    }
-});
-const savedTheme = localStorage.getItem('theme');
-if (savedTheme === 'light') {
-    document.documentElement.setAttribute('data-theme', 'light');
-    themeIcon.classList.remove('fa-sun');
-    themeIcon.classList.add('fa-moon');
-}
-</script>
 
- -->
-
-
-
-<!-- Inventory Settings Page Content -->
 <div class="container-fluid px-4 py-3">
     <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
