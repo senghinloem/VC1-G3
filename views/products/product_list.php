@@ -15,7 +15,135 @@ if (!isset($_SESSION['user_id'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+    /* Table container styling */
+    .table-container {
+        transition: opacity 0.3s ease;
+        max-height: 500px;
+        overflow-y: auto;
+        overflow-x: auto;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        position: relative;
+    }
 
+    .table-container.loading {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
+    /* Table styling */
+    .product-table {
+        margin-bottom: 0;
+        width: 100%;
+        min-width: 800px;
+        border-collapse: separate;
+        border-spacing: 0;
+        background-color: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .product-table th {
+        background: linear-gradient(180deg, #f8f9fa, #f1f3f5);
+        font-weight: 700;
+        color: #2c3e50;
+        padding: 18px 24px;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+        border-bottom: 2px solid #dee2e6;
+        vertical-align: middle;
+        white-space: nowrap;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background-color: #f8f9fa;
+        text-align: center;
+    }
+
+    .product-table td {
+        vertical-align: middle;
+        padding: 15px 24px;
+        color: #495057;
+        border-bottom: 1px solid #eceff1;
+        white-space: nowrap;
+        transition: background-color 0.2s ease;
+        text-align: center;
+    }
+
+    table.product-table tbody tr:nth-child(odd) {
+        background-color: #e9ecef;
+    }
+
+    table.product-table tbody tr:nth-child(even) {
+        background-color: #fff;
+    }
+
+    table.product-table tbody tr:hover {
+        background-color: #f5f7fa !important;
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+    }
+
+    table.product-table tbody tr td[colspan="7"] {
+        background-color: transparent;
+    }
+
+    /* Action buttons */
+    .action-btn {
+        background: transparent;
+        border: none;
+        color: #6c757d;
+        cursor: pointer;
+        padding: 0.5rem 1rem;
+        font-size: 1.1rem;
+        transition: color 0.2s ease;
+    }
+
+    .action-btn:hover {
+        color: #0d6efd;
+    }
+
+    .product-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* Card styling */
+    .card {
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        border: none;
+    }
+
+    .card-header {
+        background-color: #fff;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        padding: 1rem 1.5rem;
+    }
+
+    /* Search loading state */
+    .search-container .spinner {
+        display: none;
+        margin-left: 10px;
+        color: #0d6efd;
+    }
+
+    .search-container.loading .spinner {
+        display: inline-block;
+    }
+
+    /* Empty state */
+    .empty-state {
+        text-align: center;
+        padding: 40px 0;
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        color: #6c757d;
+        margin-bottom: 1rem;
+    }
+    </style>
 </head>
 
 <body class="bg-light">

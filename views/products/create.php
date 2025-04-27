@@ -4,6 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Add</title>
+    <style>
+        .image-upload {
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            text-align: center;
+            padding: 30px;
+            cursor: pointer;
+            transition: border-color 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 150px; 
+            position: relative;
+        }
+        .image-upload:hover {
+            border-color: #007bff;
+        }
+        .image-upload {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .image-upload img.preview {
+            max-width: 100%;
+            max-height: 150px;
+            object-fit: contain;
+        }
+
+        .error-text {
+            color: red;
+            font-size: 14px;
+        }
+
+
+    </style>
 </head>
 <body>
     <div class="container mt-4">
