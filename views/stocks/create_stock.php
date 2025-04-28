@@ -8,19 +8,18 @@ if (!isset($products)) {
     <?php if (isset($error)): ?>
         <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
     <?php endif; ?>
-    
+
     <form class="mt-5" action="/stock/store" method="POST"
         style="background-color: #f9f9f9; padding: 40px; border-radius: 8px; 
                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); max-width: 700px; 
                width: 100%; margin: auto;">
-        
+
         <div class="form-group">
             <label for="stock_name" style="font-size: 18px;">Stock Name</label>
             <input type="text" id="stock_name" name="stock_name" class="form-control"
                 value="" required
                 style="width: 100%; padding: 12px; font-size: 16px; border-radius: 4px; border: 1px solid #ccc;">
         </div>
-
         <div class="form-group mt-4">
             <label for="product_id" style="font-size: 18px;">Product</label>
             <select id="product_id" name="product_id" class="form-control" required
@@ -49,17 +48,17 @@ if (!isset($products)) {
         </div>
     </form>
 </div>
-
+</form>
 <script>
     document.getElementById('quantity').addEventListener('change', function() {
         const quantity = parseInt(this.value);
         const statusField = document.getElementById('status');
-        
+
         if (quantity > 500) {
             this.value = 500;
             alert('Maximum stock limit is 500. Quantity has been adjusted.');
         }
-        
+
         statusField.value = quantity > 0 ? 'in_stock' : 'out_of_stock';
     });
 </script>

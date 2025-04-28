@@ -18,10 +18,9 @@
             align-items: center;
         }
 
-        #searchInput{
+        #searchInput {
             height: 40px;
         }
-
     </style>
 </head>
 
@@ -320,10 +319,26 @@
             updateTable();
         });
 
-        // Stock Chart (unchanged)
-        const labels = products.map(product => product.name);
-        const lowStockData = products.map(product => product.quantity < 5 ? product.quantity : 0);
-        const highStockData = products.map(product => product.quantity >= 5 ? product.quantity : 0);
+        // Stock Chart: Show top 20 products by quantity, including all low stock products
+        // Step 1: Filter low stock products (quantity < 5)
+        const lowStockProducts = products.filter(product => product.quantity < 5);
+
+        // Step 2: Filter out high stock products (quantity >= 5) and sort by quantity descending
+        const highStockProducts = products
+            .filter(product => product.quantity >= 5)
+            .sort((a, b) => b.quantity - a.quantity);
+
+        // Step 3: Combine low stock products with top high stock products to make up to 20
+        const maxChartItems = 20;
+        const remainingSlots = maxChartItems - lowStockProducts.length;
+        const topHighStockProducts = highStockProducts.slice(0, remainingSlots);
+        const chartProducts = [...lowStockProducts, ...topHighStockProducts].sort((a, b) => b.quantity - a.quantity);
+
+        // Step 4: Prepare chart data
+        const labels = chartProducts.map(product => product.name);
+        const lowStockData = chartProducts.map(product => product.quantity < 5 ? product.quantity : 0);
+        const highStockData = chartProducts.map(product => product.quantity >= 5 ? product.quantity : 0);
+
         const ctx = document.getElementById('stockChart').getContext('2d');
         new Chart(ctx, {
             type: 'bar',
@@ -346,6 +361,15 @@
                         position: 'top'
                     },
                 },
+                scales: {
+                    x: {
+                        ticks: {
+                            autoSkip: false,
+                            maxRotation: 45,
+                            minRotation: 45
+                        }
+                    }
+                }
             },
         });
 
