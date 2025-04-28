@@ -1,4 +1,5 @@
-<form id="adjustStockForm" method="POST" action="/stock/adjust/<?= $stock['stock_id'] ?>">
+
+<form method="POST" action="/stock/adjust/<?= $stock['stock_id'] ?>">
     <div class="container mt-4">
         <div class="card">
             <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
@@ -29,7 +30,7 @@
                                                 <td><?= htmlspecialchars($stock['product'] ?? 'No product associated') ?></td>
                                             </tr>
                                             <tr>
-                                                <th>Quantity</th>
+                                                <th>Current Quantity</th>
                                                 <td><?= htmlspecialchars($stock['stock_quantity']) ?></td>
                                             </tr>
                                             <tr>
@@ -85,73 +86,92 @@
                 <a href="/stock" class="btn btn-primary btn-sm me-2">
                     <i class="fas fa-arrow-left me-1"></i> Back to Stock
                 </a>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#saveModal">
-                    <i class="fas fa-save me-1"></i> Save
+                <button type="button" class="btn btn-primary" id="adjustStockButton">
+                    <i class="fas fa-save me-1"></i> Adjust Stock
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Delete Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="text-center mb-3">
-                        <i class="fas fa-exclamation-triangle text-danger fa-3x"></i>
-                    </div>
-                    <p class="text-center">Are you sure you want to delete this stock item?</p>
-                    <p class="text-center fw-bold"><?= isset($stock) ? htmlspecialchars($stock['stock_name']) : '' ?></p>
-                    <p class="text-center text-muted">This action cannot be undone.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <form action="/stock/delete/<?= isset($stock) ? $stock['stock_id'] : '' ?>" method="POST">
-                        <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit" class="btn btn-danger">
-                            <i class="fas fa-trash-alt me-1"></i> Delete
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Save Confirmation Modal -->
-    <div class="modal fade" id="saveModal" tabindex="-1" aria-labelledby="saveModalLabel" aria-hidden="true">
+    <!-- Adjustment Confirmation Modal -->
+    <div class="modal fade" id="adjustmentModal" tabindex="-1" aria-labelledby="adjustmentModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="saveModalLabel">Confirm Save</h5>
+                    <h5 class="modal-title" id="adjustmentModalLabel">Confirm Stock Adjustment</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="text-center mb-3">
                         <i class="fas fa-exclamation-triangle text-warning fa-3x"></i>
                     </div>
-                    <p class="text-center">Are you sure?</p>
-                    <p class="text-center">You are about to save stock <strong><?= isset($stock) ? htmlspecialchars($stock['stock_name']) : '' ?></strong>.</p>
-                    <p class="text-center text-muted">Please confirm to proceed.</p>
+                    <p class="text-center">Please confirm your stock adjustment:</p>
+                    
+                    <div class="adjustment-details">
+                        <p><strong>Stock Name:</strong> <span id="modalStockName"><?= htmlspecialchars($stock['stock_name'] ?? '') ?></span></p>
+                        <p><strong>Current Quantity:</strong> <span id="modalCurrentQty"><?= htmlspecialchars($stock['stock_quantity'] ?? 0) ?></span></p>
+                        <p><strong>Quantity to Add:</strong> <span id="modalAddQty">0</span></p>
+                        <p><strong>Quantity to Subtract:</strong> <span id="modalSubtractQty">0</span></p>
+                        <p><strong>New Quantity:</strong> <span id="modalNewQty"><?= htmlspecialchars($stock['stock_quantity'] ?? 0) ?></span></p>
+                    </div>
+                    
+                    <div class="alert alert-warning mt-3">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        This action cannot be undone. Please verify the quantities before proceeding.
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="confirmSaveButton">
-                        <i class="fas fa-save me-1"></i> Save Stock
+                    <button type="submit" class="btn btn-primary" id="confirmAdjustment">
+                        <i class="fas fa-check-circle me-1"></i> Confirm Adjustment
                     </button>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- JavaScript to Handle Save Confirmation -->
-    <script>
-    document.getElementById('confirmSaveButton').addEventListener('click', function() {
-        // Submit the form when the "Save Stock" button in the modal is clicked
-        document.getElementById('adjustStockForm').submit();
-    });
-    </script>
 </form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const adjustBtn = document.getElementById('adjustStockButton');
+    const addQtyInput = document.getElementById('add_quantity');
+    const subtractQtyInput = document.getElementById('subtract_quantity');
+    const modal = new bootstrap.Modal(document.getElementById('adjustmentModal'));
+    
+    adjustBtn.addEventListener('click', function() {
+        const addQty = parseInt(addQtyInput.value) || 0;
+        const subtractQty = parseInt(subtractQtyInput.value) || 0;
+        const currentQty = parseInt(document.getElementById('modalCurrentQty').textContent);
+        
+        // Update modal with the values
+        document.getElementById('modalAddQty').textContent = addQty;
+        document.getElementById('modalSubtractQty').textContent = subtractQty;
+        document.getElementById('modalNewQty').textContent = currentQty + addQty - subtractQty;
+        
+        // Validate that at least one field has a value
+        if (addQty === 0 && subtractQty === 0) {
+            alert('Please enter a quantity to add or subtract');
+            return;
+        }
+        
+        // Validate that subtract quantity doesn't exceed current + added quantity
+        if (subtractQty > (currentQty + addQty)) {
+            alert('Subtract quantity cannot exceed current quantity plus added quantity');
+            return;
+        }
+        
+        // Show the modal
+        modal.show();
+    });
+    
+    // Prevent form submission when pressing enter in input fields
+    [addQtyInput, subtractQtyInput].forEach(input => {
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                adjustBtn.click();
+            }
+        });
+    });
+});
+</script>

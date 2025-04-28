@@ -1,16 +1,8 @@
 <?php
-
 class Database
 {
     private $pdo;
-    /**
-     * Constructor to initialize the database connection.
-     *
-     * @param string $host The hostname of the database server.
-     * @param string $dbname The name of the database.
-     * @param string $username The username for the database connection.
-     * @param string $password The password for the database connection.
-     */
+
     public function __construct($host, $dbname, $username, $password)
     {
         $dsn = "mysql:host=$host;dbname=$dbname;charset=UTF8";
@@ -20,32 +12,70 @@ class Database
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+            error_log("Connection failed: " . $e->getMessage());
             die("Connection failed: " . $e->getMessage());
         }
     }
 
-    /**
-     * Executes a SQL query with optional parameters.
-     *
-     * @param string $sql The SQL query to execute.
-     * @param array $params The parameters to bind to the query.
-     * @return PDOStatement The result of the executed query.
-     */
     public function query($sql, $params = [])
     {
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($params);
-        return $stmt;
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+            return $stmt;
+        } catch (PDOException $e) {
+            error_log("Query error: " . $e->getMessage());
+            throw $e;
+        }
     }
 
-    /**
-     * Prepares a SQL statement for execution.
-     *
-     * @param string $sql The SQL query to prepare.
-     * @return PDOStatement The prepared statement.
-     */
     public function prepare($sql)
     {
-        return $this->pdo->prepare($sql);
+        try {
+            return $this->pdo->prepare($sql);
+        } catch (PDOException $e) {
+            error_log("Prepare error: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    public function beginTransaction()
+    {
+        try {
+            return $this->pdo->beginTransaction();
+        } catch (PDOException $e) {
+            error_log("Begin transaction error: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    public function commit()
+    {
+        try {
+            return $this->pdo->commit();
+        } catch (PDOException $e) {
+            error_log("Commit error: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    public function rollBack()
+    {
+        try {
+            return $this->pdo->rollBack();
+        } catch (PDOException $e) {
+            error_log("Rollback error: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    public function lastInsertId()
+    {
+        try {
+            return $this->pdo->lastInsertId();
+        } catch (PDOException $e) {
+            error_log("lastInsertId error: " . $e->getMessage());
+            throw $e;
+        }
     }
 }
