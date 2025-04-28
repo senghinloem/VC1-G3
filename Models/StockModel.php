@@ -1,3 +1,4 @@
+
 <?php
 class StockModel {
     private $db;
@@ -92,7 +93,6 @@ class StockModel {
             $stmt->bindParam(':quantity', $quantity, PDO::PARAM_INT);
             $stmt->bindParam(':status', $status, PDO::PARAM_STR);
             $stmt->execute();
-
             // Update or insert into has_stock
             $sql = "INSERT INTO has_stock (product_id, available_quantity) 
                     VALUES (:product_id, :quantity) 
@@ -161,7 +161,6 @@ class StockModel {
                 $stmt->bindParam(':old_quantity', $old_quantity, PDO::PARAM_INT);
                 $stmt->bindParam(':old_product_id', $old_product_id, PDO::PARAM_INT);
                 $stmt->execute();
-
                 // Insert or update new product's quantity
                 $sql = "INSERT INTO has_stock (product_id, available_quantity) 
                         VALUES (:product_id, :quantity) 
