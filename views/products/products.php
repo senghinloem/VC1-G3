@@ -100,6 +100,35 @@ if (!isset($_SESSION['user_id'])) {
             background: #c82333;
         }
 
+/* Disabled buttons styling */
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none; /* Prevent clicks */
+}
+
+/* Override Bootstrap's default disabled colors */
+.btn-danger:disabled {
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+}
+
+.btn-primary:disabled {
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+}
+
+.btn-success:disabled {
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+}
+
+.btn-outline-secondary:disabled {
+    color: #6c757d !important;
+    border-color: #6c757d !important;
+    background-color: transparent !important;
+}
+
         /* Input group styling */
         .input-group {
             border-radius: 4px;
@@ -490,9 +519,9 @@ if (!isset($_SESSION['user_id'])) {
     </div>
     
     <div class="action-buttons mb-4">
-        <button class="btn btn-danger" id="deleteSelected" type="button" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">Delete</button>
+        <button class="btn btn-danger" id="deleteSelected" type="button" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" disabled>Delete</button>
         <div class="dropdown">
-            <button class="btn btn-primary dropdown-toggle" type="button" id="stockDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="stockDropdown" data-bs-toggle="dropdown" aria-expanded="false" disabled>
                 Select Stock
             </button>
             <ul class="dropdown-menu" aria-labelledby="stockDropdown">
@@ -508,7 +537,7 @@ if (!isset($_SESSION['user_id'])) {
             </ul>
         </div>
         <button class="btn btn-success" id="applyStock" disabled>Apply to Selected</button>
-        <button class="btn btn-outline-secondary" id="clearStockSelection">Clear</button>
+        <button class="btn btn-outline-secondary" id="clearStockSelection" disabled>Clear</button>
     </div>
     
     <div class="table-responsive">
@@ -699,10 +728,12 @@ document.getElementById('applyStock').addEventListener('click', function() {
 
 // Handle clear selection
 document.getElementById('clearStockSelection').addEventListener('click', function() {
-    selectedStockId = null;
-    selectedStockName = null;
-    stockDropdownElement.innerHTML = 'Select Stock <span class="caret"></span>';
-    document.getElementById('applyStock').disabled = true;
+    if (selectedStockId) {
+        selectedStockId = null;
+        selectedStockName = null;
+        document.getElementById('stockDropdown').innerHTML = 'Select Stock <span class="caret"></span>';
+        updateButtonStates();
+}
 });
 
 // Pagination variables
@@ -757,6 +788,42 @@ function initPagination() {
     });
 }
 
+// Function to update button states
+function updateButtonStates() {
+    const selectedCheckboxes = document.querySelectorAll('.productCheckbox:checked');
+    const hasSelection = selectedCheckboxes.length > 0;
+    const hasStockSelected = selectedStockId !== null;
+    
+    // Enable/disable buttons based on selection & stock
+    document.getElementById('deleteSelected').disabled = !hasSelection;
+    document.getElementById('stockDropdown').disabled = !hasSelection;
+    document.getElementById('applyStock').disabled = !hasSelection || !hasStockSelected;
+    document.getElementById('clearStockSelection').disabled = !hasSelection || !hasStockSelected; // Matches Apply button behavior
+}
+
+// Handle stock selection from dropdown
+document.querySelectorAll('.dropdown-item[data-stock-id]').forEach(item => {
+    item.addEventListener('click', function(e) {
+        e.preventDefault();
+        selectedStockId = this.getAttribute('data-stock-id');
+        selectedStockName = this.getAttribute('data-stock-name');
+        
+        stockDropdownElement.innerHTML = selectedStockName + ' <span class="caret"></span>';
+        updateButtonStates(); // Update states after stock selection
+        stockDropdown.hide();
+    });
+});
+
+// Handle clear selection - now properly disabled when no selection
+document.getElementById('clearStockSelection').addEventListener('click', function() {
+    if (selectedStockId) { // Safety check
+        selectedStockId = null;
+        selectedStockName = null;
+        document.getElementById('stockDropdown').innerHTML = 'Select Stock <span class="caret"></span>';
+        updateButtonStates();
+    }
+});
+
 // Go to specific page
 function goToPage(page) {
     if (page < 1 || page > totalPages) return;
@@ -795,8 +862,13 @@ function goToPage(page) {
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
+    updateButtonStates();
     initPagination();
     goToPage(1);
+
+    document.querySelectorAll('.productCheckbox').forEach(checkbox => {
+        checkbox.addEventListener('change', updateButtonStates);
+    });
     
     // Existing search functionality
     document.getElementById('searchInput').addEventListener('input', function() {
