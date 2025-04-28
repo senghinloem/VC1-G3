@@ -101,5 +101,8 @@ $route->get("/category/edit/{category_id}", [CategoriesController::class, "edit"
 $route->post("/category/edit/{category_id}", [CategoriesController::class, "edit"]);
 $route->get("/category/delete/{category_id}", [CategoriesController::class, "delete"]);
 $route->get("/categories/category/show/{category_id}", [CategoriesController::class, "show"]);
+// In your routes file
+$route->get('/categories/search', [CategoriesController::class, "search"]);
+
 $route->route();
 ?>
