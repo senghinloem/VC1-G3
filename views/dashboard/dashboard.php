@@ -214,10 +214,16 @@
         let currentPage = 1;
         let filteredProducts = products;
 
-        // Function to render table rows
+        // Log the products array to debug
+        console.log('Products:', products);
+
+        // Function to render table rows with default image handling
         function renderTable(productsToShow) {
             const tableBody = document.getElementById('productTableBody');
             tableBody.innerHTML = '';
+
+            // Define the default image path (replace with the actual path to your grayed-out placeholder icon)
+            const defaultImage = 'views/assets/images/default.png'; // Update this path to match your project's default image
 
             if (productsToShow.length === 0) {
                 document.getElementById('no-products-message').style.display = 'block';
@@ -228,9 +234,11 @@
 
             productsToShow.forEach(product => {
                 const row = document.createElement('tr');
+                // Check if product.image is empty or invalid, and use default image if so
+                const imageSrc = product.image && product.image.trim() !== '' ? product.image : defaultImage;
                 row.innerHTML = `
                     <td>${product.product_id}</td>
-                    <td><img src="${product.image}" alt="${product.name}" style="width: 50px; height: 50px; border-radius: 50px; object-fit: cover"></td>
+                    <td><img src="${imageSrc}" alt="${product.name}" style="width: 50px; height: 50px; border-radius: 50px; object-fit: cover"></td>
                     <td>${product.name}</td>
                     <td>${product.description}</td>
                     <td>${product.price}</td>
@@ -295,6 +303,9 @@
                 return matchesSearch && matchesUnit;
             });
 
+            // Log filtered products to debug
+            console.log('Filtered Products:', filteredProducts);
+
             // Calculate pagination
             const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
             currentPage = Math.min(currentPage, totalPages || 1);
@@ -320,21 +331,16 @@
         });
 
         // Stock Chart: Show top 20 products by quantity, including all low stock products
-        // Step 1: Filter low stock products (quantity < 5)
         const lowStockProducts = products.filter(product => product.quantity < 5);
-
-        // Step 2: Filter out high stock products (quantity >= 5) and sort by quantity descending
         const highStockProducts = products
             .filter(product => product.quantity >= 5)
             .sort((a, b) => b.quantity - a.quantity);
 
-        // Step 3: Combine low stock products with top high stock products to make up to 20
         const maxChartItems = 20;
         const remainingSlots = maxChartItems - lowStockProducts.length;
         const topHighStockProducts = highStockProducts.slice(0, remainingSlots);
         const chartProducts = [...lowStockProducts, ...topHighStockProducts].sort((a, b) => b.quantity - a.quantity);
 
-        // Step 4: Prepare chart data
         const labels = chartProducts.map(product => product.name);
         const lowStockData = chartProducts.map(product => product.quantity < 5 ? product.quantity : 0);
         const highStockData = chartProducts.map(product => product.quantity >= 5 ? product.quantity : 0);
@@ -373,8 +379,12 @@
             },
         });
 
-        // Dynamic Pie Chart for Units (unchanged)
+        // Dynamic Pie Chart for Units
         document.addEventListener('DOMContentLoaded', function() {
+            // Reset filters on page load
+            document.getElementById('searchInput').value = '';
+            document.getElementById('unitSelect').value = '';
+
             const pieCtx = document.getElementById('pie-chart').getContext('2d');
 
             const unitCounts = {};
