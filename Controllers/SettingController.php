@@ -6,4 +6,6 @@ class SettingController extends BaseController
     {
         $this->view("settings/setting");
     }
+    
+    
 }

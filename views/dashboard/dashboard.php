@@ -10,6 +10,18 @@
     <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
     <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
     <link href="views/assets/css/dashboard.css" rel="stylesheet" />
+    <style>
+        /* Custom styles for the filter section */
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #searchInput {
+            height: 40px;
+        }
+    </style>
 </head>
 
 <body>
@@ -32,7 +44,7 @@
                                     <h5 class="font-weight-bolder"><?= $totalProducts; ?></h5>
                                     <p class="mb-0">
                                         <span class="text-success text-sm font-weight-bolder"><?= $totalProductsPercentage . $symbol ?></span>
-                                        of 650 produts
+                                        of 650 products
                                     </p>
                                 </div>
                             </div>
@@ -144,38 +156,24 @@
             </div>
         </div>
 
-        <!-- Filter product section remains largely unchanged -->
-        <?php
-        // Example pagination setup
-        $productsPerPage = 10;
-        $totalProducts = count($products);
-        $totalPages = ceil($totalProducts / $productsPerPage);
-        $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        $startIndex = ($currentPage - 1) * $productsPerPage;
-
-        // Slice the products array for pagination
-        $paginatedProducts = array_slice($products, $startIndex, $productsPerPage);
-        ?>
-
         <div class="card p-3 mt-4">
-            <h4>Filter product</h4>
-            <div class="selection">
-                <form method="GET" action="#">
-                    <input type="text" id="form-control" name="query" class="form-control" placeholder="Search...."
-                        aria-label="Search" value="<?= htmlspecialchars($_GET['query'] ?? '') ?>">
-                </form>
-                <select id="form-select" class="form-select" aria-label="Default select example">
-                    <option selected value="">Select by unit</option>
-                    <?php
-                    $units = [];
-                    foreach ($products as $product) {
-                        if (!empty($product['unit']) && !in_array($product['unit'], $units)) {
-                            $units[] = $product['unit'];
-                            echo '<option value="' . htmlspecialchars($product['unit']) . '">' . htmlspecialchars($product['unit']) . '</option>';
+            <div class="filter-header">
+                <h4>Filter product</h4>
+                <div class="selection">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Search...." aria-label="Search">
+                    <select id="unitSelect" class="form-select" aria-label="Default select example">
+                        <option selected value="">Select by unit</option>
+                        <?php
+                        $units = [];
+                        foreach ($products as $product) {
+                            if (!empty($product['unit']) && !in_array($product['unit'], $units)) {
+                                $units[] = $product['unit'];
+                                echo '<option value="' . htmlspecialchars($product['unit']) . '">' . htmlspecialchars($product['unit']) . '</option>';
+                            }
                         }
-                    }
-                    ?>
-                </select>
+                        ?>
+                    </select>
+                </div>
             </div>
 
             <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
@@ -191,73 +189,156 @@
                             <th>Quantity</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <?php if (!empty($paginatedProducts) && is_array($paginatedProducts)): ?>
-                            <?php foreach ($paginatedProducts as $product): ?>
-                                <tr>
-                                    <td><?= htmlspecialchars($product['product_id']) ?></td>
-                                    <td><img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>"
-                                            style="width: 50px; height: 50px; border-radius: 50px; object-fit: cover"></td>
-                                    <td><?= htmlspecialchars($product['name']) ?></td>
-                                    <td><?= htmlspecialchars($product['description']) ?></td>
-                                    <td><?= htmlspecialchars($product['price']) ?></td>
-                                    <td><?= htmlspecialchars($product['unit']) ?></td>
-                                    <td><?= htmlspecialchars($product['quantity']) ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <tr>
-                                <td colspan="7" class="text-center">There Are No Products.</td>
-                            </tr>
-                        <?php endif; ?>
-                        <tr id="no-products-message" style="display: none;">
-                            <td colspan="7" class="text-center text-danger">Not Product Found !!</td>
-                        </tr>
+                    <tbody id="productTableBody">
+                        <!-- Table rows will be populated by JavaScript -->
                     </tbody>
                 </table>
+                <div id="no-products-message" class="text-center text-danger" style="display: none;">
+                    No Products Found!
+                </div>
             </div>
 
             <!-- Pagination UI -->
-            <?php if ($totalPages > 1): ?>
-                <div class="d-flex justify-content-end mt-3">
-                    <nav aria-label="Page navigation">
-                        <ul class="pagination mb-0">
-                            <li class="page-item <?= ($currentPage == 1) ? 'disabled' : '' ?>">
-                                <a class="page-link" href="?page=1<?= isset($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '' ?>" aria-label="First">
-                                    &laquo;
-                                </a>
-                            </li>
-
-                            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                                <li class="page-item <?= ($i == $currentPage) ? 'active' : '' ?>">
-                                    <a class="page-link" href="?page=<?= $i ?><?= isset($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '' ?>">
-                                        <?= $i ?>
-                                    </a>
-                                </li>
-                            <?php endfor; ?>
-
-                            <li class="page-item <?= ($currentPage == $totalPages) ? 'disabled' : '' ?>">
-                                <a class="page-link" href="?page=<?= $totalPages ?><?= isset($_GET['query']) ? '&query=' . urlencode($_GET['query']) : '' ?>" aria-label="Last">
-                                    &raquo;
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-            <?php endif; ?>
-
+            <div class="d-flex justify-content-end mt-3">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination mb-0" id="pagination"></ul>
+                </nav>
+            </div>
         </div>
-
     </div>
 
     <script>
         // Product data from PHP
         const products = <?= json_encode($products); ?>;
+        const productsPerPage = 10;
+        let currentPage = 1;
+        let filteredProducts = products;
 
-        // Stock Chart (unchanged)
-        const labels = products.map(product => product.name);
-        const lowStockData = products.map(product => product.quantity < 5 ? product.quantity : 0);
-        const highStockData = products.map(product => product.quantity >= 5 ? product.quantity : 0);
+        // Function to render table rows
+        function renderTable(productsToShow) {
+            const tableBody = document.getElementById('productTableBody');
+            tableBody.innerHTML = '';
+
+            if (productsToShow.length === 0) {
+                document.getElementById('no-products-message').style.display = 'block';
+                return;
+            }
+
+            document.getElementById('no-products-message').style.display = 'none';
+
+            productsToShow.forEach(product => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${product.product_id}</td>
+                    <td><img src="${product.image}" alt="${product.name}" style="width: 50px; height: 50px; border-radius: 50px; object-fit: cover"></td>
+                    <td>${product.name}</td>
+                    <td>${product.description}</td>
+                    <td>${product.price}</td>
+                    <td>${product.unit}</td>
+                    <td>${product.quantity}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Function to render pagination
+        function renderPagination(totalPages) {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            // First page button
+            pagination.innerHTML += `
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="#" data-page="1" aria-label="First">«</a>
+                </li>
+            `;
+
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                pagination.innerHTML += `
+                    <li class="page-item ${i === currentPage ? 'active' : ''}">
+                        <a class="page-link" href="#" data-page="${i}">${i}</a>
+                    </li>
+                `;
+            }
+
+            // Last page button
+            pagination.innerHTML += `
+                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="#" data-page="${totalPages}" aria-label="Last">»</a>
+                </li>
+            `;
+
+            // Add event listeners to pagination links
+            document.querySelectorAll('.page-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const page = parseInt(e.target.dataset.page);
+                    if (page && page !== currentPage) {
+                        currentPage = page;
+                        updateTable();
+                    }
+                });
+            });
+        }
+
+        // Function to filter and update table
+        function updateTable() {
+            const searchQuery = document.getElementById('searchInput').value.toUpperCase();
+            const selectedUnit = document.getElementById('unitSelect').value.toUpperCase();
+
+            // Filter products
+            filteredProducts = products.filter(product => {
+                const matchesSearch = product.name.toUpperCase().includes(searchQuery) ||
+                    product.price.toString().includes(searchQuery);
+                const matchesUnit = selectedUnit === '' || product.unit.toUpperCase() === selectedUnit;
+                return matchesSearch && matchesUnit;
+            });
+
+            // Calculate pagination
+            const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+            currentPage = Math.min(currentPage, totalPages || 1);
+
+            // Slice products for current page
+            const startIndex = (currentPage - 1) * productsPerPage;
+            const paginatedProducts = filteredProducts.slice(startIndex, startIndex + productsPerPage);
+
+            // Render table and pagination
+            renderTable(paginatedProducts);
+            renderPagination(totalPages);
+        }
+
+        // Event listeners for filters
+        document.getElementById('searchInput').addEventListener('input', () => {
+            currentPage = 1; // Reset to first page on search
+            updateTable();
+        });
+
+        document.getElementById('unitSelect').addEventListener('change', () => {
+            currentPage = 1; // Reset to first page on unit change
+            updateTable();
+        });
+
+        // Stock Chart: Show top 20 products by quantity, including all low stock products
+        // Step 1: Filter low stock products (quantity < 5)
+        const lowStockProducts = products.filter(product => product.quantity < 5);
+
+        // Step 2: Filter out high stock products (quantity >= 5) and sort by quantity descending
+        const highStockProducts = products
+            .filter(product => product.quantity >= 5)
+            .sort((a, b) => b.quantity - a.quantity);
+
+        // Step 3: Combine low stock products with top high stock products to make up to 20
+        const maxChartItems = 20;
+        const remainingSlots = maxChartItems - lowStockProducts.length;
+        const topHighStockProducts = highStockProducts.slice(0, remainingSlots);
+        const chartProducts = [...lowStockProducts, ...topHighStockProducts].sort((a, b) => b.quantity - a.quantity);
+
+        // Step 4: Prepare chart data
+        const labels = chartProducts.map(product => product.name);
+        const lowStockData = chartProducts.map(product => product.quantity < 5 ? product.quantity : 0);
+        const highStockData = chartProducts.map(product => product.quantity >= 5 ? product.quantity : 0);
+
         const ctx = document.getElementById('stockChart').getContext('2d');
         new Chart(ctx, {
             type: 'bar',
@@ -280,14 +361,22 @@
                         position: 'top'
                     },
                 },
+                scales: {
+                    x: {
+                        ticks: {
+                            autoSkip: false,
+                            maxRotation: 45,
+                            minRotation: 45
+                        }
+                    }
+                }
             },
         });
 
-        // Dynamic Pie Chart for Units
+        // Dynamic Pie Chart for Units (unchanged)
         document.addEventListener('DOMContentLoaded', function() {
             const pieCtx = document.getElementById('pie-chart').getContext('2d');
 
-            // Calculate unit distribution
             const unitCounts = {};
             products.forEach(product => {
                 if (product.unit) {
@@ -302,7 +391,7 @@
                 '#6f42c1', '#858796', '#36b9cc', '#f8f9fc'
             ].slice(0, unitLabels.length);
 
-            const pieChart = new Chart(pieCtx, {
+            new Chart(pieCtx, {
                 type: 'doughnut',
                 data: {
                     labels: unitLabels,
@@ -338,41 +427,9 @@
                     cutout: '50%'
                 }
             });
-        });
 
-        // Existing filter functions
-        document.getElementById('form-select').addEventListener('change', function() {
-            const selectedUnit = this.value.toUpperCase();
-            const table = document.getElementById("productTable");
-            const rows = table.getElementsByTagName("tr");
-
-            for (let i = 1; i < rows.length; i++) {
-                const unitCell = rows[i].getElementsByTagName("td")[5];
-                if (unitCell) {
-                    const unitValue = unitCell.textContent || unitCell.innerText;
-                    rows[i].style.display = (selectedUnit === "" || unitValue.toUpperCase() === selectedUnit) ? "" : "none";
-                }
-            }
-        });
-
-        document.getElementById('form-control').addEventListener('keyup', function() {
-            const filter = this.value.toUpperCase();
-            const table = document.getElementById("productTable");
-            const rows = table.getElementsByTagName("tr");
-            let visibleRowCount = 0;
-
-            for (let i = 1; i < rows.length; i++) {
-                const nameCell = rows[i].getElementsByTagName("td")[2];
-                const priceCell = rows[i].getElementsByTagName("td")[4];
-                if (nameCell && priceCell) {
-                    const nameValue = nameCell.textContent || nameCell.innerText;
-                    const priceValue = parseFloat(priceCell.textContent || priceCell.innerText);
-                    const matches = nameValue.toUpperCase().includes(filter) || priceValue.toString().includes(filter);
-                    rows[i].style.display = matches ? "" : "none";
-                    if (matches) visibleRowCount++;
-                }
-            }
-            document.getElementById("no-products-message").style.display = visibleRowCount === 0 ? "" : "none";
+            // Initial table render
+            updateTable();
         });
     </script>
 </body>
