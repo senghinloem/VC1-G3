@@ -1,5 +1,4 @@
 <?php
-
 class CategoriesModel {
     private $db;
 
@@ -10,6 +9,8 @@ class CategoriesModel {
             throw new Exception("Database connection failed: " . $e->getMessage());
         }
     }
+
+    // Existing methods...
 
     public function getCategory() {
         try {
@@ -70,6 +71,9 @@ class CategoriesModel {
 
     public function assignProductsToCategory($category_id, $product_ids) {
         try {
+            // Clear existing assignments (optional, depending on your requirements)
+            $this->clearProductsFromCategory($category_id);
+            // Assign new products
             $stmt = $this->db->prepare("UPDATE products SET category_id = ? WHERE product_id = ?");
             foreach ($product_ids as $product_id) {
                 $stmt->execute([$category_id, $product_id]);
@@ -80,6 +84,16 @@ class CategoriesModel {
         }
     }
 
+    public function clearProductsFromCategory($category_id) {
+        try {
+            $stmt = $this->db->prepare("UPDATE products SET category_id = NULL WHERE category_id = ?");
+            $stmt->execute([$category_id]);
+            return true;
+        } catch (PDOException $e) {
+            throw new Exception("Error clearing products from category: " . $e->getMessage());
+        }
+    }
+
     public function getProductsByCategory($category_id) {
         try {
             $stmt = $this->db->prepare("SELECT product_id, name, description, price, unit, quantity FROM products WHERE category_id = ? ORDER BY name");
@@ -87,6 +101,22 @@ class CategoriesModel {
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             throw new Exception("Error fetching products for category: " . $e->getMessage());
+        }
+    }
+
+    public function searchCategories($query) {
+        try {
+            $stmt = $this->db->prepare("
+                SELECT category_id, category_name, description, created_at 
+                FROM categories 
+                WHERE category_name LIKE ? OR description LIKE ?
+                ORDER BY category_name
+            ");
+            $searchTerm = "%" . $query . "%";
+            $stmt->execute([$searchTerm, $searchTerm]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Error searching categories: " . $e->getMessage());
         }
     }
 }
