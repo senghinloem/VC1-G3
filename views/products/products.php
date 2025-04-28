@@ -35,7 +35,7 @@ if (!isset($_SESSION['user_id'])) {
             background: #ffffff; 
             padding: 1rem 1.5rem 1rem 1.5rem; 
             margin-top: -3.5rem;
-            box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 0px 8px;
+            box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px;        
         }
         .header-section h4 {
             margin: 0;
@@ -435,7 +435,7 @@ if (!isset($_SESSION['user_id'])) {
     
 <div class="container mt-4">
     <!-- Header Section -->
-    <div class="header-section" style="margin-top: 1px;">
+    <div class="header-section" style="margin-top: -31px;">
     
         <h4>
             <i class="fas fa-box me-2 text-primary"></i> Products
@@ -464,26 +464,26 @@ if (!isset($_SESSION['user_id'])) {
         <div class="row">
             <div class="col-md-3 col-sm-6 mb-3">
                 <div class="stat-card total-users">
-                    <h3><?= number_format($totalUsers ?? 0) ?></h3>
+                    <h3><?= number_format($totalProducts ?? 0) ?></h3>
                     <p>Total Products</p>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6 mb-3">
                 <div class="stat-card online-users">
-                    <h3><?= number_format($activeUsers ?? 0) ?></h3>
-                    <p>Online Users</p>
+                    <h3><?= number_format($addedProducts ?? 0) ?></h3>
+                    <p>New Products Added</p>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6 mb-3">
                 <div class="stat-card offline-users">
-                    <h3><?= number_format($inactiveUsers ?? 0) ?></h3>
-                    <p>Offline Users</p>
+                    <h3><?= number_format($assignedProducts ?? 0) ?></h3>
+                    <p>New Products Assigned</p>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6 mb-3">
                 <div class="stat-card online-rate">
-                    <h3></h3>
-                    <p>Online Rate</p>
+                    <h3><?= number_format($totalProducts ?? 0) ?></h3>
+                    <p>New Products Pending Assignment</p>
                 </div>
             </div>
         </div>
@@ -531,7 +531,7 @@ if (!isset($_SESSION['user_id'])) {
                         <tr>
                             <td><input type="checkbox" class="productCheckbox" value="<?= $product['product_id'] ?>"></td>
                             <td>
-                                <img class="default-product-image" src="<?= htmlspecialchars($product['image']) ?>" alt="no image<?= htmlspecialchars($product['name']) ?>" style="width: 80px; height: 80px;">
+                                <img class="default-product-image" src="<?= htmlspecialchars($product['image'] ?? 'https://www.mooreseal.com/wp-content/uploads/2013/11/dummy-image-square.jpg') ?>" alt="" style="width: 80px; height: 80px;">
                             </td>
                             <td>
                                 <span class="product-name-box"><?= htmlspecialchars($product['name']) ?></span>
@@ -551,7 +551,7 @@ if (!isset($_SESSION['user_id'])) {
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr class="empty-state">
-                        <td colspan="7" class="text-center">
+                        <td colspan="8" class="text-center">
                             <i class="bi bi-box-seam" style="font-size: 3rem; color: #adb5bd;"></i>
                             <p class="mt-2 mb-0">No products found</p>
                         </td>
