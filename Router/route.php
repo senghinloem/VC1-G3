@@ -14,6 +14,7 @@ require_once "Controllers/HelpController.php";
 require_once "Controllers/SettingController.php";
 require_once "Controllers/ReportController.php";
 require_once "Controllers/NotificationController.php";
+require_once "Controllers/CategoriesController.php";
 
 $route = new Router();
 
@@ -91,6 +92,14 @@ $route->get("/notifications", [NotificationController::class, 'index']);
 $route->post("/notifications/mark-all-read", [NotificationController::class, 'markAllAsRead']);
 // $route->post("/notifications/mark-read/{notification_id}", [NotificationController::class, 'markAsRead']);
 $route->post("/notifications/delete/{notification_id}", [NotificationController::class, 'delete']);
-    
+
+// categories
+$route->get("/category", [CategoriesController::class, "category"]);
+$route->get("/category/create", [CategoriesController::class, "create"]);
+$route->post("/category/create", [CategoriesController::class, "create"]);
+$route->get("/category/edit/{category_id}", [CategoriesController::class, "edit"]);
+$route->post("/category/edit/{category_id}", [CategoriesController::class, "edit"]);
+$route->get("/category/delete/{category_id}", [CategoriesController::class, "delete"]);
+$route->get("/categories/category/show/{category_id}", [CategoriesController::class, "show"]);
 $route->route();
 ?>
