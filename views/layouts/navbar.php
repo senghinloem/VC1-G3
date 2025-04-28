@@ -12,7 +12,6 @@ $notificationCount = isset($_SESSION['user_id']) ? $notificationModel->getNotifi
 
 <?php if (isset($_SESSION['user_id'])): ?>
 <!--begin::Body-->
-
 <body class="layout-fixed sidebar-expand-lg bg-light">
     <!--begin::App Wrapper-->
     <div class="app-wrapper">
@@ -36,18 +35,14 @@ $notificationCount = isset($_SESSION['user_id']) ? $notificationModel->getNotifi
                         <a class="nav-link position-relative" data-bs-toggle="dropdown" href="#" aria-expanded="false">
                             <i class="bi bi-bell-fill fs-5 text-dark"></i>
                             <?php if ($notificationCount > 0): ?>
-                            <span
-                                class="badge bg-warning position-absolute notification-badge"><?php echo $notificationCount; ?></span>
+                            <span class="badge bg-warning position-absolute notification-badge"><?php echo $notificationCount; ?></span>
                             <?php endif; ?>
                         </a>
-                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end shadow-lg border-0 rounded-3 p-2"
-                            style="min-width: 350px;">
+                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end shadow-lg border-0 rounded-3 p-2" style="min-width: 350px;">
                             <!-- Header -->
-                            <div
-                                class="dropdown-header d-flex align-items-center justify-content-between p-3 bg-primary text-white rounded-top">
+                            <div class="dropdown-header d-flex align-items-center justify-content-between p-3 bg-primary text-white rounded-top">
                                 <span class="fw-semibold fs-6">Notifications</span>
-                                <span
-                                    class="badge bg-light text-primary rounded-pill"><?php echo $notificationCount; ?></span>
+                                <span class="badge bg-light text-primary rounded-pill"><?php echo $notificationCount; ?></span>
                             </div>
                             <!-- Notification Items -->
                             <div class="dropdown-body" style="max-height: 300px; overflow-y: auto;">
@@ -58,17 +53,12 @@ $notificationCount = isset($_SESSION['user_id']) ? $notificationModel->getNotifi
                                 <?php else: ?>
                                 <?php foreach ($notifications as $notification): ?>
                                 <a href="#" class="dropdown-item d-flex align-items-center p-3 rounded-2 my-1">
-                                    <div class="bg-<?php echo $notification['type'] === 'success' ? 'success' : ($notification['type'] === 'error' ? 'danger' : 'info'); ?> text-white d-flex align-items-center justify-content-center rounded-circle me-3"
-                                        style="width: 40px; height: 40px;">
-                                        <i
-                                            class="bi bi-<?php echo $notification['type'] === 'success' ? 'check-circle' : ($notification['type'] === 'error' ? 'x-circle' : 'info-circle'); ?> fs-5"></i>
+                                    <div class="bg-<?php echo $notification['type'] === 'success' ? 'success' : ($notification['type'] === 'error' ? 'danger' : 'info'); ?> text-white d-flex align-items-center justify-content-center rounded-circle me-3" style="width: 40px; height: 40px;">
+                                        <i class="bi bi-<?php echo $notification['type'] === 'success' ? 'check-circle' : ($notification['type'] === 'error' ? 'x-circle' : 'info-circle'); ?> fs-5"></i>
                                     </div>
                                     <div class="flex-grow-1">
-
-                                        <p class="mb-0 fw-medium text-dark">
-                                            <?php echo htmlspecialchars($notification['message']); ?></p>
-                                        <small
-                                            class="text-muted"><?php echo date('H:i d M', strtotime($notification['created_at'])); ?></small>
+                                        <p class="mb-0 fw-medium text-dark"><?php echo htmlspecialchars($notification['message']); ?></p>
+                                        <small class="text-muted"><?php echo date('H:i d M', strtotime($notification['created_at'])); ?></small>
                                     </div>
                                 </a>
                                 <?php endforeach; ?>
@@ -76,8 +66,7 @@ $notificationCount = isset($_SESSION['user_id']) ? $notificationModel->getNotifi
                             </div>
                             <!-- Footer -->
                             <div class="dropdown-footer p-2 bg-light rounded-bottom">
-                                <a href="/notifications"
-                                    class="d-block text-center text-primary fw-semibold py-2 rounded-2">
+                                <a href="/notifications" class="d-block text-center text-primary fw-semibold py-2 rounded-2">
                                     See All Notifications
                                 </a>
                             </div>
@@ -86,34 +75,48 @@ $notificationCount = isset($_SESSION['user_id']) ? $notificationModel->getNotifi
                     <!--end::Notifications Dropdown-->
                     <!--begin::User Menu Dropdown-->
                     <li class="nav-item dropdown user-menu">
-                        <a href="#" class="nav-link dropdown-toggle d-flex align-items-center"
-                            data-bs-toggle="dropdown">
+                        <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
                             <?php
-                                $userImage = isset($_SESSION['image']) && !empty($_SESSION['image']) 
-                                    ? '/uploads/' . htmlspecialchars($_SESSION['image'], ENT_QUOTES, 'UTF-8') 
-                                    : '/views/assets/img/user2-160x160.jpg';
-                                $imagePath = $_SERVER['DOCUMENT_ROOT'] . $userImage;
-                                if (!file_exists($imagePath)) {
-                                    $userImage = '/views/assets/img/user2-160x160.jpg';
+                            // Define the default image path
+                            $defaultImage = '/views/assets/img/user2-160x160.jpg';
+                            // Check if user image exists in session and is valid
+                            $userImage = isset($_SESSION['image']) && !empty($_SESSION['image']) 
+                                ? '/uploads/' . htmlspecialchars($_SESSION['image'], ENT_QUOTES, 'UTF-8') 
+                                : $defaultImage;
+
+                            // Construct absolute path to check if the image exists
+                            $imagePath = $_SERVER['DOCUMENT_ROOT'] . $userImage;
+
+                            // If the image doesn't exist, fall back to a placeholder or default
+                            if (!file_exists($imagePath) || !is_readable($imagePath)) {
+                                $userImage = $defaultImage; // Try the default image again
+                                $defaultImagePath = $_SERVER['DOCUMENT_ROOT'] . $defaultImage;
+
+                                // If even the default image is missing, use a fallback placeholder
+                                if (!file_exists($defaultImagePath) || !is_readable($defaultImagePath)) {
+                                    $userImage = '/views/assets/img/placeholder-user.jpg'; // Ensure this placeholder exists
+                                    $placeholderPath = $_SERVER['DOCUMENT_ROOT'] . $userImage;
+
+                                    // Last resort: if placeholder is also missing, use a base64-encoded default image
+                                    if (!file_exists($placeholderPath) || !is_readable($placeholderPath)) {
+                                        $userImage = 'data:image/svg+xml;base64,' . base64_encode(
+                                            '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="20" fill="#ccc"/><path d="M20 10a6 6 0 0 1 0 12 6 6 0 0 1 0-12zm0 14c5 0 9 3 9 7v1H11v-1c0-4 4-7 9-7z" fill="#fff"/></svg>'
+                                        );
+                                    }
                                 }
-                                $userFirstName = $_SESSION['first_name'] ?? 'Unknown';
-                                $userLastName = $_SESSION['last_name'] ?? '';
-                                $fullName = trim("$userFirstName $userLastName");
-                                ?>
-                            <img src="<?= htmlspecialchars($userImage, ENT_QUOTES, 'UTF-8') ?>"
-                                class="user-image rounded-circle shadow-sm me-2" alt="User Image" width="40"
-                                height="40">
+                            }
+
+                            $userFirstName = $_SESSION['first_name'] ?? 'Unknown';
+                            $userLastName = $_SESSION['last_name'] ?? '';
+                            $fullName = trim("$userFirstName $userLastName");
+                            ?>
+                            <img src="<?= htmlspecialchars($userImage, ENT_QUOTES, 'UTF-8') ?>" class="user-image rounded-circle shadow-sm me-2" alt="User Image" width="40" height="40">
                         </a>
                         <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end shadow border-0 rounded-3">
                             <li class="user-header text-center p-3 bg-light border-bottom">
-                                <img src="<?= htmlspecialchars($userImage, ENT_QUOTES, 'UTF-8') ?>"
-                                    class="rounded-circle shadow-sm mb-2" alt="User Image" width="80" height="80">
-                                <p class="mb-0 fw-bold">
-                                    <?= htmlspecialchars($fullName ?: 'Unknown') ?>
-                                </p>
-                                <small class="opacity-75">
-                                    <?= htmlspecialchars($_SESSION['user_role'] ?? 'Role Unknown') ?>
-                                </small>
+                                <img src="<?= htmlspecialchars($userImage, ENT_QUOTES, 'UTF-8') ?>" class="rounded-circle shadow-sm mb-2" alt="User Image" width="80" height="80">
+                                <p class="mb-0 fw-bold"><?= htmlspecialchars($fullName ?: 'Unknown') ?></p>
+                                <small class="opacity-75"><?= htmlspecialchars($_SESSION['user_role'] ?? 'Role Unknown') ?></small>
                             </li>
                             <li class="p-2">
                                 <a href="/users/profile" class="dropdown-item d-flex align-items-center">
@@ -121,7 +124,6 @@ $notificationCount = isset($_SESSION['user_id']) ? $notificationModel->getNotifi
                                 </a>
                                 <a href="#" class="dropdown-item d-flex align-items-center">
                                     <i class="bi bi-gear me-2"></i> Settings
-
                                 </a>
                                 <div class="dropdown-divider"></div>
                                 <a href="/users/logout" class="dropdown-item d-flex align-items-center text-danger">
@@ -164,24 +166,18 @@ $notificationCount = isset($_SESSION['user_id']) ? $notificationModel->getNotifi
                                 <span class="ms-2">Stock Management</span>
                             </a>
                         </li>
-
-
                         <li class="nav-item">
                             <a href="/product_list" class="nav-link text-white">
                                 <i class="bi bi-clipboard-fill"></i>
                                 <span class="ms-2">Product List</span>
                             </a>
                         </li>
-
-
                         <li class="nav-item">
                             <a href="/category" class="nav-link text-white">
                                 <i class="bi bi-tags-fill"></i>
                                 <span class="ms-2">Category</span>
                             </a>
                         </li>
-
-
                         <li class="nav-item">
                             <a href="/supplier" class="nav-link text-white">
                                 <i class="bi bi-tree-fill"></i>
@@ -210,12 +206,6 @@ $notificationCount = isset($_SESSION['user_id']) ? $notificationModel->getNotifi
 
                     <div class="mt-4 border-top pt-3">
                         <ul class="nav sidebar-menu flex-column">
-                            <!-- <li class="nav-item">
-                                    <a href="/setting" class="nav-link text-white">
-                                        <i class="bi bi-gear-fill"></i>
-                                        <span class="ms-2">Settings</span>
-                                    </a>
-                                </li> -->
                             <li class="nav-item">
                                 <a href="/help" class="nav-link text-white">
                                     <i class="bi bi-question-circle-fill"></i>
@@ -256,4 +246,4 @@ $notificationCount = isset($_SESSION['user_id']) ? $notificationModel->getNotifi
             });
         });
         </script>
-        <?php endif; ?>
+    <?php endif; ?>
