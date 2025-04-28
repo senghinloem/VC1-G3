@@ -28,7 +28,7 @@ class ProductController extends BaseController {
     }
 
     public function store() {
-        $imagePath = "uploads/default.png";
+        $imagePath = 'https://www.mooreseal.com/wp-content/uploads/2013/11/dummy-image-square.jpg';
         $errors = [];
 
         if (!empty($_FILES['image']['name'])) {
