@@ -1,5 +1,4 @@
 <?php
-// Ensure $stock_management is initialized as an empty array if not set
 if (!isset($stock_management)) {
     $stock_management = [];
 }
@@ -34,7 +33,6 @@ if (!isset($stock_management)) {
             </div>
         </div>
     </div>
-
     <!-- Stock Out of Product (Quantity = 0) -->
     <h4 class="text-danger mt-5" style="margin-left: 2cm;">Out of Stock</h4>
     <div class="col-12 mt-5">

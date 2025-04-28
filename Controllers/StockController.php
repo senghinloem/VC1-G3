@@ -80,9 +80,12 @@ class StockController extends BaseController
                 $this->view("stocks/create_stock", ['error' => 'Failed to add stock. Invalid product or data.', 'products' => $products]);
             }
         } catch (PDOException $e) {
-            $products = $this->stockModel->getProducts();
-            $error_message = $e->getCode() == '23000' ? 'Invalid product or stock already exists.' : 'An error occurred: ' . $e->getMessage();
-            $this->view("stocks/create_stock", ['error' => $error_message, 'products' => $products]);
+            if ($e->getCode() == 23000) {
+                $this->view("stocks/create_stock", ['error' => 'Stock already exists.']);
+            } else {
+                error_log("Error in store: " . $e->getMessage());
+                $this->view("stocks/create_stock", ['error' => 'An error occurred: ' . $e->getMessage()]);
+            }
         }
     }
 
@@ -104,7 +107,6 @@ class StockController extends BaseController
             $this->redirect('/stock?error=Failed to delete stock');
         }
     }
-
     public function search()
     {
         $search_term = $_GET['search'] ?? '';
@@ -186,7 +188,6 @@ class StockController extends BaseController
             ]);
             return;
         }
-
         try {
             $success = $this->stockModel->updateStock($stock_id, $stock_name, $product_id, $quantity);
             if ($success) {
@@ -224,72 +225,65 @@ class StockController extends BaseController
     }
 
     public function adjust($stock_id)
-{
-    if (!$this->stockModel->validateStockId($stock_id)) {
-        $this->redirect('/stock?error=Stock item does not exist');
-        return;
-    }
-    
-    $stock = $this->stockModel->getStockById($stock_id);
-    if (!$stock) {
-        $this->redirect("/stock?error=Stock not found.");
-        return;
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        // Show the adjustment form
-        $this->view('stocks/adjust_stock', ['stock' => $stock]);
-        return;
-    }
-
-    // Process the form submission
-    $add = isset($_POST['add_quantity']) ? (int)$_POST['add_quantity'] : 0;
-    $subtract = isset($_POST['subtract_quantity']) ? (int)$_POST['subtract_quantity'] : 0;
-
-    // Validate quantities
-    if ($add < 0 || $subtract < 0) {
-        $this->redirect("/stock/view/{$stock_id}?error=Quantities cannot be negative");
-        return;
-    }
-
-    if ($add === 0 && $subtract === 0) {
-        $this->redirect("/stock/view/{$stock_id}?error=No adjustment made");
-        return;
-    }
-
-    if ($subtract > ($stock['stock_quantity'] + $add)) {
-        $this->redirect("/stock/view/{$stock_id}?error=Subtract quantity exceeds available stock");
-        return;
-    }
-
-    $new_quantity = max(0, $stock['stock_quantity'] + $add - $subtract);
-    if ($new_quantity > 500) {
-        $new_quantity = 500;
-    }
-
-    try {
-        $success = $this->stockModel->updateStock(
-            $stock_id, 
-            $stock['stock_name'], 
-            $stock['product_id'], 
-            $new_quantity
-        );
-        
-        if ($success) {
-            // Redirect to stock listing page after successful adjustment
-            $this->redirect("/stock?success=Stock adjusted successfully");
-        } else {
-            $this->redirect("/stock?error=Failed to adjust stock");
+    {
+        if (!$this->stockModel->validateStockId($stock_id)) {
+            $this->redirect('/stock?error=Stock item does not exist');
+            return;
         }
-    } catch (Exception $e) {
-        error_log("Adjustment error for stock_id $stock_id: " . $e->getMessage());
-        $this->redirect("/stock?error=Failed to adjust stock: " . $e->getMessage());
+
+        $stock = $this->stockModel->getStockById($stock_id);
+        if (!$stock) {
+            $this->redirect("/stock?error=Stock not found.");
+            return;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->view('stocks/adjust_stock', ['stock' => $stock]);
+            return;
+        }
+        $add = isset($_POST['add_quantity']) ? (int)$_POST['add_quantity'] : 0;
+        $subtract = isset($_POST['subtract_quantity']) ? (int)$_POST['subtract_quantity'] : 0;
+        if ($add < 0 || $subtract < 0) {
+            $this->redirect("/stock/view/{$stock_id}?error=Quantities cannot be negative");
+            return;
+        }
+
+        if ($add === 0 && $subtract === 0) {
+            $this->redirect("/stock/view/{$stock_id}?error=No adjustment made");
+            return;
+        }
+
+        if ($subtract > ($stock['stock_quantity'] + $add)) {
+            $this->redirect("/stock/view/{$stock_id}?error=Subtract quantity exceeds available stock");
+            return;
+        }
+
+        $new_quantity = max(0, $stock['stock_quantity'] + $add - $subtract);
+        if ($new_quantity > 500) {
+            $new_quantity = 500;
+        }
+
+        try {
+            $success = $this->stockModel->updateStock(
+                $stock_id,
+                $stock['stock_name'],
+                $stock['product_id'],
+                $new_quantity
+            );
+
+            if ($success) {
+                $this->redirect("/stock?success=Stock adjusted successfully");
+            } else {
+                $this->redirect("/stock?error=Failed to adjust stock");
+            }
+        } catch (Exception $e) {
+            error_log("Adjustment error for stock_id $stock_id: " . $e->getMessage());
+            $this->redirect("/stock?error=Failed to adjust stock: " . $e->getMessage());
+        }
     }
-}
 
     private function getCurrentUserId()
     {
-        // Implement your own logic to get the current user ID from session
-        return $_SESSION['user_id'] ?? 1; // Default to 1 if not set
+        return $_SESSION['user_id'] ?? 1;
     }
 }
