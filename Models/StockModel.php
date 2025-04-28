@@ -13,7 +13,10 @@ class StockModel {
 
     public function getStock() {
         try {
-            $result = $this->db->query("SELECT * FROM stock_management");
+            $sql = "SELECT sm.*, p.name AS product 
+                    FROM stock_management sm 
+                    LEFT JOIN products p ON sm.product_id = p.product_id";
+            $result = $this->db->query($sql);
             return $result->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             error_log("Error fetching stock: " . $e->getMessage());
@@ -23,7 +26,7 @@ class StockModel {
 
     public function getStockById($stock_id) {
         try {
-            $sql = "SELECT sm.*, p.product_id, p.image, p.name, p.description, p.price, p.unit, sm.quantity AS stock_quantity 
+            $sql = "SELECT sm.*, p.product_id, p.name AS product, p.image, p.description, p.price, p.unit, sm.quantity AS stock_quantity 
                     FROM stock_management sm 
                     LEFT JOIN products p ON sm.product_id = p.product_id 
                     WHERE sm.stock_id = :stock_id";
@@ -91,7 +94,10 @@ class StockModel {
 
     public function searchStock($search_term) {
         try {
-            $sql = "SELECT * FROM stock_management WHERE stock_name LIKE :search_term";
+            $sql = "SELECT sm.*, p.name AS product 
+                    FROM stock_management sm 
+                    LEFT JOIN products p ON sm.product_id = p.product_id 
+                    WHERE sm.stock_name LIKE :search_term";
             $stmt = $this->db->prepare($sql);
             $stmt->bindValue(':search_term', '%' . $search_term . '%', PDO::PARAM_STR);
             $stmt->execute();

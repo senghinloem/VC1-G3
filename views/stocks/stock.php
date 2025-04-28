@@ -27,7 +27,7 @@
     </div>
 
     <!-- Stock Has No Product (Quantity < 500) -->
-    <h4 class="text-danger mt-5" style="margin-left: 2cm;">Stock has no product</h4>
+    <h4 class="text-primary mt-5" style="margin-left: 2cm;">Stock Aviable</h4>
     <div class="col-12 mt-5">
         <div class="card">
             <div class="card-body p-0">
@@ -91,7 +91,7 @@
     </div>
 
     <!-- Stock Has Product (Quantity >= 500) -->
-    <h4 class="text-primary mt-5" style="margin-left: 2cm;">Stock has product</h4>
+    <h4 class="text-danger mt-5" style="margin-left: 2cm;">Stock Unaviable</h4>
     <div class="col-12 mt-5">
         <div class="card">
             <div class="card-body p-0">
