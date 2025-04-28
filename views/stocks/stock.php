@@ -14,7 +14,7 @@ if (!isset($stock_management)) {
                     </h4>
                     <div class="d-flex flex-wrap gap-3">
                     <div class="search-container">
-                                    <form action="/suppliers/search" method="GET" class="d-flex align-items-center" id="searchForm">
+                                    <form action="/stock/search" method="GET" class="d-flex align-items-center" id="searchForm">
                                         <div class="input-group">
                                             <input type="text" name="search" class="form-control" 
                                                    placeholder="Search for supplier..." 
