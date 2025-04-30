@@ -36,7 +36,8 @@ class ProductModel {
                 throw new Exception("Invalid product data");
             }
             $this->db->query(
-                "INSERT INTO products (image, name, description, price, unit, quantity) VALUES (:image, :name, :description, :price, :unit, :quantity)",
+                "INSERT INTO products (image, name, description, price, unit, quantity, created_at) 
+                 VALUES (:image, :name, :description, :price, :unit, :quantity, NOW())",
                 [
                     ':image' => $image,
                     ':name' => $name,
@@ -113,8 +114,8 @@ class ProductModel {
             
             // Assign to stock
             $result = $this->db->query(
-                "INSERT INTO stock_management (product_id, user_id, stock_name, quantity, status, stock_type) 
-                 VALUES (:product_id, :user_id, :stock_name, :quantity, :status, :stock_type)",
+                "INSERT INTO stock_management (product_id, user_id, stock_name, quantity, status, stock_type, created_at) 
+                 VALUES (:product_id, :user_id, :stock_name, :quantity, :status, :stock_type, NOW())",
                 [
                     ':product_id' => $productId,
                     ':user_id' => $_SESSION['user_id'],

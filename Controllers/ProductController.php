@@ -17,9 +17,18 @@ class ProductController extends BaseController {
     public function product() {
         $products = $this->product->getAllProducts();
         $stocks = $this->product->getAllStocks();
+        $totalProducts = $this->product->getTotalProductsCount();
+        $addedProducts = $this->product->getNewProductsAddedCount();
+        $assignedProducts = $this->product->getAssignedProductsCount();
+        $pendingProducts = $this->product->getPendingAssignmentCount();
+
         $this->view('products/products', [
             'products' => $products,
-            'stocks' => $stocks
+            'stocks' => $stocks,
+            'totalProducts' => $totalProducts,
+            'addedProducts' => $addedProducts,
+            'assignedProducts' => $assignedProducts,
+            'pendingProducts' => $pendingProducts
         ]);
     }
 
@@ -35,7 +44,7 @@ class ProductController extends BaseController {
             $imageInfo = getimagesize($_FILES['image']['tmp_name']);
             $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
             if ($imageInfo && in_array($imageInfo['mime'], $allowedTypes)) {
-                $uploadDir = "uploads/";
+                $uploadDir = "Uploads/";
                 $imageName = time() . "_" . basename($_FILES['image']['name']);
                 $imagePath = $uploadDir . preg_replace("/[^a-zA-Z0-9.\-_]/", "", $imageName);
                 if (!move_uploaded_file($_FILES['image']['tmp_name'], $imagePath)) {
@@ -120,7 +129,7 @@ class ProductController extends BaseController {
 
         $successCount = 0;
         foreach ($inputData['products'] as $product) {
-            $image = !empty($product['image']) ? $product['image'] : "uploads/default.png";
+            $image = !empty($product['image']) ? $product['image'] : "Uploads/default.png";
             $name = $product['name'];
             $description = $product['description'];
             $price = floatval($product['price']);
@@ -215,6 +224,4 @@ class ProductController extends BaseController {
             ]);
         }
     }
-    
 }
-?>
