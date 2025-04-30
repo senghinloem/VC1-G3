@@ -184,7 +184,6 @@ if (!isset($_SESSION['user_id'])) {
                             <table class="product-table table-borderless">
                                 <thead>
                                     <tr>
-                                        <th>Product ID</th>
                                         <th>Product Name</th>
                                         <th>Price</th>
                                         <th>Unit</th>
@@ -197,7 +196,6 @@ if (!isset($_SESSION['user_id'])) {
                                     <?php if (!empty($products) && is_array($products)): ?>
                                     <?php foreach ($products as $product): ?>
                                     <tr>
-                                        <td><?= htmlspecialchars($product['product_id']) ?></td>
                                         <td><?= htmlspecialchars($product['product_name']) ?></td>
                                         <td>$<?= number_format((float)$product['price'], 2) ?></td>
                                         <td><?= htmlspecialchars($product['unit']) ?></td>

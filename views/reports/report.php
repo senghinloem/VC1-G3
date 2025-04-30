@@ -7,14 +7,14 @@ error_reporting(E_ALL);
 // Include Composer's autoloader
 $autoload_path = __DIR__ . '/../../vendor/autoload.php';
 if (!file_exists($autoload_path)) {
-    die("Autoloader not found at: $autoload_path. Please run 'composer require phpoffice/phpspreadsheet setasign/fpdi' in the project root.");
+    die("Autoloader not found at: $autoload_path. Please run 'composer require phpoffice/phpspreadsheet setasign/fpdi tecnickcom/tcpdf' in the project root (C:\\Users\\Leader.Din\\Desktop\\VC1-G3).");
 }
 require_once $autoload_path;
 
 // Import required classes
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use setasign\Fpdi\Fpdi;
+use setasign\Fpdi\Tcpdf\Fpdi;
 
 // Database connection
 $host = 'localhost';
@@ -208,12 +208,16 @@ if (isset($_GET['export'])) {
     switch ($_GET['export']) {
         case 'pdf':
             try {
+                if (!class_exists('setasign\Fpdi\Tcpdf\Fpdi')) {
+                    die("FPDI with TCPDF class not found. Please ensure 'setasign/fpdi' and 'tecnickcom/tcpdf' are installed via Composer.");
+                }
                 $pdf = new Fpdi();
                 $pdf->AddPage();
                 $pdf->SetFont('Arial', 'B', 16);
                 $pdf->Cell(0, 10, 'Inventory Report - ' . ucfirst($report_period), 0, 1, 'C');
                 $pdf->Ln(10);
 
+                // Quick Stats
                 $pdf->SetFont('Arial', 'B', 12);
                 $pdf->Cell(0, 10, 'Quick Stats', 0, 1);
                 $pdf->SetFont('Arial', '', 12);
@@ -223,6 +227,7 @@ if (isset($_GET['export'])) {
                 $pdf->Cell(0, 10, "Turnover: " . number_format($data['monthly_turnover'] ?? 0, 1) . "%", 0, 1);
                 $pdf->Ln(10);
 
+                // Top Products
                 $pdf->SetFont('Arial', 'B', 12);
                 $pdf->Cell(0, 10, 'Top Products by Value', 0, 1);
                 $pdf->SetFont('Arial', '', 10);
@@ -242,6 +247,7 @@ if (isset($_GET['export'])) {
                 }
                 $pdf->Ln(10);
 
+                // Top Suppliers
                 $pdf->SetFont('Arial', 'B', 12);
                 $pdf->Cell(0, 10, 'Top Suppliers by Value', 0, 1);
                 $pdf->SetFont('Arial', '', 10);
@@ -257,6 +263,7 @@ if (isset($_GET['export'])) {
                 }
                 $pdf->Ln(10);
 
+                // Sales/Provision History
                 $pdf->SetFont('Arial', 'B', 12);
                 $pdf->Cell(0, 10, 'Sales/Provision History (' . ucfirst($history_period) . ')', 0, 1);
                 $pdf->SetFont('Arial', '', 10);
@@ -277,9 +284,11 @@ if (isset($_GET['export'])) {
                     $pdf->Ln();
                 }
 
+                // Output PDF
                 $pdf->Output('D', "Inventory_Report_$report_period.pdf");
                 exit;
             } catch (Exception $e) {
+                error_log("PDF generation failed: " . $e->getMessage());
                 die("PDF generation failed: " . $e->getMessage());
             }
             break;
@@ -429,266 +438,393 @@ if (isset($_GET['export'])) {
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Inventory Reports</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        @media print {
-            .col-lg-3 { display: none !important; }
-            .col-lg-9 { width: 100% !important; margin: 0 !important; padding: 0 !important; }
-            .btn, .dropdown, .modal, .pagination, #createReportModal, #scheduleReportModal { display: none !important; }
-            .container-fluid { padding: 0 !important; margin: 0 !important; width: 100% !important; }
-            .card { border: none !important; box-shadow: none !important; page-break-inside: avoid; }
-            .table { width: 100% !important; border-collapse: collapse; }
-            .table th, .table td { border: 1px solid #000 !important; padding: 8px !important; }
-            .table-responsive { page-break-inside: avoid; }
-            .alert { background: none !important; border: none !important; padding: 5px !important; }
-            .alert i, .card-body i { display: none !important; }
-            #history-table { width: 100% !important; border-collapse: collapse; }
-            #history-table th, #history-table td { border: 1px solid #000 !important; padding: 8px !important; }
-            #history-table tbody:not(:first-child) { display: none; }
+    @media print {
+        .col-lg-3 {
+            display: none !important;
         }
+
+        .col-lg-9 {
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .btn,
+        .dropdown,
+        .modal,
+        .pagination,
+        #createReportModal,
+        #scheduleReportModal {
+            display: none !important;
+        }
+
+        .container-fluid {
+            padding: 0 !important;
+            margin: 0 !important;
+            width: 100% !important;
+        }
+
+        .card {
+            border: none !important;
+            box-shadow: none !important;
+            page-break-inside: avoid;
+        }
+
+        .table {
+            width: 100% !important;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            border: 1px solid #000 !important;
+            padding: 8px !important;
+        }
+
+        .table-responsive {
+            page-break-inside: avoid;
+        }
+
+        .alert {
+            background: none !important;
+            border: none !important;
+            padding: 5px !important;
+        }
+
+        .alert i,
+        .card-body i {
+            display: none !important;
+        }
+
+        #history-table {
+            width: 100% !important;
+            border-collapse: collapse;
+        }
+
+        #history-table th,
+        #history-table td {
+            border: 1px solid #000 !important;
+            padding: 8px !important;
+        }
+
+        #history-table tbody:not(:first-child) {
+            display: none;
+        }
+    }
     </style>
 </head>
+
 <body>
-<div class="container-fluid px-4 py-3">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="mb-1">Reports & Analytics</h1>
-            <p class="text-muted mb-0">Generate and analyze inventory data reports</p>
+    <div class="container-fluid px-4 py-3">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="mb-1">Reports & Analytics</h1>
+                <p class="text-muted mb-0">Generate and analyze inventory data reports</p>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#scheduleReportModal">
+                    <i class="fas fa-clock me-2"></i>Schedule Reports
+                </button>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createReportModal">
+                    <i class="fas fa-plus me-2"></i>Create Report
+                </button>
+            </div>
         </div>
-        <div class="d-flex gap-2">
-            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#scheduleReportModal">
-                <i class="fas fa-clock me-2"></i>Schedule Reports
-            </button>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createReportModal">
-                <i class="fas fa-plus me-2"></i>Create Report
-            </button>
-        </div>
-    </div>
 
-    <div class="row mb-4">
-        <div class="col-md-3 mb-3">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body d-flex align-items-center">
-                    <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3">
-                        <i class="fas fa-box text-primary fa-2x"></i>
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3">
+                            <i class="fas fa-box text-primary fa-2x"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-1">Total Products</h6>
+                            <h3 class="mb-0"><?php echo (int)($data['total_products'] ?? 0); ?></h3>
+                        </div>
                     </div>
-                    <div>
-                        <h6 class="text-muted mb-1">Total Products</h6>
-                        <h3 class="mb-0"><?php echo (int)($data['total_products'] ?? 0); ?></h3>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="rounded-circle bg-success bg-opacity-10 p-3 me-3">
+                            <i class="fas fa-dollar-sign text-success fa-2x"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-1">Inventory Value</h6>
+                            <h3 class="mb-0"><?php echo '$' . number_format($data['inventory_value'] ?? 0, 2); ?></h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="rounded-circle bg-warning bg-opacity-10 p-3 me-3">
+                            <i class="fas fa-exclamation-triangle text-warning fa-2x"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-1">Low Stock Items</h6>
+                            <h3 class="mb-0"><?php echo (int)($data['low_stock_items'] ?? 0); ?></h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="rounded-circle bg-info bg-opacity-10 p-3 me-3">
+                            <i class="fas fa-exchange-alt text-info fa-2x"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-1"><?php echo ucfirst($report_period); ?> Turnover</h6>
+                            <h3 class="mb-0"><?php echo number_format($data['monthly_turnover'] ?? 0, 1) . '%'; ?></h3>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3 mb-3">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body d-flex align-items-center">
-                    <div class="rounded-circle bg-success bg-opacity-10 p-3 me-3">
-                        <i class="fas fa-dollar-sign text-success fa-2x"></i>
-                    </div>
-                    <div>
-                        <h6 class="text-muted mb-1">Inventory Value</h6>
-                        <h3 class="mb-0"><?php echo '$' . number_format($data['inventory_value'] ?? 0, 2); ?></h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-3">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body d-flex align-items-center">
-                    <div class="rounded-circle bg-warning bg-opacity-10 p-3 me-3">
-                        <i class="fas fa-exclamation-triangle text-warning fa-2x"></i>
-                    </div>
-                    <div>
-                        <h6 class="text-muted mb-1">Low Stock Items</h6>
-                        <h3 class="mb-0"><?php echo (int)($data['low_stock_items'] ?? 0); ?></h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-3">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body d-flex align-items-center">
-                    <div class="rounded-circle bg-info bg-opacity-10 p-3 me-3">
-                        <i class="fas fa-exchange-alt text-info fa-2x"></i>
-                    </div>
-                    <div>
-                        <h6 class="text-muted mb-1"><?php echo ucfirst($report_period); ?> Turnover</h6>
-                        <h3 class="mb-0"><?php echo number_format($data['monthly_turnover'] ?? 0, 1) . '%'; ?></h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="row mb-4">
-        <div class="col-lg-3">
-            <div class="card border-0 shadow-sm mb-4">
-                <div class="card-header bg-white py-3">
-                    <h5 class="card-title mb-0">Report Categories</h5>
-                </div>
-                <div class="card-body p-0">
-                    <div class="list-group list-group-flush">
-                        <a href="?period=monthly" class="list-group-item list-group-item-action <?php echo $report_period == 'monthly' ? 'active' : ''; ?> d-flex align-items-center">
-                            <i class="fas fa-chart-line me-3"></i><span>Overview Dashboard</span>
-                        </a>
+        <div class="row mb-4">
+            <div class="col-lg-3">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="card-title mb-0">Report Categories</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            <a href="?period=monthly"
+                                class="list-group-item list-group-item-action <?php echo $report_period == 'monthly' ? 'active' : ''; ?> d-flex align-items-center">
+                                <i class="fas fa-chart-line me-3"></i><span>Overview Dashboard</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">Filters</h5>
-                    <button class="btn btn-sm btn-outline-secondary" type="button" onclick="document.querySelector('form').reset();">Reset</button>
-                </div>
-                <div class="card-body">
-                    <form method="POST">
-                        <div class="mb-3">
-                            <label class="form-label">Date Range</label>
-                            <select class="form-select mb-2" onchange="window.location.href='?period='+this.value">
-                                <option value="daily" <?php echo $report_period == 'daily' ? 'selected' : ''; ?>>Daily</option>
-                                <option value="weekly" <?php echo $report_period == 'weekly' ? 'selected' : ''; ?>>Weekly</option>
-                                <option value="monthly" <?php echo $report_period == 'monthly' ? 'selected' : ''; ?>>Monthly</option>
-                            </select>
-                            <div class="row g-2">
-                                <div class="col-6">
-                                    <input type="date" class="form-control form-control-sm" name="start_date" value="<?php echo $start_date; ?>">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Filters</h5>
+                        <button class="btn btn-sm btn-outline-secondary" type="button"
+                            onclick="document.querySelector('form').reset();">Reset</button>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST">
+                            <div class="mb-3">
+                                <label class="form-label">Date Range</label>
+                                <select class="form-select mb-2" onchange="window.location.href='?period='+this.value">
+                                    <option value="daily" <?php echo $report_period == 'daily' ? 'selected' : ''; ?>>
+                                        Daily</option>
+                                    <option value="weekly" <?php echo $report_period == 'weekly' ? 'selected' : ''; ?>>
+                                        Weekly</option>
+                                    <option value="monthly"
+                                        <?php echo $report_period == 'monthly' ? 'selected' : ''; ?>>Monthly</option>
+                                </select>
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <input type="date" class="form-control form-control-sm" name="start_date"
+                                            value="<?php echo $start_date; ?>">
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="date" class="form-control form-control-sm" name="end_date"
+                                            value="<?php echo $end_date; ?>">
+                                    </div>
                                 </div>
-                                <div class="col-6">
-                                    <input type="date" class="form-control form-control-sm" name="end_date" value="<?php echo $end_date; ?>">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Product Categories</label>
+                                <select class="form-select" name="categories[]" multiple size="3">
+                                    <option value="all"
+                                        <?php echo empty($filters['categories']) || in_array('all', $filters['categories']) ? 'selected' : ''; ?>>
+                                        All Categories</option>
+                                    <option value="1"
+                                        <?php echo !empty($filters['categories']) && in_array('1', $filters['categories']) ? 'selected' : ''; ?>>
+                                        Electronics</option>
+                                    <option value="2"
+                                        <?php echo !empty($filters['categories']) && in_array('2', $filters['categories']) ? 'selected' : ''; ?>>
+                                        Books</option>
+                                    <option value="3"
+                                        <?php echo !empty($filters['categories']) && in_array('3', $filters['categories']) ? 'selected' : ''; ?>>
+                                        Furniture</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Stock Status (Uncheck to hide)</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="stock_status[]"
+                                        value="inStock" id="inStock"
+                                        <?php echo empty($filters['stock_status']) || in_array('inStock', $filters['stock_status']) ? 'checked' : ''; ?>>
+                                    <label class="form-check-label" for="inStock">In Stock</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="stock_status[]"
+                                        value="lowStock" id="lowStock"
+                                        <?php echo empty($filters['stock_status']) || in_array('lowStock', $filters['stock_status']) ? 'checked' : ''; ?>>
+                                    <label class="form-check-label" for="lowStock">Low Stock</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="stock_status[]"
+                                        value="outOfStock" id="outOfStock"
+                                        <?php echo empty($filters['stock_status']) || in_array('outOfStock', $filters['stock_status']) ? 'checked' : ''; ?>>
+                                    <label class="form-check-label" for="outOfStock">Out of Stock</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="stock_status[]"
+                                        value="overstock" id="overstock"
+                                        <?php echo empty($filters['stock_status']) || in_array('overstock', $filters['stock_status']) ? 'checked' : ''; ?>>
+                                    <label class="form-check-label" for="overstock">Overstock</label>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Product Categories</label>
-                            <select class="form-select" name="categories[]" multiple size="3">
-                                <option value="all" <?php echo empty($filters['categories']) || in_array('all', $filters['categories']) ? 'selected' : ''; ?>>All Categories</option>
-                                <option value="1" <?php echo !empty($filters['categories']) && in_array('1', $filters['categories']) ? 'selected' : ''; ?>>Electronics</option>
-                                <option value="2" <?php echo !empty($filters['categories']) && in_array('2', $filters['categories']) ? 'selected' : ''; ?>>Books</option>
-                                <option value="3" <?php echo !empty($filters['categories']) && in_array('3', $filters['categories']) ? 'selected' : ''; ?>>Furniture</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Stock Status (Uncheck to hide)</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="stock_status[]" value="inStock" id="inStock" <?php echo empty($filters['stock_status']) || in_array('inStock', $filters['stock_status']) ? 'checked' : ''; ?>>
-                                <label class="form-check-label" for="inStock">In Stock</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="stock_status[]" value="lowStock" id="lowStock" <?php echo empty($filters['stock_status']) || in_array('lowStock', $filters['stock_status']) ? 'checked' : ''; ?>>
-                                <label class="form-check-label" for="lowStock">Low Stock</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="stock_status[]" value="outOfStock" id="outOfStock" <?php echo empty($filters['stock_status']) || in_array('outOfStock', $filters['stock_status']) ? 'checked' : ''; ?>>
-                                <label class="form-check-label" for="outOfStock">Out of Stock</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="stock_status[]" value="overstock" id="overstock" <?php echo empty($filters['stock_status']) || in_array('overstock', $filters['stock_status']) ? 'checked' : ''; ?>>
-                                <label class="form-check-label" for="overstock">Overstock</label>
-                            </div>
-                        </div>
-
-                        <button class="btn btn-primary w-100" type="submit">
-                            <i class="fas fa-filter me-2"></i>Apply Filters
-                        </button>
-                    </form>
+                            <button class="btn btn-primary w-100" type="submit">
+                                <i class="fas fa-filter me-2"></i>Apply Filters
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-lg-9">
-            <div class="card border-0 shadow-sm mb-4">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h4 class="mb-0"><?php echo $report_period === 'sales' ? 'Sales Analysis' : 'Inventory Overview Dashboard'; ?></h4>
-                        <div class="btn-group">
-                            <select class="form-select form-select-sm me-2" onchange="window.location.href='?period='+this.value">
-                                <option value="daily" <?php echo $report_period == 'daily' ? 'selected' : ''; ?>>Daily</option>
-                                <option value="weekly" <?php echo $report_period == 'weekly' ? 'selected' : ''; ?>>Weekly</option>
-                                <option value="monthly" <?php echo $report_period == 'monthly' ? 'selected' : ''; ?>>Monthly</option>
-                                <option value="sales" <?php echo $report_period == 'sales' ? 'selected' : ''; ?>>Sales</option>
-                            </select>
-                            <button class="btn btn-outline-secondary btn-sm" onclick="window.print()">
-                                <i class="fas fa-print me-1"></i> Print
-                            </button>
-                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
-                                <i class="fas fa-download me-1"></i> Export
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><h6 class="dropdown-header">Export with History</h6></li>
-                                <li><a class="dropdown-item" href="?export=pdf&period=<?php echo $report_period; ?>&history_period=daily"><i class="far fa-file-pdf me-2"></i>PDF (Daily History)</a></li>
-                                <li><a class="dropdown-item" href="?export=pdf&period=<?php echo $report_period; ?>&history_period=weekly"><i class="far fa-file-pdf me-2"></i>PDF (Weekly History)</a></li>
-                                <li><a class="dropdown-item" href="?export=pdf&period=<?php echo $report_period; ?>&history_period=monthly"><i class="far fa-file-pdf me-2"></i>PDF (Monthly History)</a></li>
-                                <li><a class="dropdown-item" href="?export=pdf&period=<?php echo $report_period; ?>&history_period=yearly"><i class="far fa-file-pdf me-2"></i>PDF (Yearly History)</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="?export=excel&period=<?php echo $report_period; ?>&history_period=daily"><i class="far fa-file-excel me-2"></i>Excel (Daily History)</a></li>
-                                <li><a class="dropdown-item" href="?export=excel&period=<?php echo $report_period; ?>&history_period=weekly"><i class="far fa-file-excel me-2"></i>Excel (Weekly History)</a></li>
-                                <li><a class="dropdown-item" href="?export=excel&period=<?php echo $report_period; ?>&history_period=monthly"><i class="far fa-file-excel me-2"></i>Excel (Monthly History)</a></li>
-                                <li><a class="dropdown-item" href="?export=excel&period=<?php echo $report_period; ?>&history_period=yearly"><i class="far fa-file-excel me-2"></i>Excel (Yearly History)</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="?export=csv&period=<?php echo $report_period; ?>&history_period=daily"><i class="far fa-file-csv me-2"></i>CSV (Daily History)</a></li>
-                                <li><a class="dropdown-item" href="?export=csv&period=<?php echo $report_period; ?>&history_period=weekly"><i class="far fa-file-csv me-2"></i>CSV (Weekly History)</a></li>
-                                <li><a class="dropdown-item" href="?export=csv&period=<?php echo $report_period; ?>&history_period=monthly"><i class="far fa-file-csv me-2"></i>CSV (Monthly History)</a></li>
-                                <li><a class="dropdown-item" href="?export=csv&period=<?php echo $report_period; ?>&history_period=yearly"><i class="far fa-file-csv me-2"></i>CSV (Yearly History)</a></li>
-                            </ul>
+            <div class="col-lg-9">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="mb-0">
+                                <?php echo $report_period === 'sales' ? 'Sales Analysis' : 'Inventory Overview Dashboard'; ?>
+                            </h4>
+                            <div class="btn-group">
+                                <select class="form-select form-select-sm me-2"
+                                    onchange="window.location.href='?period='+this.value">
+                                    <option value="daily" <?php echo $report_period == 'daily' ? 'selected' : ''; ?>>
+                                        Daily</option>
+                                    <option value="weekly" <?php echo $report_period == 'weekly' ? 'selected' : ''; ?>>
+                                        Weekly</option>
+                                    <option value="monthly"
+                                        <?php echo $report_period == 'monthly' ? 'selected' : ''; ?>>Monthly</option>
+                                    <option value="sales" <?php echo $report_period == 'sales' ? 'selected' : ''; ?>>
+                                        Sales</option>
+                                </select>
+                                <button class="btn btn-outline-secondary btn-sm" onclick="window.print()">
+                                    <i class="fas fa-print me-1"></i> Print
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm dropdown-toggle"
+                                    data-bs-toggle="dropdown">
+                                    <i class="fas fa-download me-1"></i> Export
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <h6 class="dropdown-header">Export with History</h6>
+                                    </li>
+                                    <li><a class="dropdown-item"
+                                            href="?export=pdf&period=<?php echo $report_period; ?>&history_period=daily"><i
+                                                class="far fa-file-pdf me-2"></i>PDF (Daily History)</a></li>
+                                    <li><a class="dropdown-item"
+                                            href="?export=pdf&period=<?php echo $report_period; ?>&history_period=weekly"><i
+                                                class="far fa-file-pdf me-2"></i>PDF (Weekly History)</a></li>
+                                    <li><a class="dropdown-item"
+                                            href="?export=pdf&period=<?php echo $report_period; ?>&history_period=monthly"><i
+                                                class="far fa-file-pdf me-2"></i>PDF (Monthly History)</a></li>
+                                    <li><a class="dropdown-item"
+                                            href="?export=pdf&period=<?php echo $report_period; ?>&history_period=yearly"><i
+                                                class="far fa-file-pdf me-2"></i>PDF (Yearly History)</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item"
+                                            href="?export=excel&period=<?php echo $report_period; ?>&history_period=daily"><i
+                                                class="far fa-file-excel me-2"></i>Excel (Daily History)</a></li>
+                                    <li><a class="dropdown-item"
+                                            href="?export=excel&period=<?php echo $report_period; ?>&history_period=weekly"><i
+                                                class="far fa-file-excel me-2"></i>Excel (Weekly History)</a></li>
+                                    <li><a class="dropdown-item"
+                                            href="?export=excel&period=<?php echo $report_period; ?>&history_period=monthly"><i
+                                                class="far fa-file-excel me-2"></i>Excel (Monthly History)</a></li>
+                                    <li><a class="dropdown-item"
+                                            href="?export=excel&period=<?php echo $report_period; ?>&history_period=yearly"><i
+                                                class="far fa-file-excel me-2"></i>Excel (Yearly History)</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item"
+                                            href="?export=csv&period=<?php echo $report_period; ?>&history_period=daily"><i
+                                                class="far fa-file-csv me-2"></i>CSV (Daily History)</a></li>
+                                    <li><a class="dropdown-item"
+                                            href="?export=csv&period=<?php echo $report_period; ?>&history_period=weekly"><i
+                                                class="far fa-file-csv me-2"></i>CSV (Weekly History)</a></li>
+                                    <li><a class="dropdown-item"
+                                            href="?export=csv&period=<?php echo $report_period; ?>&history_period=monthly"><i
+                                                class="far fa-file-csv me-2"></i>CSV (Monthly History)</a></li>
+                                    <li><a class="dropdown-item"
+                                            href="?export=csv&period=<?php echo $report_period; ?>&history_period=yearly"><i
+                                                class="far fa-file-csv me-2"></i>CSV (Yearly History)</a></li>
+                                </ul>
+                            </div>
                         </div>
-                    </div>
-                    <p class="text-muted">
-                        Showing data for <strong><?php echo ucfirst($report_period); ?></strong> (<?php echo $start_date . ' - ' . $end_date; ?>) • 
-                        <?php echo !empty($filters['categories']) && !in_array('all', $filters['categories']) ? implode(', ', array_map(function($id) use ($pdo) {
+                        <p class="text-muted">
+                            Showing data for <strong><?php echo ucfirst($report_period); ?></strong>
+                            (<?php echo $start_date . ' - ' . $end_date; ?>) •
+                            <?php echo !empty($filters['categories']) && !in_array('all', $filters['categories']) ? implode(', ', array_map(function($id) use ($pdo) {
                             $stmt = $pdo->prepare("SELECT category_name FROM categories WHERE category_id = ?");
                             $stmt->execute([$id]);
                             return $stmt->fetchColumn();
                         }, $filters['categories'])) : 'All Categories'; ?>
-                        • Status: <?php echo !empty($filters['stock_status']) ? implode(', ', array_map('ucfirst', str_replace('Stock', ' Stock', $filters['stock_status']))) : 'All'; ?>
-                    </p>
-                    <div class="alert alert-info d-flex align-items-center">
-                        <i class="fas fa-box me-3 fa-lg"></i>
-                        <div>
-                            <strong>Total Products in Inventory:</strong> <?php echo (int)($data['total_products'] ?? 0); ?>
+                            • Status:
+                            <?php echo !empty($filters['stock_status']) ? implode(', ', array_map('ucfirst', str_replace('Stock', ' Stock', $filters['stock_status']))) : 'All'; ?>
+                        </p>
+                        <div class="alert alert-info d-flex align-items-center">
+                            <i class="fas fa-box me-3 fa-lg"></i>
+                            <div>
+                                <strong>Total Products in Inventory:</strong>
+                                <?php echo (int)($data['total_products'] ?? 0); ?>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="card border-0 shadow-sm mb-4">
-                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">Top Products by Value</h5>
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">Top 10</button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#">Top 5</a></li>
-                            <li><a class="dropdown-item" href="#">Top 10</a></li>
-                            <li><a class="dropdown-item" href="#">Top 20</a></li>
-                        </ul>
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Top Products by Value</h5>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                                data-bs-toggle="dropdown">Top 10</button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="#">Top 5</a></li>
+                                <li><a class="dropdown-item" href="#">Top 10</a></li>
+                                <li><a class="dropdown-item" href="#">Top 20</a></li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Product</th>
-                                    <th class="text-center">Quantity</th>
-                                    <th class="text-end">Unit Cost</th>
-                                    <th class="text-end">Total Value</th>
-                                    <th class="text-center">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (!empty($data['top_products'])): ?>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Product</th>
+                                        <th class="text-center">Quantity</th>
+                                        <th class="text-end">Unit Cost</th>
+                                        <th class="text-end">Total Value</th>
+                                        <th class="text-center">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (!empty($data['top_products'])): ?>
                                     <?php foreach ($data['top_products'] as $product): ?>
-                                        <tr>
-                                            <td><?php echo htmlspecialchars($product['name'] ?? 'N/A'); ?></td>
-                                            <td class="text-center"><?php echo (int)($product['quantity'] ?? 0); ?></td>
-                                            <td class="text-end"><?php echo '$' . number_format($product['unit_cost'] ?? 0, 2); ?></td>
-                                            <td class="text-end"><?php echo '$' . number_format($product['total_value'] ?? 0, 2); ?></td>
-                                            <td class="text-center">
-                                                <span class="badge <?php
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($product['name'] ?? 'N/A'); ?></td>
+                                        <td class="text-center"><?php echo (int)($product['quantity'] ?? 0); ?></td>
+                                        <td class="text-end">
+                                            <?php echo '$' . number_format($product['unit_cost'] ?? 0, 2); ?></td>
+                                        <td class="text-end">
+                                            <?php echo '$' . number_format($product['total_value'] ?? 0, 2); ?></td>
+                                        <td class="text-center">
+                                            <span class="badge <?php
                                                     switch ($product['status'] ?? '') {
                                                         case 'In Stock': echo 'bg-success'; break;
                                                         case 'Low Stock': echo 'bg-warning text-dark'; break;
@@ -697,258 +833,282 @@ if (isset($_GET['export'])) {
                                                         default: echo 'bg-secondary';
                                                     }
                                                 ?>">
-                                                    <?php echo htmlspecialchars($product['status'] ?? 'Unknown'); ?>
-                                                </span>
-                                            </td>
-                                        </tr>
+                                                <?php echo htmlspecialchars($product['status'] ?? 'Unknown'); ?>
+                                            </span>
+                                        </td>
+                                    </tr>
                                     <?php endforeach; ?>
-                                <?php else: ?>
+                                    <?php else: ?>
                                     <tr>
                                         <td colspan="5" class="text-center">No products found</td>
                                     </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="card border-0 shadow-sm mb-4">
-                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">Top Suppliers by Value</h5>
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">Top 5</button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#">Top 5</a></li>
-                            <li><a class="dropdown-item" href="#">Top 10</a></li>
-                        </ul>
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Top Suppliers by Value</h5>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                                data-bs-toggle="dropdown">Top 5</button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="#">Top 5</a></li>
+                                <li><a class="dropdown-item" href="#">Top 10</a></li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Supplier</th>
-                                    <th class="text-center">Product Count</th>
-                                    <th class="text-end">Total Value</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (!empty($data['top_suppliers'])): ?>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Supplier</th>
+                                        <th class="text-center">Product Count</th>
+                                        <th class="text-end">Total Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (!empty($data['top_suppliers'])): ?>
                                     <?php foreach ($data['top_suppliers'] as $supplier): ?>
-                                        <tr>
-                                            <td><?php echo htmlspecialchars($supplier['supplier_name'] ?? 'N/A'); ?></td>
-                                            <td class="text-center"><?php echo (int)($supplier['product_count'] ?? 0); ?></td>
-                                            <td class="text-end"><?php echo '$' . number_format($supplier['total_value'] ?? 0, 2); ?></td>
-                                        </tr>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($supplier['supplier_name'] ?? 'N/A'); ?></td>
+                                        <td class="text-center"><?php echo (int)($supplier['product_count'] ?? 0); ?>
+                                        </td>
+                                        <td class="text-end">
+                                            <?php echo '$' . number_format($supplier['total_value'] ?? 0, 2); ?></td>
+                                    </tr>
                                     <?php endforeach; ?>
-                                <?php else: ?>
+                                    <?php else: ?>
                                     <tr>
                                         <td colspan="3" class="text-center">No suppliers found</td>
                                     </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="card border-0 shadow-sm mb-4">
-                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">Sales/Provision History</h5>
-                    <select class="form-select form-select-sm" onchange="toggleHistoryView(this.value)">
-                        <option value="daily">Daily</option>
-                        <option value="weekly">Weekly</option>
-                        <option value="monthly" selected>Monthly</option>
-                        <option value="yearly">Yearly</option>
-                    </select>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0" id="history-table">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Period</th>
-                                    <th class="text-center">Total Quantity</th>
-                                    <th class="text-end">Total Value</th>
-                                </tr>
-                            </thead>
-                            <tbody id="daily-history" style="display: none;">
-                                <?php if (!empty($data['daily_history'])): ?>
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Sales/Provision History</h5>
+                        <select class="form-select form-select-sm" onchange="toggleHistoryView(this.value)">
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly" selected>Monthly</option>
+                            <option value="yearly">Yearly</option>
+                        </select>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0" id="history-table">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Period</th>
+                                        <th class="text-center">Total Quantity</th>
+                                        <th class="text-end">Total Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="daily-history" style="display: none;">
+                                    <?php if (!empty($data['daily_history'])): ?>
                                     <?php foreach ($data['daily_history'] as $entry): ?>
-                                        <tr>
-                                            <td><?php echo htmlspecialchars($entry['period_date']); ?></td>
-                                            <td class="text-center"><?php echo (int)($entry['total_quantity'] ?? 0); ?></td>
-                                            <td class="text-end"><?php echo '$' . number_format($entry['total_value'] ?? 0, 2); ?></td>
-                                        </tr>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($entry['period_date']); ?></td>
+                                        <td class="text-center"><?php echo (int)($entry['total_quantity'] ?? 0); ?></td>
+                                        <td class="text-end">
+                                            <?php echo '$' . number_format($entry['total_value'] ?? 0, 2); ?></td>
+                                    </tr>
                                     <?php endforeach; ?>
-                                <?php else: ?>
-                                    <tr><td colspan="3" class="text-center">No daily history found</td></tr>
-                                <?php endif; ?>
-                            </tbody>
-                            <tbody id="weekly-history" style="display: none;">
-                                <?php if (!empty($data['weekly_history'])): ?>
+                                    <?php else: ?>
+                                    <tr>
+                                        <td colspan="3" class="text-center">No daily history found</td>
+                                    </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                                <tbody id="weekly-history" style="display: none;">
+                                    <?php if (!empty($data['weekly_history'])): ?>
                                     <?php foreach ($data['weekly_history'] as $entry): ?>
-                                        <tr>
-                                            <td>Week <?php echo htmlspecialchars($entry['week']) . ', ' . $entry['year']; ?></td>
-                                            <td class="text-center"><?php echo (int)($entry['total_quantity'] ?? 0); ?></td>
-                                            <td class="text-end"><?php echo '$' . number_format($entry['total_value'] ?? 0, 2); ?></td>
-                                        </tr>
+                                    <tr>
+                                        <td>Week <?php echo htmlspecialchars($entry['week']) . ', ' . $entry['year']; ?>
+                                        </td>
+                                        <td class="text-center"><?php echo (int)($entry['total_quantity'] ?? 0); ?></td>
+                                        <td class="text-end">
+                                            <?php echo '$' . number_format($entry['total_value'] ?? 0, 2); ?></td>
+                                    </tr>
                                     <?php endforeach; ?>
-                                <?php else: ?>
-                                    <tr><td colspan="3" class="text-center">No weekly history found</td></tr>
-                                <?php endif; ?>
-                            </tbody>
-                            <tbody id="monthly-history">
-                                <?php if (!empty($data['monthly_history'])): ?>
+                                    <?php else: ?>
+                                    <tr>
+                                        <td colspan="3" class="text-center">No weekly history found</td>
+                                    </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                                <tbody id="monthly-history">
+                                    <?php if (!empty($data['monthly_history'])): ?>
                                     <?php foreach ($data['monthly_history'] as $entry): ?>
-                                        <tr>
-                                            <td><?php echo htmlspecialchars($entry['period_date']); ?></td>
-                                            <td class="text-center"><?php echo (int)($entry['total_quantity'] ?? 0); ?></td>
-                                            <td class="text-end"><?php echo '$' . number_format($entry['total_value'] ?? 0, 2); ?></td>
-                                        </tr>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($entry['period_date']); ?></td>
+                                        <td class="text-center"><?php echo (int)($entry['total_quantity'] ?? 0); ?></td>
+                                        <td class="text-end">
+                                            <?php echo '$' . number_format($entry['total_value'] ?? 0, 2); ?></td>
+                                    </tr>
                                     <?php endforeach; ?>
-                                <?php else: ?>
-                                    <tr><td colspan="3" class="text-center">No monthly history found</td></tr>
-                                <?php endif; ?>
-                            </tbody>
-                            <tbody id="yearly-history" style="display: none;">
-                                <?php if (!empty($data['yearly_history'])): ?>
+                                    <?php else: ?>
+                                    <tr>
+                                        <td colspan="3" class="text-center">No monthly history found</td>
+                                    </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                                <tbody id="yearly-history" style="display: none;">
+                                    <?php if (!empty($data['yearly_history'])): ?>
                                     <?php foreach ($data['yearly_history'] as $entry): ?>
-                                        <tr>
-                                            <td><?php echo htmlspecialchars($entry['period_date']); ?></td>
-                                            <td class="text-center"><?php echo (int)($entry['total_quantity'] ?? 0); ?></td>
-                                            <td class="text-end"><?php echo '$' . number_format($entry['total_value'] ?? 0, 2); ?></td>
-                                        </tr>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($entry['period_date']); ?></td>
+                                        <td class="text-center"><?php echo (int)($entry['total_quantity'] ?? 0); ?></td>
+                                        <td class="text-end">
+                                            <?php echo '$' . number_format($entry['total_value'] ?? 0, 2); ?></td>
+                                    </tr>
                                     <?php endforeach; ?>
-                                <?php else: ?>
-                                    <tr><td colspan="3" class="text-center">No yearly history found</td></tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
+                                    <?php else: ?>
+                                    <tr>
+                                        <td colspan="3" class="text-center">No yearly history found</td>
+                                    </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="card border-0 shadow-sm mb-4">
-                <div class="card-header bg-white py-3">
-                    <h5 class="card-title mb-0">Alerts & Recommendations</h5>
-                </div>
-                <div class="card-body">
-                    <?php if (in_array('lowStock', $selected_statuses)): ?>
-                    <div class="alert alert-warning d-flex align-items-center mb-3" role="alert">
-                        <i class="fas fa-exclamation-triangle me-3 fa-lg"></i>
-                        <div>
-                            <strong><?php echo (int)($data['low_stock_items'] ?? 0); ?> products</strong> are currently at low stock levels.
-                        </div>
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="card-title mb-0">Alerts & Recommendations</h5>
                     </div>
-                    <?php endif; ?>
-                    <?php if (in_array('outOfStock', $selected_statuses)): ?>
-                    <div class="alert alert-danger d-flex align-items-center mb-3" role="alert">
-                        <i class="fas fa-times-circle me-3 fa-lg"></i>
-                        <div>
-                            <strong><?php echo (int)($data['not_in_stock'] ?? 0); ?> products</strong> are out of stock.
+                    <div class="card-body">
+                        <?php if (in_array('lowStock', $selected_statuses)): ?>
+                        <div class="alert alert-warning d-flex align-items-center mb-3" role="alert">
+                            <i class="fas fa-exclamation-triangle me-3 fa-lg"></i>
+                            <div>
+                                <strong><?php echo (int)($data['low_stock_items'] ?? 0); ?> products</strong> are
+                                currently at low stock levels.
+                            </div>
                         </div>
-                    </div>
-                    <?php endif; ?>
-                    <?php if (in_array('overstock', $selected_statuses)): ?>
-                    <div class="alert alert-info d-flex align-items-center mb-3" role="alert">
-                        <i class="fas fa-info-circle me-3 fa-lg"></i>
-                        <div>
-                            <strong><?php echo (int)($data['overstocked_items'] ?? 0); ?> products</strong> have been overstocked.
+                        <?php endif; ?>
+                        <?php if (in_array('outOfStock', $selected_statuses)): ?>
+                        <div class="alert alert-danger d-flex align-items-center mb-3" role="alert">
+                            <i class="fas fa-times-circle me-3 fa-lg"></i>
+                            <div>
+                                <strong><?php echo (int)($data['not_in_stock'] ?? 0); ?> products</strong> are out of
+                                stock.
+                            </div>
                         </div>
-                    </div>
-                    <?php endif; ?>
-                    <div class="alert alert-success d-flex align-items-center mb-0" role="alert">
-                        <i class="fas fa-lightbulb me-3 fa-lg"></i>
-                        <div>
-                            Recommended: Increase stock for <strong><?php echo htmlspecialchars($data['top_recommendation']['name'] ?? 'N/A'); ?></strong> by 20%.
+                        <?php endif; ?>
+                        <?php if (in_array('overstock', $selected_statuses)): ?>
+                        <div class="alert alert-info d-flex align-items-center mb-3" role="alert">
+                            <i class="fas fa-info-circle me-3 fa-lg"></i>
+                            <div>
+                                <strong><?php echo (int)($data['overstocked_items'] ?? 0); ?> products</strong> have
+                                been overstocked.
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                        <div class="alert alert-success d-flex align-items-center mb-0" role="alert">
+                            <i class="fas fa-lightbulb me-3 fa-lg"></i>
+                            <div>
+                                Recommended: Increase stock for
+                                <strong><?php echo htmlspecialchars($data['top_recommendation']['name'] ?? 'N/A'); ?></strong>
+                                by 20%.
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Create Report Modal -->
-<div class="modal fade" id="createReportModal" tabindex="-1" aria-labelledby="createReportModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="createReportModalLabel">Create New Report</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <!-- Create Report Modal -->
+    <div class="modal fade" id="createReportModal" tabindex="-1" aria-labelledby="createReportModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createReportModalLabel">Create New Report</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="GET">
+                        <div class="mb-3">
+                            <label class="form-label">Report Name</label>
+                            <input type="text" class="form-control" placeholder="Enter report name">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Report Type</label>
+                            <select class="form-select" name="period">
+                                <option value="monthly">Inventory Overview</option>
+                            </select>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Format</label>
+                                <select class="form-select" name="export">
+                                    <option value="pdf">PDF</option>
+                                    <option value="excel">Excel</option>
+                                    <option value="csv">CSV</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Generate Report</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="modal-body">
-                <form method="GET">
+        </div>
+    </div>
+
+    <!-- Schedule Report Modal -->
+    <div class="modal fade" id="scheduleReportModal" tabindex="-1" aria-labelledby="scheduleReportModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="scheduleReportModalLabel">Schedule Reports</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Report Name</label>
-                        <input type="text" class="form-control" placeholder="Enter report name">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Report Type</label>
-                        <select class="form-select" name="period">
+                        <label class="form-label">Select Report</label>
+                        <select class="form-select">
                             <option value="monthly">Inventory Overview</option>
                         </select>
                     </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Format</label>
-                            <select class="form-select" name="export">
-                                <option value="pdf">PDF</option>
-                                <option value="excel">Excel</option>
-                                <option value="csv">CSV</option>
-                            </select>
-                        </div>
+                    <div class="mb-3">
+                        <label class="form-label">Frequency</label>
+                        <select class="form-select">
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                        </select>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Generate Report</button>
+                        <button type="button" class="btn btn-primary">Schedule Report</button>
                     </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Schedule Report Modal -->
-<div class="modal fade" id="scheduleReportModal" tabindex="-1" aria-labelledby="scheduleReportModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="scheduleReportModalLabel">Schedule Reports</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <label class="form-label">Select Report</label>
-                    <select class="form-select">
-                        <option value="monthly">Inventory Overview</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Frequency</label>
-                    <select class="form-select">
-                        <option value="daily">Daily</option>
-                        <option value="weekly">Weekly</option>
-                        <option value="monthly">Monthly</option>
-                    </select>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary">Schedule Report</button>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-function toggleHistoryView(period) {
-    document.querySelectorAll('#history-table tbody').forEach(tbody => tbody.style.display = 'none');
-    document.getElementById(period + '-history').style.display = 'table-row-group';
-}
-</script>
+    <script>
+    function toggleHistoryView(period) {
+        document.querySelectorAll('#history-table tbody').forEach(tbody => tbody.style.display = 'none');
+        document.getElementById(period + '-history').style.display = 'table-row-group';
+    }
+    </script>
 </body>
+
 </html>

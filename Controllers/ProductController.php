@@ -15,7 +15,7 @@ class ProductController extends BaseController {
     }
 
     public function product() {
-        $products = $this->product->getAllProducts(true);
+        $products = $this->product->getAllProducts();
         $stocks = $this->product->getAllStocks();
         $this->view('products/products', [
             'products' => $products,
@@ -77,7 +77,7 @@ class ProductController extends BaseController {
 
         if (empty($errors)) {
             try {
-                $this->product->addProduct($imagePath, $name, $description, $price, $unit, $quantity);
+                $productId = $this->product->addProduct($imagePath, $name, $description, $price, $unit, $quantity);
                 $this->notification->addNotification(
                     $_SESSION['user_id'],
                     "New product '$name' added",
@@ -215,5 +215,6 @@ class ProductController extends BaseController {
             ]);
         }
     }
+    
 }
 ?>
