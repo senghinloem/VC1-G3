@@ -33,7 +33,7 @@ class DashboardModel
 
     public function getLowStockCount()
     {
-        $result = $this->db->query("SELECT COUNT(*) AS low_stock_count FROM products WHERE quantity < 10");
+        $result = $this->db->query("SELECT COUNT(*) AS low_stock_count FROM products WHERE quantity < 5");
         $row = $result->fetch(PDO::FETCH_ASSOC);
         return $row['low_stock_count'] ?? 0;
     }
