@@ -560,7 +560,7 @@ if (!isset($_SESSION['user_id'])) {
                         <tr>
                             <td><input type="checkbox" class="productCheckbox" value="<?= $product['product_id'] ?>"></td>
                             <td>
-                                <img class="default-product-image" src="<?= htmlspecialchars($product['image'] ?? 'https://www.mooreseal.com/wp-content/uploads/2013/11/dummy-image-square.jpg') ?>" alt="" style="width: 80px; height: 80px;">
+                                <img class="default-product-image" src="<?= htmlspecialchars($product['image'] ?? "uploads/default.png") ?>" alt="" style="width: 90px; height: 80px;">
                             </td>
                             <td>
                                 <span class="product-name-box"><?= htmlspecialchars($product['name']) ?></span>
