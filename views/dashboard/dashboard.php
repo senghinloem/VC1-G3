@@ -210,7 +210,7 @@
     <script>
         // Product data from PHP
         const products = <?= json_encode($products); ?>;
-        const productsPerPage = 10;
+        const productsPerPage = 5;
         let currentPage = 1;
         let filteredProducts = products;
 
